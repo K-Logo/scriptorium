@@ -19,7 +19,8 @@ model User {
   passwordHash    String
   firstName       String
   lastName        String
-  role            String    @default("USER")    // avail enums: "USER", "ADMIN"
-  avatar          String                        // path to user image
-  createdAt       DateTime  @default(now())     // maybe make this optional
+  email           String    @unique                           // we can validate in frontend
+  phoneNumber     String    @unique                           // we can validate in frontend
+  role            String    @default("USER")                  // avail enums: "USER", "ADMIN"
+  createdAt       DateTime  @default(now())                   // maybe make this optional
 }
