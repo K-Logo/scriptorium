@@ -1,5 +1,7 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+// HELPER TO GET ALL USERS
+import { getAllUsers } from '../../service/users_db';
 
-export default function handler(req, res) {
-  res.status(200).json({ name: "John Doe" });
+export default async function handler(req, res) {
+  const allUsers = await getAllUsers();
+  res.status(200).json(allUsers);
 }
