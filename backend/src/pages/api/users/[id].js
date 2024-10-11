@@ -1,13 +1,12 @@
 import * as users_db from '@/service/users_db';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 export default async function handler(req, res) {
   if (req.method === "PUT") {
     let { id } = req.query;
     id = Number.parseInt(id);
-    const decodedJWT = verifyAndDecodeJWT(getTokenFrom(req), id);
+    const decodedJWT = verifyAndDecodeJWT(req, id);
     if (!decodedJWT) {
       res.status(401).json({ error: "Unauthorized" });
     }
@@ -31,12 +30,4 @@ export default async function handler(req, res) {
   } else {
     res.status(405).json({ error: "Method not allowed." });
   }
-}
-
-function getTokenFrom(req) {
-  const authorization = req.headers['authorization'];
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '');
-  }
-  return null;
 }

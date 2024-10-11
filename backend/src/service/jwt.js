@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
 
 export function getJWT(user, expiryInMinutes) {
-  console.log(user.username);
   const userForJWT = {
     id: user.db_id,
     username: user.username,
@@ -16,10 +15,20 @@ export function getJWT(user, expiryInMinutes) {
 }
 
 // returns null if the token is not valid; otherwise, returns the decoded token
-export function verifyAndDecodeJWT(token, userId) {
+export function verifyAndDecodeJWT(req, userId) {
+  const token = getTokenFromReq(req);
   const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
   if (!decodedJWT || decodedJWT.id != userId) {
     return null;
   }
   return decodedJWT;
+}
+
+// helper. retrieves token from Authorization header
+function getTokenFromReq(req) {
+  const authorization = req.headers['authorization'];
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '');
+  }
+  return null;
 }
