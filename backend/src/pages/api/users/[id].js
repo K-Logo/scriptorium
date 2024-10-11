@@ -1,4 +1,4 @@
-import * as users_db from '@/service/users_db';
+import * as usersDb from '@/service/usersDb';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
 const bcrypt = require('bcrypt');
 
@@ -15,14 +15,14 @@ export default async function handler(req, res) {
     const { newUsername, newPassword, newFirstName, newLastName, newEmail, newPhoneNumber } = req.body;
     if (newPassword) {
       const newPasswordHash = await bcrypt.hash(newPassword, 10);
-      await users_db.updatePasswordHashById(id, newPasswordHash);        
+      await usersDb.updatePasswordHashById(id, newPasswordHash);        
     }
-    if (newFirstName)   await users_db.updateFirstNameById(id, newFirstName);
-    if (newLastName)    await users_db.updateLastNameById(id, newLastName);
+    if (newFirstName)   await usersDb.updateFirstNameById(id, newFirstName);
+    if (newLastName)    await usersDb.updateLastNameById(id, newLastName);
     
     const errs = [];
     try {
-      if (newUsername)    await users_db.updateUsernameById(id, newUsername);
+      if (newUsername)    await usersDb.updateUsernameById(id, newUsername);
     } catch (e) {
       const err = new Object();
       err[errs.length] = `A user with username ${newUsername} already exists.`;
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     }
 
     try {
-      if (newEmail)       await users_db.updateEmailById(id, newEmail);
+      if (newEmail)       await usersDb.updateEmailById(id, newEmail);
     } catch (e) {
       const err = new Object();
       err[errs.length] = `A user with email ${newEmail} already exists.`;
@@ -38,14 +38,14 @@ export default async function handler(req, res) {
     }
 
     try {
-      if (newPhoneNumber) await users_db.updatePhoneNumberById(id, newPhoneNumber);
+      if (newPhoneNumber) await usersDb.updatePhoneNumberById(id, newPhoneNumber);
     } catch (e) {
       const err = new Object();
       err[errs.length] = `A user with phone number ${newPhoneNumber} already exists.`;
       errs.push(err);
     }
 
-    const jwt = getJWT(await users_db.getUserById(id), 15);
+    const jwt = getJWT(await usersDb.getUserById(id), 15);
     if (errs.length === 0) {
       return res.status(200).json({ token: jwt });  // return JWT with updated user details
     } else {

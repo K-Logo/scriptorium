@@ -2,10 +2,6 @@ import User from '@/model/user';
 import { PrismaClient } from '@prisma/client'
 export const prisma = new PrismaClient();
 
-/**
- *  TODO: ERROR HANDLING
- * */
-
 export async function addUser(user) {
   const savedDbUser = await prisma.user.create({
     data: {

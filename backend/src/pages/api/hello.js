@@ -1,5 +1,5 @@
 // HELPER TO GET ALL USERS
-import { getAllUsers } from '../../service/users_db';
+import { getAllUsers } from '../../service/usersDb';
 
 export default async function handler(req, res) {
   const allUsers = await getAllUsers();
