@@ -24,3 +24,12 @@ model User {
   role            String    @default("USER")                  // avail enums: "USER", "ADMIN"
   createdAt       DateTime  @default(now())                   // maybe make this optional
 }
+
+model Blog {
+  title           String 
+  description     String
+  tag             String
+  link_to_code    String
+  user            String
+  rating          Int       @default(0)
+}
