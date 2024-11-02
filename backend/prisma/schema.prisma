@@ -24,3 +24,21 @@ model User {
   role            String    @default("USER")                  // avail enums: "USER", "ADMIN"
   createdAt       DateTime  @default(now())                   // maybe make this optional
 }
+
+model CodeTemplate {
+  id              Int       @id @default(autoincrement())
+  title           String
+  explanation     String
+  content         String
+  tags            Tag[]     @relation("CodeTemplateTag")
+  createdAt       DateTime  @default(now())                   // maybe make this optional
+  parent          CodeTemplate? @relation("CodeTemplateFork", fields: [parentId], references: [id])
+  parentId        Int?
+  children        CodeTemplate[] @relation("CodeTemplateFork")
+}
+
+model Tag {
+  id              Int       @id @default(autoincrement())
+  name            String
+  codeTemplates    CodeTemplate[] @relation("CodeTemplateTag")
+}
