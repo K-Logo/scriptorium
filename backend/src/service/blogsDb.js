@@ -16,30 +16,42 @@ export async function addBlogPost(blog){
 }
 
 export async function searchBlogPostByTitle(title) {
-    const dbBlog = await prisma.blog.findFirst({
-        where: { title: title }
-    });
+    const blogs = await prisma.blog.findMany({
+        where: {
+            title: {
+            contains: title,
+            mode: 'insensitive', // doesn't matter if there are capitals in the title
+            },
+        },
+        });
+    return blogs;
+};
 
-    // TODO load the blog to somewhere?
-}
-
-export async function searchBlogPostByDescription() {
-    // TODO: figure out how to search using parts of the description
-    // ManyToMany fields
+export async function searchBlogPostByDescription(content) {
+    const blogs = await prisma.blog.findMany({
+        where: {
+            description: {
+            contains: content,
+            mode: 'insensitive', // doesn't matter if there are capitals in the title
+            },
+        },
+        });
+    return blogs;
 }
 
 export async function searchBlogPostByTag(tag) {
-    const dbBlog = await prisma.blog.findFirst({
-        where: { tag: tag }
-    });
-
-    // TODO load the blog to somewhere?
+    const blogs = await prisma.blog.findMany({
+        where: {
+            tag: {
+            contains: tag,
+            mode: 'insensitive', // doesn't matter if there are capitals in the title
+            },
+        },
+        });
+    return blogs;
 }
 
 export async function searchBlogPostByCode(template) {
-    const dbBlog = await prisma.blog.findFirst({
-        where: { link_to_code: template }
-    });
-
-    // TODO load the blog to somewhere?
+    // ManyToMany fields
+    // TODO: waiting for the code templates implementation
 }
