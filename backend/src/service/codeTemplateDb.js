@@ -3,7 +3,10 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 export async function addCodeTemplate(codeTemplate) {
-    // todo: create tags (assume codeTemplate.tags is array of stings)
+    dbTagIds = [];
+    for (const tag of codeTemplate.tags) {
+        dbTags.push(createTagAndGetId(tag));
+    }
 
     if (parentId) {
         const parentCodeTemplate = await getCodeTemplateById(parentId);
@@ -19,7 +22,9 @@ export async function addCodeTemplate(codeTemplate) {
             title: codeTemplate.title,
             explanation: codeTemplate.explanation,
             content: codeTemplate.content,
-            tags: codeTemplate.tags,
+            tags: {
+                connect: tagIds.map(tagId => ({ id: tagId }))
+            },
             parentId: codeTemplate.parentId,
             userId: codeTemplate.userId
         }
@@ -28,12 +33,49 @@ export async function addCodeTemplate(codeTemplate) {
     return savedDbCodeTemplate;
 }
 
+/* Attempts to create a tag, and return its id.
+   If a tag with the same name already exists,
+   return its id. */
+export async function createTagAndGetId(tag) {
+    // Assume tag is a string
+    const dbTag = await prisma.tag.findFirst({ 
+        where: {name: tag}
+    });
+
+    if (!dbTag) { // If the tag does not exist
+        dbTag = await prisma.tag.create({
+            data: {
+                name: tag
+            }
+        });
+    }
+
+    return dbTag.id;
+}
+
 export async function getCodeTemplateById(id) {
     const dbCodeTemplate = await prisma.codeTemplate.findFirst({
         where: { id: id }
     });
 
     return toCodeTemplate(dbCodeTemplate);
+}
+
+export async function getCodeTemplateByUserId(userId) {
+    const codeTemplates = await prisma.codeTemplate.findMany({
+        where: {
+            userId: userId
+        }
+    });
+    return codeTemplates;
+}
+
+export async function deleteCodeTemplateById(id) {
+    await prisma.codeTemplate.delete({
+        where: {
+            id: id
+        }
+    });
 }
 
 export async function getCodeTemplateByTitle(substring) {
@@ -122,11 +164,15 @@ export async function updateContentById(id, newContent) {
 }
 
 export async function addTagById(id, newTag) {
+    // Assume newTag is a string
+    
+    const newTagId = createTagAndGetId(newTag);
+
     await prisma.codeTemplate.update({
         where: { id: id },
         data: {
             tags: {
-                connect: { id: newTag.id }
+                connect: { id: newTagId }
             }
         }
     });
@@ -150,6 +196,9 @@ function toCodeTemplate(dbCodeTemplate) {
         return null;
     }
 
+    // Convert dbCodeTemplate.tags into an array of strings
+    const stringTags = dbCodeTemplate.tags.map(tag => tag.name);
+
     return new CodeTemplate(dbCodeTemplate.id, dbCodeTemplate.title, dbCodeTemplate.explanation, dbCodeTemplate.content,
-        dbCodeTemplate.tags, dbCodeTemplate.parent, dbCodeTemplate.parentId, dbCodeTemplate.children);
+        stringTags, dbCodeTemplate.parent, dbCodeTemplate.parentId, dbCodeTemplate.children);
 }

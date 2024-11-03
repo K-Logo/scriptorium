@@ -42,6 +42,6 @@ model CodeTemplate {
 
 model Tag {
   id              Int       @id @default(autoincrement())
-  name            String
+  name            String    @unique
   codeTemplates    CodeTemplate[] @relation("CodeTemplateTag")
 }
