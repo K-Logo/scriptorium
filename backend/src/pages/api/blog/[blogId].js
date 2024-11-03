@@ -11,7 +11,9 @@ export default async function handler(req, res) {
         return res.status(401).json({ error: "Unauthorized" });
       }
       
-      if (decodedJWT.id != blogId) {
+      const blog = blogsDb.searchBlogPostById(blogId);
+
+      if (decodedJWT.id != blog.author_id) {
         return res.status(401).json({ error: "You are not the author of the account. You cannot edit this post." });
       }
   
@@ -22,7 +24,7 @@ export default async function handler(req, res) {
       if (newTag)   await blogsDb.updateTagById(blogId, newTag);
       if (newCodeTemplate)    await blogsDb.updateCodeById(blogId, newCodeTemplate);
 
-      res.status(200).json({ message: "Blog post edited successfully." });
+      res.status(201).json({ message: "Blog post edited successfully." });
     } else if (req.method == 'DELETE') {
       let { blogId } = req.query; // get blog's id
       blogId = Number.parseInt(blogId);
@@ -31,7 +33,9 @@ export default async function handler(req, res) {
       if (!decodedJWT) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      if (decodedJWT.id != blogId) {
+      
+      const blog = blogsDb.searchBlogPostById(blogId);
+      if (decodedJWT.id != blog.author_id) {
         return res.status(401).json({ error: "You are not the author of the account. You cannot delete this post." });
       }
       
