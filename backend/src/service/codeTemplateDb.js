@@ -3,21 +3,36 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 export async function addCodeTemplate(codeTemplate) {
+    console.log("3333333")
+    console.log(codeTemplate.userId)
     if (codeTemplate.parentId) {
-        const parentCodeTemplate = await getCodeTemplateById(codeTemplate.parentId);
+        let parentCodeTemplate = await getCodeTemplateById(codeTemplate.parentId);
+        parentCodeTemplate = toCodeTemplate(parentCodeTemplate);
         codeTemplate.title = parentCodeTemplate.title;
         codeTemplate.explanation = parentCodeTemplate.explanation;
         codeTemplate.content = parentCodeTemplate.content;
         codeTemplate.tags = parentCodeTemplate.tags;
-        codeTemplate.userId = parentCodeTemplate.userId;
+        console.log("47592374809321074891327098471238904")
+        console.log(parentCodeTemplate.title)
+        console.log(parentCodeTemplate.explanation)
+        console.log(parentCodeTemplate.content)
+        console.log(parentCodeTemplate.tags)
+        console.log(parentCodeTemplate.userId)
     }
 
     const dbTagIds = [];
+    console.log(codeTemplate.tags)
     if (codeTemplate.tags) {
         for (const tag of codeTemplate.tags) {
-            dbTagIds.push(await createTagAndGetId(tag.name));
+            console.log("fjdkldjfl")
+            console.log(tag)
+            dbTagIds.push(await createTagAndGetId(tag));
         }
     }
+    console.log(dbTagIds);
+
+    console.log("oooooooooo")
+    console.log(codeTemplate.userId)
 
     const savedDbCodeTemplate = await prisma.codeTemplate.create({
         data: {
@@ -43,6 +58,7 @@ export async function createTagAndGetId(tag) {
     let dbTag = await prisma.tag.findFirst({ 
         where: {name: tag}
     });
+    console.log(dbTag)
 
     if (!dbTag) { // If the tag does not exist
         dbTag = await prisma.tag.create({
@@ -216,5 +232,5 @@ function toCodeTemplate(dbCodeTemplate) {
     const stringTags = dbCodeTemplate.tags.map(tag => tag.name);
     console.log(stringTags);
     return new CodeTemplate(dbCodeTemplate.id, dbCodeTemplate.title, dbCodeTemplate.explanation, dbCodeTemplate.content,
-        stringTags, dbCodeTemplate.parentId);
+        stringTags, dbCodeTemplate.parentId, dbCodeTemplate.userId);
 }
