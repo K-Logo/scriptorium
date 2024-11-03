@@ -4,11 +4,13 @@ export default class Blog {
     description;
     tag;
     code_template;
-    user; // username that posted the blog
+    author; // username that posted the blog
+    author_id;
     rating; // upvotes
     reports;
+    comments;
 
-    constructor(blog_id, title, description, tag, code_template, user) {
+    constructor(blog_id, title, description, tag, code_template, author) {
         if (blog_id) {
             this.blog_id = blog_id;
         }
@@ -20,9 +22,11 @@ export default class Blog {
         if (code_template){
             this.code_template = code_template;
         }
-        this.user = user;
+        this.author = author;
+        this.author_id = author.id;
         this.rating = 0;
         this.reports = 0;
+        this.comments = []; // empty array
     }
 
     get blog_id() {
@@ -61,11 +65,15 @@ export default class Blog {
         this.code_template = new_template;
     }
 
-    get user() {
-        return this.user;
+    get author() {
+        return this.author;
     }
 
     get rating() {
         return this.rating;
+    }
+
+    get comments(){
+        return this.comments;
     }
 }

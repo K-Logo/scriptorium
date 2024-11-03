@@ -7,8 +7,8 @@ export async function addBlogPost(blog){
             title: blog.title,
             description: blog.description,
             tag: blog.tag,
-            link_to_code: blog.link_to_code,
-            user: blog.user
+            code_template: blog.code_template,
+            author: blog.author
         }
     });
 

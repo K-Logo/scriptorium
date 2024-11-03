@@ -1,16 +1,23 @@
 import Blog from '@/model/blog';
 import { addBlogPost } from '@/service/blogsDb';
+import { getUserById } from '@/service/usersDb';
 
 // Accepts bodies with *mandatory* title and description. tag and code template is optional
 export default async function handler(req, res) {
     if (req.method === "POST") {
-        const { title, description, code_template, tag } = req.body;
+        const { title, description, tag, code_template} = req.body;
 
         if (!title || !description) {
             res.status(409).json({ error: "Title and description are mandatory fields." });
         } 
+        const decodedJWT = verifyAndDecodeBlogJWT(req);
+        if (!decodedJWT) {
+          return res.status(401).json({ error: "Unauthorized" });
+        }
 
-        const blog = new Blog(title, description, code_template, tag);
+        const author = getUserById(decodedJWT.id);
+
+        const blog = new Blog(null, title, description, tag, code_template, author);
     
         try {
           const savedBlog = await addBlogPost(blog);
