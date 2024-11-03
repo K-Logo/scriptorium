@@ -27,7 +27,7 @@ export default async function executeCode(req, res) {
       case 'cpp':
         ext = 'cpp';
         sourceFilePath = `${filePath}.${ext}`;
-        compileCmd = ['gcc', sourceFilePath, '-o', `${filePath}.out`, '-lstdc++'];
+        compileCmd = ['g++', sourceFilePath, '-o', `${filePath}.out`];
         execCmd = [`${filePath}.out`];
         execFilePath = `${filePath}.out`;
         break;
