@@ -111,6 +111,14 @@ function toUser(dbUser) {
      dbUser.lastName, dbUser.email, dbUser.phoneNumber, dbUser.avatarPath, dbUser.role);
 }
 
+export async function deleteUserById(id) {
+  await prisma.user.delete({
+      where: {
+          id: id
+      }
+  });
+}
+
 // private "logging" util
 export async function getAllUsers() {
   const allUsers = await prisma.user.findMany({
