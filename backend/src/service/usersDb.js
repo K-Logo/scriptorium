@@ -10,7 +10,8 @@ export async function addUser(user) {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      phoneNumber: user.phoneNumber
+      phoneNumber: user.phoneNumber,
+      avatarPath: user.avatarPath
     }
   });
 
@@ -61,6 +62,15 @@ export async function updatePhoneNumberById(id, newPhoneNumber) {
   });
 }
 
+export async function updateAvatarPathById(id, newAvatarPath) {
+  await prisma.user.update({
+    where: { id: id },
+    data: {
+      avatarPath: newAvatarPath
+    }
+  });
+}
+
 export async function updateFirstNameById(id, newFirstName) {
   await prisma.user.update({
     where: { id: id },
@@ -91,7 +101,7 @@ export async function updatePasswordHashById(id, newPasswordHash) {
 
 function toUser(dbUser) {
   return new User(dbUser.id, dbUser.username, dbUser.passwordHash, dbUser.firstName,
-     dbUser.lastName, dbUser.email, dbUser.phoneNumber, dbUser.role);
+     dbUser.lastName, dbUser.email, dbUser.phoneNumber, dbUser.avatarPath, dbUser.role);
 }
 
 // private "logging" util

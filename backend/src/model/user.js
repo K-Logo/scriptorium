@@ -7,9 +7,10 @@ export default class User {
   #lastName;
   #email;
   #phoneNumber;
+  #avatarPath;
   #role;
 
-  constructor(db_id, username, passwordHash, firstName, lastName, email, phoneNumber, role) {
+  constructor(db_id, username, passwordHash, firstName, lastName, email, phoneNumber, avatarPath, role) {
     if (db_id) {
       this.#db_id = db_id;
     }
@@ -19,6 +20,7 @@ export default class User {
     this.#lastName = lastName;
     this.#email = email;
     this.#phoneNumber = phoneNumber;
+    this.#avatarPath = avatarPath;
     if (role) {
       this.#role = role;
     }
@@ -78,6 +80,14 @@ export default class User {
 
   set phoneNumber(phoneNumber) {
     this.#phoneNumber = phoneNumber;
+  }
+
+  get avatarPath() {
+    return this.#avatarPath;
+  }
+
+  set avatarPath(avatarPath) {
+    this.#avatarPath = avatarPath;
   }
 
   get role() {

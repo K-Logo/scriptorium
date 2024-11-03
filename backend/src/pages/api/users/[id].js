@@ -12,13 +12,14 @@ export default async function handler(req, res) {
     }
 
     // the following fields will be null there is no change; otherwise, they will be a string w updated value.
-    const { newUsername, newPassword, newFirstName, newLastName, newEmail, newPhoneNumber } = req.body;
+    const { newUsername, newPassword, newFirstName, newLastName, newEmail, newPhoneNumber, newAvatarPath } = req.body;
     if (newPassword) {
       const newPasswordHash = await bcrypt.hash(newPassword, 10);
       await usersDb.updatePasswordHashById(id, newPasswordHash);        
     }
     if (newFirstName)   await usersDb.updateFirstNameById(id, newFirstName);
     if (newLastName)    await usersDb.updateLastNameById(id, newLastName);
+    if (newAvatarPath)  await usersDb.updateAvatarPathById(id, newAvatarPath);
     
     const errs = [];
     try {
