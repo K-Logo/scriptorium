@@ -104,3 +104,36 @@ export async function updateCodeById(id, code) {
         }
     });
 }
+
+export async function updateRatingById(id, action) {
+    if (action == "upvote") {
+        await prisma.blog.update({
+            where: {id: id },
+            data: {
+                rating: {
+                    increment: 1
+                }
+            }
+        });
+    } else if (action == "downvote") {
+        await prisma.blog.update({
+            where: {id: id },
+            data: {
+                rating: {
+                    increment: -1
+                }
+            }
+        });
+    }
+} 
+
+export async function updateReportCounter(id) {
+    await prisma.blog.update({
+        where: {id: id },
+        data: {
+            report: {
+                increment: 1
+            }
+        }
+    });
+}
