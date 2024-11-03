@@ -19,7 +19,7 @@ export default async function signup(req, res) {
       const savedUser = await addUser(user);
       return res.status(201).json(savedUser);
     } catch (e) {
-      return res.status(409).json({ error: "Username, email or phone number already taken." });
+      return res.status(409).json({ error: "Username, email or phone number already taken.", e: e });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed." })

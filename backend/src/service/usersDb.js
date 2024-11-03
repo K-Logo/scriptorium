@@ -28,7 +28,14 @@ export async function getUserByUsername(username) {
 
 export async function getUserById(id) {
   const dbUser = await prisma.user.findFirst({
-    where: { id: id }
+    where: { id: id },
+    include: {
+      codeTemplates: {
+        include: {
+          tags: true,
+        },
+      },
+    },
   });
 
   return toUser(dbUser);
@@ -106,6 +113,14 @@ function toUser(dbUser) {
 
 // private "logging" util
 export async function getAllUsers() {
-  const allUsers = await prisma.user.findMany();
+  const allUsers = await prisma.user.findMany({
+    include: {
+      codeTemplates: {
+        include: {
+          tags: true,
+        },
+      },
+    },
+  });
   return allUsers;
 }

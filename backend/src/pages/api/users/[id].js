@@ -1,5 +1,6 @@
 import * as usersDb from '@/service/usersDb';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
+import { getCodeTemplateByUserId } from '@/service/codeTemplateDb';
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const files = fs.readdirSync('./public/avatars')
@@ -64,6 +65,17 @@ export default async function handler(req, res) {
     } else {
       return res.status(409).json({ errors: errs, token: jwt });
     }
+  } else if (req.method === "GET") {
+    let { id } = req.query;
+    id = Number.parseInt(id);
+    const decodedJWT = verifyAndDecodeJWT(req, id);
+    if (!decodedJWT) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const codeTemplates = await getCodeTemplateByUserId(id);
+    res.status(200).json(codeTemplates);
+
   } else {
     return res.status(405).json({ error: "Method not allowed." });
   }
