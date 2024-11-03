@@ -8,7 +8,9 @@ export async function addBlogPost(blog){
             description: blog.description,
             tag: blog.tag,
             code_template: blog.code_template,
-            author: blog.author
+            author: {
+                connect: { id: blog.author_id }
+            }
         }
     });
 
