@@ -4,7 +4,7 @@ import { verifyAndDecodeJWT } from "@/service/jwt";
 
 export default async function handler(req, res) {
     if (req.method == "POST") {
-        const { title, explanation, content, tags, parentId, userId } = req.body;
+        let { title, explanation, content, tags, parentId, userId } = req.body;
         userId = Number.parseInt(userId);
         const decodedJWT = verifyAndDecodeJWT(req, userId);
         if (!decodedJWT) {
@@ -13,12 +13,12 @@ export default async function handler(req, res) {
 
         const codeTemplate = new CodeTemplate(null, title, explanation, content, tags, parentId, userId);
 
-        try {
+        // try {
             const savedCodeTemplate = await addCodeTemplate(codeTemplate);
             return res.status(201).json(savedCodeTemplate);
-        } catch (e) {
-            return res.status(409).json({ error: "Please double check your fields." });
-        }
+        // } catch (e) {
+        //     return res.status(409).json({ error: "Please double check your fields." });
+        // }
 
     } else if (req.method == "GET") {
         // Search by only one of the fields
@@ -26,13 +26,13 @@ export default async function handler(req, res) {
 
         let codeTemplate = null;
         if (title) {
-            try {
+            // try {
                 codeTemplate = await getCodeTemplateByTitle(title);
                 return res.status(200).json(codeTemplate);
-            } catch (e) {
-                res.status(401).json({ error: "Invalid title." });
-                return;
-            }
+            // } catch (e) {
+            //     res.status(401).json({ error: "Invalid title." });
+            //     return;
+            // }
         } else if (content) {
             try {
                 codeTemplate = await getCodeTemplateByContent(content);

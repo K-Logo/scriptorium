@@ -3,18 +3,20 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 export async function addCodeTemplate(codeTemplate) {
-    dbTagIds = [];
-    for (const tag of codeTemplate.tags) {
-        dbTags.push(createTagAndGetId(tag));
+    if (codeTemplate.parentId) {
+        const parentCodeTemplate = await getCodeTemplateById(codeTemplate.parentId);
+        codeTemplate.title = parentCodeTemplate.title;
+        codeTemplate.explanation = parentCodeTemplate.explanation;
+        codeTemplate.content = parentCodeTemplate.content;
+        codeTemplate.tags = parentCodeTemplate.tags;
+        codeTemplate.userId = parentCodeTemplate.userId;
     }
 
-    if (parentId) {
-        const parentCodeTemplate = await getCodeTemplateById(parentId);
-        title = parentCodeTemplate.title;
-        explanation = parentCodeTemplate.explanation;
-        content = parentCodeTemplate.content;
-        tags = parentCodeTemplate.tags;
-        userId = codeTemplate.userId;
+    const dbTagIds = [];
+    if (codeTemplate.tags) {
+        for (const tag of codeTemplate.tags) {
+            dbTagIds.push(await createTagAndGetId(tag.name));
+        }
     }
 
     const savedDbCodeTemplate = await prisma.codeTemplate.create({
@@ -23,7 +25,7 @@ export async function addCodeTemplate(codeTemplate) {
             explanation: codeTemplate.explanation,
             content: codeTemplate.content,
             tags: {
-                connect: tagIds.map(tagId => ({ id: tagId }))
+                connect: dbTagIds.map(tagId => ({ id: tagId }))
             },
             parentId: codeTemplate.parentId,
             userId: codeTemplate.userId
@@ -38,7 +40,7 @@ export async function addCodeTemplate(codeTemplate) {
    return its id. */
 export async function createTagAndGetId(tag) {
     // Assume tag is a string
-    const dbTag = await prisma.tag.findFirst({ 
+    let dbTag = await prisma.tag.findFirst({ 
         where: {name: tag}
     });
 
@@ -55,16 +57,22 @@ export async function createTagAndGetId(tag) {
 
 export async function getCodeTemplateById(id) {
     const dbCodeTemplate = await prisma.codeTemplate.findFirst({
-        where: { id: id }
+        where: { id: id },
+        include: {
+            tags: true,
+        }
     });
 
-    return toCodeTemplate(dbCodeTemplate);
+    return dbCodeTemplate;
 }
 
 export async function getCodeTemplateByUserId(userId) {
     const codeTemplates = await prisma.codeTemplate.findMany({
         where: {
             userId: userId
+        },
+        include: {
+            tags: true,
         }
     });
     return codeTemplates;
@@ -83,15 +91,21 @@ export async function getCodeTemplateByTitle(substring) {
         where: {
             title: {
                 contains: substring,  // Look for code templates containing substring
-                mode: 'insensitive'   // Case-insensitive
             }
+        },
+        include: {
+            tags: true,
         }
     });
 
+    console.log(dbCodeTemplates);
+
     const codeTemplates = [];
     for (const dbCodeTemplate of dbCodeTemplates) {
-        codeTemplates.push(toCodeTemplate(dbCodeTemplate));
+        codeTemplates.push(dbCodeTemplate);
     }
+
+    console.log(codeTemplates);
 
     return codeTemplates;
 }
@@ -103,16 +117,18 @@ export async function getCodeTemplateByTag(substring) {
                 some: {
                     name: {
                         contains: substring,  // Look for code templates containing substring
-                        mode: 'insensitive'   // Case-insensitive
                     }
                 }
             }
+        },
+        include: {
+            tags: true,
         }
     });
 
     const codeTemplates = [];
     for (const dbCodeTemplate of dbCodeTemplates) {
-        codeTemplates.push(toCodeTemplate(dbCodeTemplate));
+        codeTemplates.push(dbCodeTemplate);
     }
 
     return codeTemplates;
@@ -123,14 +139,13 @@ export async function getCodeTemplateByContent(substring) {
         where: {
             content: {
                 contains: substring,  // Look for code templates containing substring
-                mode: 'insensitive'   // Case-insensitive
             }
         }
     });
 
     const codeTemplates = [];
     for (const dbCodeTemplate of dbCodeTemplates) {
-        codeTemplates.push(toCodeTemplate(dbCodeTemplate));
+        codeTemplates.push(dbCodeTemplate);
     }
 
     return codeTemplates;
@@ -166,7 +181,7 @@ export async function updateContentById(id, newContent) {
 export async function addTagById(id, newTag) {
     // Assume newTag is a string
     
-    const newTagId = createTagAndGetId(newTag);
+    const newTagId = await createTagAndGetId(newTag);
 
     await prisma.codeTemplate.update({
         where: { id: id },
@@ -197,8 +212,9 @@ function toCodeTemplate(dbCodeTemplate) {
     }
 
     // Convert dbCodeTemplate.tags into an array of strings
+    console.log(dbCodeTemplate.tags);//todo:delete
     const stringTags = dbCodeTemplate.tags.map(tag => tag.name);
-
+    console.log(stringTags);
     return new CodeTemplate(dbCodeTemplate.id, dbCodeTemplate.title, dbCodeTemplate.explanation, dbCodeTemplate.content,
-        stringTags, dbCodeTemplate.parent, dbCodeTemplate.parentId, dbCodeTemplate.children);
+        stringTags, dbCodeTemplate.parentId);
 }

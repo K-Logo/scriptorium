@@ -60,7 +60,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const codeTemplates = getCodeTemplateByUserId(id);
+    const codeTemplates = await getCodeTemplateByUserId(id);
     res.status(200).json(codeTemplates);
 
   } else {

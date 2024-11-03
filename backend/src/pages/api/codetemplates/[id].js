@@ -1,4 +1,5 @@
 import { addTagById, deleteCodeTemplateById, getCodeTemplateById, updateContentById, updateExplanationById, updateTitleById } from "@/service/codeTemplateDb";
+import { verifyAndDecodeJWT } from '@/service/jwt';
 
 export default async function handler(req, res) {
     let { id } = req.query;
@@ -6,7 +7,7 @@ export default async function handler(req, res) {
     if (!id) {
         return res.status(400).json({ error: "Invalid ID" });
     }
-    const codeTemplate = await getCodeTemplateById(id);
+    let codeTemplate = await getCodeTemplateById(id);
     if (!codeTemplate) {
         return res.status(404).json({ error: "Code template not found" });
     }
@@ -25,9 +26,9 @@ export default async function handler(req, res) {
         if (newContent)     await updateContentById(id, newContent);
         if (newTag)         await addTagById(id, newTag);
         
-        const codeTemplate = await getCodeTemplateById(id);
+        codeTemplate = await getCodeTemplateById(id);
         if (!codeTemplate) {
-            return res.status(404).json({ error: "Code template note found" });
+            return res.status(404).json({ error: "Code template not found" });
         }
         return res.status(200).json(codeTemplate);
     } else if (req.method == "DELETE") {
