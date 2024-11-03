@@ -1,9 +1,20 @@
 import * as usersDb from '@/service/usersDb';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
 import { getCodeTemplateByUserId } from '@/service/codeTemplateDb';
+import { deleteUserById, getUserById } from '@/service/usersDb';
 const bcrypt = require('bcrypt');
 
 export default async function handler(req, res) {
+  let { id } = req.query;
+  id = Number.parseInt(id);
+  if (!id) {
+      return res.status(400).json({ error: "Invalid ID" });
+  }
+  let user = await getUserById(id);
+  if (!user) {
+      return res.status(404).json({ error: "User not found" });
+  }
+
   if (req.method === "PUT") {
     let { id } = req.query;
     id = Number.parseInt(id);
