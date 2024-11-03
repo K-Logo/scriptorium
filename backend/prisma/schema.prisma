@@ -23,4 +23,25 @@ model User {
   phoneNumber     String    @unique                           // we can validate in frontend
   role            String    @default("USER")                  // avail enums: "USER", "ADMIN"
   createdAt       DateTime  @default(now())                   // maybe make this optional
+  codeTemplates   CodeTemplate[] @relation("UserCodeTemplates")
+}
+
+model CodeTemplate {
+  id              Int       @id @default(autoincrement())
+  title           String
+  explanation     String
+  content         String
+  tags            Tag[]     @relation("CodeTemplateTag")
+  createdAt       DateTime  @default(now())                   // maybe make this optional
+  parent          CodeTemplate? @relation("CodeTemplateFork", fields: [parentId], references: [id])
+  parentId        Int?
+  children        CodeTemplate[] @relation("CodeTemplateFork")
+  user            User      @relation("UserCodeTemplates", fields: [userId], references: [id])
+  userId          Int
+}
+
+model Tag {
+  id              Int       @id @default(autoincrement())
+  name            String    @unique
+  codeTemplates    CodeTemplate[] @relation("CodeTemplateTag")
 }
