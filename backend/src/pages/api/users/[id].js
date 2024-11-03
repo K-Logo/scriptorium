@@ -1,6 +1,9 @@
 import * as usersDb from '@/service/usersDb';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
 const bcrypt = require('bcrypt');
+const fs = require('fs');
+const files = fs.readdirSync('./public/avatars')
+                .map((file) => "localhost:3000/avatars/" + file);;
 
 export default async function handler(req, res) {
   if (req.method === "PUT") {
@@ -19,9 +22,18 @@ export default async function handler(req, res) {
     }
     if (newFirstName)   await usersDb.updateFirstNameById(id, newFirstName);
     if (newLastName)    await usersDb.updateLastNameById(id, newLastName);
-    if (newAvatarPath)  await usersDb.updateAvatarPathById(id, newAvatarPath);
-    
+
     const errs = [];
+    if (newAvatarPath) {
+      if (files.includes(newAvatarPath)) {
+        await usersDb.updateAvatarPathById(id, newAvatarPath);
+      } else {
+        const err = new Object();
+        err[errs.length] = `${newAvatarPath} is not a valid avatar.`
+        errs.push(err);
+      }
+    }
+    
     try {
       if (newUsername)    await usersDb.updateUsernameById(id, newUsername);
     } catch (e) {
