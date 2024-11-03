@@ -3,21 +3,30 @@ export default class Blog {
     title;
     description;
     tag;
-    link_to_code;
+    code_template;
     user; // username that posted the blog
     rating; // upvotes
+    reports;
 
-    constructor(title, description, tag, link_to_code, user) {
+    constructor(blog_id, title, description, tag, code_template, user) {
+        if (blog_id) {
+            this.blog_id = blog_id;
+        }
         this.title = title;
         this.description = description;
         if (tag) {
             this.tag = tag;
         }
-        if (link_to_code){
-            this.link_to_code = link_to_code;
+        if (code_template){
+            this.code_template = code_template;
         }
         this.user = user;
         this.rating = 0;
+        this.reports = 0;
+    }
+
+    get blog_id() {
+        return this.blog_id;
     }
 
     get title() {
@@ -44,12 +53,12 @@ export default class Blog {
         this.tag = new_tag;
     }
 
-    get link_to_code() {
-        return this.link_to_code;
+    get code_template() {
+        return this.code_template;
     }
 
-    set link_to_code(new_link) {
-        this.link_to_code = new_link;
+    set code_template(new_template) {
+        this.code_template = new_template;
     }
 
     get user() {

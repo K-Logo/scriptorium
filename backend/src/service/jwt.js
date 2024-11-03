@@ -32,3 +32,12 @@ function getTokenFromReq(req) {
   }
   return null;
 }
+
+export function verifyAndDecodeBlogJWT(req) {
+  const token = getTokenFromReq(req);
+  const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
+  if (!decodedJWT) {
+    return null;
+  }
+  return decodedJWT;
+}
