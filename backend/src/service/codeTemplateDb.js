@@ -3,15 +3,25 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 export async function addCodeTemplate(codeTemplate) {
+    // todo: create tags (assume codeTemplate.tags is array of stings)
+
+    if (parentId) {
+        const parentCodeTemplate = await getCodeTemplateById(parentId);
+        title = parentCodeTemplate.title;
+        explanation = parentCodeTemplate.explanation;
+        content = parentCodeTemplate.content;
+        tags = parentCodeTemplate.tags;
+        userId = codeTemplate.userId;
+    }
+
     const savedDbCodeTemplate = await prisma.codeTemplate.create({
         data: {
             title: codeTemplate.title,
             explanation: codeTemplate.explanation,
             content: codeTemplate.content,
             tags: codeTemplate.tags,
-            parent: codeTemplate.parent,
             parentId: codeTemplate.parentId,
-            children: codeTemplate.children
+            userId: codeTemplate.userId
         }
     });
 
@@ -84,7 +94,62 @@ export async function getCodeTemplateByContent(substring) {
     return codeTemplates;
 }
 
+export async function updateTitleById(id, newTitle) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            title: newTitle
+        }
+    });
+}
+
+export async function updateExplanationById(id, newExplanation) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            explanation: newExplanation
+        }
+    });
+}
+
+export async function updateContentById(id, newContent) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            content: newContent
+        }
+    });
+}
+
+export async function addTagById(id, newTag) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            tags: {
+                connect: { id: newTag.id }
+            }
+        }
+    });
+}
+
+export async function updateParentById(id, newParentId) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            parent: {
+                connect: {
+                    id: newParentId
+                }
+            }
+        }
+    });
+}
+
 function toCodeTemplate(dbCodeTemplate) {
+    if (!dbCodeTemplate) {
+        return null;
+    }
+
     return new CodeTemplate(dbCodeTemplate.id, dbCodeTemplate.title, dbCodeTemplate.explanation, dbCodeTemplate.content,
         dbCodeTemplate.tags, dbCodeTemplate.parent, dbCodeTemplate.parentId, dbCodeTemplate.children);
 }

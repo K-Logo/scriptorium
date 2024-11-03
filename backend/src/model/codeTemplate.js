@@ -5,11 +5,10 @@ export default class CodeTemplate {
     #explanation;
     #content;
     #tags;
-    #parent;
     #parentId;
-    #children;
+    #userId;
 
-    constructor(db_id, title, explanation, content, tags, parent, parentId, children) {
+    constructor(db_id, title, explanation, content, tags, parentId, userId) {
         if (db_id) {
             this.#db_id = db_id;
         }
@@ -17,13 +16,10 @@ export default class CodeTemplate {
         this.#explanation = explanation;
         this.#content = content;
         this.#tags = tags;
-        if (parent) {
-            this.#parent = parent;
-        }
         if (parentId) {
             this.#parentId = parentId;
         }
-        this.#children = children;
+        this.#userId = userId
     }
 
     // Getter and Setter for db_id
@@ -71,15 +67,6 @@ export default class CodeTemplate {
         this.#tags = tags;
     }
 
-    // Getter and Setter for parent
-    get parent() {
-        return this.#parent;
-    }
-
-    set parent(parent) {
-        this.#parent = parent;
-    }
-
     // Getter and Setter for parentId
     get parentId() {
         return this.#parentId;
@@ -89,16 +76,16 @@ export default class CodeTemplate {
         this.#parentId = parentId;
     }
 
-    // Getter and Setter for children
-    get children() {
-        return this.#children;
+    // Getter and Setter for userId
+    get userId() {
+        return this.#userId;
     }
 
-    set children(children) {
-        this.#children = children;
+    set userId(userId) {
+        this.#userId = userId;
     }
 
     log() {
-        console.log(this.#title, this.#explanation, this.#tags, this.#parent, this.#parentId, this.#children);
+        console.log(this.#title, this.#explanation, this.#tags, this.#parentId, this.#userId);
     }
 }
