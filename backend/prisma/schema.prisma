@@ -23,13 +23,31 @@ model User {
   phoneNumber     String    @unique                           // we can validate in frontend
   role            String    @default("USER")                  // avail enums: "USER", "ADMIN"
   createdAt       DateTime  @default(now())                   // maybe make this optional
+  comments        Comment[] @relation("UserComments")
+  blogPosts       Blog[]    @relation("UserBlogPosts")
 }
 
 model Blog {
+  id              Int       @id @default(autoincrement())
   title           String 
   description     String
   tag             String
-  link_to_code    String
-  user            String
+  code_template   String
+  author          User      @relation("UserBlogPosts", fields: [authorId], references: [id])
+  authorId        Int       // Foreign key field for the author
   rating          Int       @default(0)
+  reports         Int       @default(0)
+  comments        Comment[]
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  content     String
+  author      User      @relation("UserComments", fields: [authorId], references: [id])
+  authorId    Int       // Foreign key field for the author
+  blogPost    Blog      @relation(fields: [blogPostId], references: [id])
+  blogPostId  Int       // Foreign key field for the blog post
+  parentId    Int?      // Optional field to handle replies
+  replies     Comment[] @relation("CommentReplies") // Comments replying to this one
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
 }

@@ -4,6 +4,7 @@ export const prisma = new PrismaClient();
 export async function addBlogPost(blog){
     const savedDbBlog = await prisma.blog.create({
         data: {
+            authorId: blog.author_id,
             title: blog.title,
             description: blog.description,
             tag: blog.tag,
