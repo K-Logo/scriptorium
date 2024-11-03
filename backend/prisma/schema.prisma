@@ -19,10 +19,11 @@ model User {
   passwordHash    String
   firstName       String
   lastName        String
-  email           String    @unique                           // we can validate in frontend
-  phoneNumber     String    @unique                           // we can validate in frontend
-  role            String    @default("USER")                  // avail enums: "USER", "ADMIN"
-  createdAt       DateTime  @default(now())                   // maybe make this optional
+  email           String    @unique                                         // we can validate in frontend
+  phoneNumber     String    @unique                                         // we can validate in frontend
+  avatarPath      String    @default("localhost:3000/avatars/amongus.jpg")
+  role            String    @default("USER")                                // avail enums: "USER", "ADMIN"
+  createdAt       DateTime  @default(now())                                 // maybe make this optional
   codeTemplates   CodeTemplate[] @relation("UserCodeTemplates")
 }
 

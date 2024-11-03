@@ -2,6 +2,9 @@ import * as usersDb from '@/service/usersDb';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
 import { getCodeTemplateByUserId } from '@/service/codeTemplateDb';
 const bcrypt = require('bcrypt');
+const fs = require('fs');
+const files = fs.readdirSync('./public/avatars')
+                .map((file) => "localhost:3000/avatars/" + file);;
 
 export default async function handler(req, res) {
   if (req.method === "PUT") {
@@ -13,15 +16,25 @@ export default async function handler(req, res) {
     }
 
     // the following fields will be null there is no change; otherwise, they will be a string w updated value.
-    const { newUsername, newPassword, newFirstName, newLastName, newEmail, newPhoneNumber } = req.body;
+    const { newUsername, newPassword, newFirstName, newLastName, newEmail, newPhoneNumber, newAvatarPath } = req.body;
     if (newPassword) {
       const newPasswordHash = await bcrypt.hash(newPassword, 10);
       await usersDb.updatePasswordHashById(id, newPasswordHash);        
     }
     if (newFirstName)   await usersDb.updateFirstNameById(id, newFirstName);
     if (newLastName)    await usersDb.updateLastNameById(id, newLastName);
-    
+
     const errs = [];
+    if (newAvatarPath) {
+      if (files.includes(newAvatarPath)) {
+        await usersDb.updateAvatarPathById(id, newAvatarPath);
+      } else {
+        const err = new Object();
+        err[errs.length] = `${newAvatarPath} is not a valid avatar.`
+        errs.push(err);
+      }
+    }
+    
     try {
       if (newUsername)    await usersDb.updateUsernameById(id, newUsername);
     } catch (e) {
