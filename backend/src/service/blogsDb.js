@@ -7,8 +7,12 @@ export async function addBlogPost(blog){
             authorId: blog.authorId,
             title: blog.title,
             description: blog.description,
-            tag: blog.tag,
-            code_template: blog.code_template,
+            tag: {
+                connect: blog.tagId
+            },
+            codeTemplate: {
+                connect: blog.codeTemplateId
+            },
             author: {
                 connect: { id: blog.authorId }
             }

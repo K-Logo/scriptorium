@@ -6,7 +6,7 @@ import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
 // Accepts bodies with *mandatory* title and description. tag and code template is optional
 export default async function handler(req, res) {
     if (req.method === "POST") {
-        const { title, description, tag, code_template, authorId } = req.body;
+        const { title, description, tagId, codeTemplateId, authorId } = req.body;
 
         if (!title || !description) {
             res.status(409).json({ error: "Title and description are mandatory fields." });
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
           return res.status(401).json({ error: "Unauthorized" });
         }
 
-        const blog = new Blog(null, title, description, tag, code_template, authorId);
+        const blog = new Blog(null, title, description, tagId, codeTemplateId, authorId);
     
         try {
           const savedBlog = await addBlogPost(blog);

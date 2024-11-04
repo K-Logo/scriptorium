@@ -1,5 +1,5 @@
 import { addComment } from '@/service/commentsDb';
-import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
+import { verifyAndDecodeBlogJWT } from '@/service/jwt';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const newComment = addComment(commentContent, decodedJWT.id, blogId);
+    const newComment = await addComment(content, decodedJWT.id, blogId);
 
     res.status(201).json(newComment);
 

@@ -24,9 +24,6 @@ export default async function(req, res) {
         } else if (action == "downvote") {
             await commentsDb.updateRatingById(commentId, action);
             res.status(200).json({ message: "Successfully downvoted the comment" });
-        } else if (action == "report") {
-            await commentsDb.updateReportCounter(commentId);
-            res.status(200).json({ message: "Successfully reported the comment" });
         } else {
             res.status(404).json({ error: "Incorrect action" });
         }
