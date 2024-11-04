@@ -43,17 +43,20 @@ export async function searchBlogPostByDescription(content) {
 export async function searchBlogPostByTag(tag) {
     const blogs = await prisma.blog.findMany({
         where: {
-            tag: {
-            contains: tag
-            }
+            tag: tag
         }
         });
     return blogs;
 }
 
 export async function searchBlogPostByCode(template) {
-    // ManyToMany fields
-    // TODO: waiting for the code templates implementation
+    const blogs = await prisma.blog.findMany({
+        where: {
+            code_template: template
+        }
+    })
+
+    return blogs;
 }
 
 export async function searchBlogPostById(id) {

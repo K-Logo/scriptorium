@@ -1,5 +1,7 @@
 import * as blogsDb from '@/service/blogsDb';
+import { getCodeTemplateById } from '@/service/codeTemplateDb';
 import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
+
 
 export default async function handler(req, res) {
   if (req.method === "PUT") {
@@ -76,9 +78,14 @@ export default async function handler(req, res) {
     } else {
       res.status(404).json({ error: "Incorrect action" });
     }
-  }
-  
-  else {
+  } else if (req.method === "GET") {
+    const { codeId } = req.body;
+
+      if (codeId) { // return the code template
+        let codeTemplate = getCodeTemplateById(codeId);
+        return res.status(200).json(codeTemplate);
+      } 
+  } else {
     return res.status(405).json({ error: "Method not allowed." });
   }
 }
