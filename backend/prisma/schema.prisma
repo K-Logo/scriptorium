@@ -54,6 +54,7 @@ model Blog {
   rating          Int       @default(0)
   reports         Int       @default(0)
   comments        Comment[]
+  hidden          Boolean   @default(false)
 }
 
 model Comment {
@@ -68,6 +69,7 @@ model Comment {
   parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
   rating      Int       @default(0)
   reports     Int       @default(0)
+  hidden      Boolean   @default(false)
 }
 
 model Tag {

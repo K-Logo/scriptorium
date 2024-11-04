@@ -73,4 +73,12 @@ export async function getSortedComments() {
             }
         });
     return allComments;
+
+export async function hideCommentById(id, hidden) {
+    await prisma.comment.update({
+        where: { id: id },
+        data: {
+            hidden: hidden
+        }
+    });
 }
