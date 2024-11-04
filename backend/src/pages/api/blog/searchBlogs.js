@@ -3,7 +3,7 @@
 import { searchBlogPostByCode, searchBlogPostByDescription, searchBlogPostByTag, searchBlogPostByTitle } from "@/service/blogsDb";
 
 export default async function handler(req, res) {
-    if (req.method === "GET") {
+    if (req.method === "POST") {
         const { searchContent, searchBy } = req.body;
 
         if (!searchContent) {
