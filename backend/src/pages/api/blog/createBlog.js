@@ -17,12 +17,12 @@ export default async function handler(req, res) {
           return res.status(401).json({ error: "Unauthorized" });
         }
     
-        // try {
+        try {
           const savedBlog = await addBlogPost(title, description, tags, codeTemplateIds, authorId);
           return res.status(201).json(savedBlog);
-        // } catch (e) {
-        //   return res.status(409).json({ error: "An error occurred saving your blog post. Please check your inputs." });
-        // }
+        } catch (e) {
+          return res.status(409).json({ error: "An error occurred saving your blog post. Please check your inputs." });
+        }
       } else {
         return res.status(405).json({ error: "Method not allowed." })
       }
