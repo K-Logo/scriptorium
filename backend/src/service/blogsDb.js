@@ -18,36 +18,87 @@ export async function addBlogPost(blog){
     return savedDbBlog;
 }
 
-export async function searchBlogPostByTitle(title) {
+export async function searchBlogPostByTitle(title, userId) {
     const blogs = await prisma.blog.findMany({
         where: {
             title: {
             contains: title
-            }
-        }
-        });
+            },
+            OR: [
+                { isHidden: false }, // Show public posts
+                { authorId: userId } // Show hidden posts for the author
+            ]
+        },
+        include: {
+            comments: {
+                where: {
+                    OR: [
+                        { isHidden: true },  // Show hidden comments
+                        { authorId: userId } // Show comments made by the author
+                    ]
+                },
+                include: {
+                    author: true, // Include the author of each comment
+                },
+            },
+        },
+    });
     return blogs;
 };
 
-export async function searchBlogPostByDescription(content) {
+export async function searchBlogPostByDescription(content, userId) {
     const blogs = await prisma.blog.findMany({
         where: {
             description: {
             contains: content
-            }
-        }
+            },
+            OR: [
+                { isHidden: false }, // Show public posts
+                { authorId: userId } // Show hidden posts for the author
+            ]
+        },
+        include: {
+            comments: {
+                where: {
+                    OR: [
+                        { isHidden: true },  // Show hidden comments
+                        { authorId: userId } // Show comments made by the author
+                    ]
+                },
+                include: {
+                    author: true, // Include the author of each comment
+                },
+            },
+        },
         });
     return blogs;
 }
 
-export async function searchBlogPostByTag(tag) {
+export async function searchBlogPostByTag(tag, userId) {
     const blogs = await prisma.blog.findMany({
         where: {
             tag: {
             contains: tag
-            }
-        }
-        });
+            },
+            OR: [
+                { isHidden: false }, // Show public posts
+                { authorId: userId } // Show hidden posts for the author
+            ]
+        },
+        include: {
+            comments: {
+                where: {
+                    OR: [
+                        { isHidden: true },  // Show hidden comments
+                        { authorId: userId } // Show comments made by the author
+                    ]
+                },
+                include: {
+                    author: true, // Include the author of each comment
+                },
+            },
+        },
+    });
     return blogs;
 }
 
@@ -56,11 +107,28 @@ export async function searchBlogPostByCode(template) {
     // TODO: waiting for the code templates implementation
 }
 
-export async function searchBlogPostById(id) {
+export async function searchBlogPostById(id, userId) {
     const blog = await prisma.blog.findFirst({
         where: {
-            id: id
-        }
+            id: id,
+            OR: [
+                { isHidden: false }, // Show public posts
+                { authorId: userId } // Show hidden posts for the author
+            ]
+        },
+        include: {
+            comments: {
+                where: {
+                    OR: [
+                        { isHidden: true },  // Show hidden comments
+                        { authorId: userId } // Show comments made by the author
+                    ]
+                },
+                include: {
+                    author: true, // Include the author of each comment
+                },
+            },
+        },
     });
 
     return blog;
@@ -133,6 +201,15 @@ export async function updateReportCounter(id) {
             reports: {
                 increment: 1
             }
+        }
+    });
+}
+
+export async function hidePostById(id, hidden) {
+    await prisma.blog.update({
+        where: { id: id },
+        data: {
+            hidden: hidden
         }
     });
 }

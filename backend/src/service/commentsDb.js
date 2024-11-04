@@ -22,3 +22,12 @@ export async function addComment(commentContent, authorId, blogId, parentId = nu
     });
     return savedComment;
 }
+
+export async function hideCommentById(id, hidden) {
+    await prisma.comment.update({
+        where: { id: id },
+        data: {
+            hidden: hidden
+        }
+    });
+}
