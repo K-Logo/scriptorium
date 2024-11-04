@@ -34,11 +34,40 @@ model CodeTemplate {
   content         String
   tags            Tag[]     @relation("CodeTemplateTag")
   createdAt       DateTime  @default(now())                   // maybe make this optional
+  comments        Comment[] @relation("UserComments")
+  blogPosts       Blog[]    @relation("UserBlogPosts")
+}
+
+model Blog {
+  id              Int       @id @default(autoincrement())
+  title           String 
+  description     String
+  tag             String?
+  code_template   String?
+  author          User      @relation("UserBlogPosts", fields: [authorId], references: [id])
+  authorId        Int       // Foreign key field for the author
+  rating          Int       @default(0)
+  reports         Int       @default(0)
+  comments        Comment[]
   parent          CodeTemplate? @relation("CodeTemplateFork", fields: [parentId], references: [id])
   parentId        Int?
   children        CodeTemplate[] @relation("CodeTemplateFork")
   user            User      @relation("UserCodeTemplates", fields: [userId], references: [id])
   userId          Int
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  content     String
+  author      User      @relation("UserComments", fields: [authorId], references: [id])
+  authorId    Int       // Foreign key field for the author
+  blogPost    Blog      @relation(fields: [blogPostId], references: [id])
+  blogPostId  Int       // Foreign key field for the blog post
+  parentId    Int?      // Optional field to handle replies
+  replies     Comment[] @relation("CommentReplies") // Comments replying to this one
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
+  rating      Int       @default(0)
+  reports     Int       @default(0)
 }
 
 model Tag {

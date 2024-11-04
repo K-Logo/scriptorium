@@ -123,6 +123,9 @@ export async function deleteUserById(id) {
 export async function getAllUsers() {
   const allUsers = await prisma.user.findMany({
     include: {
+      blogPosts: {
+        include: true
+      },
       codeTemplates: {
         include: {
           tags: true,
