@@ -7,8 +7,7 @@ import { getUserById } from '@/service/usersDb';
 
 export default async function handler(req, res) {
     const decodedJWT = verifyAndDecodeJWTNoId(req);
-    const user = getUserById(decodedJWT.id);
-    if (user.role !== "ADMIN") {
+    if (decodedJWT.role !== "ADMIN") {
         return res.status(401).json({ error: "User is not an administrator; unauthorized" });
     }
 
