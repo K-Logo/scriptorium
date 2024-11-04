@@ -1,18 +1,19 @@
 import * as blogsDb from '@/service/blogsDb';
+import { getCodeTemplateById } from '@/service/codeTemplateDb';
 import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
 
-export default async function handler(req, res) {
-  if (req.method === "PUT") {
-    let { blogId } = req.query; // get blog's id
-    blogId = Number.parseInt(blogId);
 
+export default async function handler(req, res) {
+  let { blogId } = req.query; // get blog's id
+  blogId = Number.parseInt(blogId);
+  const blog = await blogsDb.searchBlogPostById(blogId);
+
+  if (req.method === "PUT") {
     const decodedJWT = verifyAndDecodeBlogJWT(req);
     if (!decodedJWT) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     
-    const blog = await blogsDb.searchBlogPostById(blogId);
-
     console.log("jdfkasjfkladsjfkladsjfkladsjfkladsjfkladsjflkadsjf")
     console.log(decodedJWT.id)
     if (decodedJWT.id != blog.authorId) {
@@ -36,7 +37,6 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const blog = await blogsDb.searchBlogPostById(blogId);
     if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot delete this post." });
     }
@@ -54,11 +54,7 @@ export default async function handler(req, res) {
       res.status(500).json({ error: "Failed to delete the blog post" });
     }
   } else if (req.method === 'POST') {
-    let { blogId } = req.query; // get blog's id
-    blogId = Number.parseInt(blogId);
     const { action } = req.body;
-
-    const blog = blogsDb.searchBlogPostById(blogId);
 
     if (!blog) {
       res.status(404).json({ error: "Blog not found" });
@@ -76,9 +72,15 @@ export default async function handler(req, res) {
     } else {
       res.status(404).json({ error: "Incorrect action" });
     }
-  }
-  
-  else {
+  } else if (req.method === "GET") {
+    const { codeId } = req.body;
+
+    if (codeId) { // return the code template
+      let codeTemplate = getCodeTemplateById(codeId);
+      return res.status(200).json([blog, codeTemplate]);
+    }
+    return res.status(200).json(blog);
+  } else {
     return res.status(405).json({ error: "Method not allowed." });
   }
 }

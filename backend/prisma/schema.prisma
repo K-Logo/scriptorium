@@ -47,8 +47,8 @@ model Blog {
   id              Int       @id @default(autoincrement())
   title           String 
   description     String
-  tag             String?
-  code_template   String?
+  tag             Tag?
+  code_template   CodeTemplate?
   author          User      @relation("UserBlogPosts", fields: [authorId], references: [id])
   authorId        Int       // Foreign key field for the author
   rating          Int       @default(0)
@@ -57,16 +57,14 @@ model Blog {
   hidden          Boolean   @default(false)
 }
 
-
-
 model Comment {
   id          Int       @id @default(autoincrement())
   content     String
   author      User      @relation("UserComments", fields: [authorId], references: [id])
   authorId    Int       // Foreign key field for the author
   blogPost    Blog      @relation(fields: [blogPostId], references: [id])
-  blogPostId  Int       // Foreign key field for the blog post
-  parentId    Int?      // Optional field to handle replies
+  blogPostId  Int
+  parentId    Int?
   replies     Comment[] @relation("CommentReplies") // Comments replying to this one
   parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
   rating      Int       @default(0)
