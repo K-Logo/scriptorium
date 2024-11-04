@@ -1,6 +1,8 @@
 import * as blogsDb from '@/service/blogsDb';
 import { getCodeTemplateById } from '@/service/codeTemplateDb';
 import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
+import { PrismaClient } from '@prisma/client'
+export const prisma = new PrismaClient();
 
 
 export default async function handler(req, res) {
@@ -14,17 +16,23 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     
+    const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
+
     console.log("jdfkasjfkladsjfkladsjfkladsjfkladsjfkladsjflkadsjf")
     console.log(decodedJWT.id)
     if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot edit this post." });
     }
 
+    if (blog.hidden) {
+      return res.status(401).json({ error: "The post is currently hidden by the administrator. You cannot edit this post." })
+    }
+
     // the following fields will be null there is no change; otherwise, they will be a string w updated value.
     const { newTitle, newDescription, newTag, newCodeTemplateId } = req.body;
     if (newTitle)   await blogsDb.updateTitleById(blogId, newTitle);
     if (newDescription)    await blogsDb.updateDescriptionById(blogId, newDescription);
-    if (newTag)   await blogsDb.updateTagById(blogId, newTag);
+    if (newTag)   await blogsDb.addTagById(blogId, newTag);
     if (newCodeTemplateId)    await blogsDb.updateCodeById(blogId, newCodeTemplateId);
 
     res.status(200).json({ message: "Blog post edited successfully." });

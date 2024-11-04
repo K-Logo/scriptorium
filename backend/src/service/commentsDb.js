@@ -4,8 +4,6 @@ export const prisma = new PrismaClient();
 export async function addComment(commentContent, authorId, blogId, parentId = null) {
     const savedComment = await prisma.comment.create({
         data: {
-            authorId: authorId,
-            blogId: blogId,
             content: commentContent,
             author: {
                 connect: { id: authorId }
@@ -33,7 +31,7 @@ export async function searchCommentById(id) {
     return comment;
 }
 
-export async function updateRatingById(id) {
+export async function updateRatingById(id, action) {
     if (action == "upvote") {
         await prisma.comment.update({
             where: {id: id },
@@ -55,13 +53,15 @@ export async function updateRatingById(id) {
     }
 }
 
-export async function getSortedComments() {
+export async function getSortedComments(order) {
     const allComments = await prisma.comment.findMany({
         orderBy: {
-            reports: "desc"
+            rating: order
             }
         });
     return allComments;
+}
+
 }
 
 export async function hideCommentById(id, hidden) {

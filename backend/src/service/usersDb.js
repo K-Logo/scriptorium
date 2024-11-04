@@ -124,7 +124,15 @@ export async function getAllUsers() {
   const allUsers = await prisma.user.findMany({
     include: {
       blogPosts: {
-        include: true
+        include: {
+          comments: {
+            include: {
+              author: false
+            }
+          },
+          codeTemplates: true,
+          tags: true
+        }
       },
       codeTemplates: {
         include: {

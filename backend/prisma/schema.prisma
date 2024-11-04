@@ -49,10 +49,8 @@ model Blog {
   id              Int       @id @default(autoincrement())
   title           String 
   description     String
-  tags            Tag?      @relation("TagsInBlog", fields:[tagId], references: [id])
-  tagId           Int       // Foreign key for tags
-  codeTemplate    CodeTemplate? @relation("CodeInBlogs", fields: [codeTemplateId], references: [id])
-  codeTemplateId  Int       // Foreign ket for code templates
+  tags            Tag[]
+  codeTemplates   CodeTemplate[]
   author          User      @relation("UserBlogPosts", fields: [authorId], references: [id])
   authorId        Int       // Foreign key field for the author
   rating          Int       @default(0)
@@ -67,7 +65,7 @@ model Comment {
   content     String
   author      User      @relation("UserComments", fields: [authorId], references: [id])
   authorId    Int       // Foreign key field for the author
-  blogPost    Blog      @relation(fields: [blogPostId], references: [id])
+  blogPost    Blog      @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
   blogPostId  Int
   replies     Comment[] @relation("CommentReplies") // Comments replying to this one
   parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
@@ -83,6 +81,7 @@ model Tag {
   name            String    @unique
   codeTemplates   CodeTemplate[] @relation("CodeTemplateTag")
   blogs           Blog[]   @relation("TagsInBlog")
+
 }
 
 model Report {

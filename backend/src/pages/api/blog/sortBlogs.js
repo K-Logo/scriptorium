@@ -2,7 +2,9 @@ import { getSortedBlogs } from '@/service/blogsDb';
 
 export default async function handler(req, res) {
     if (req.method === "GET") {
-        const allPosts = await getSortedBlogs();
+        const { order } = req.body;
+
+        const allPosts = await getSortedBlogs(order);
 
         return res.status(200).json(allPosts);
     } else {
