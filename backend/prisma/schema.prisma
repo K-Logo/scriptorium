@@ -41,9 +41,10 @@ model CodeTemplate {
   children        CodeTemplate[] @relation("CodeTemplateFork")
   user            User      @relation("UserCodeTemplates", fields: [userId], references: [id])
   userId          Int
-  blogs           Blog[]
+  blogs           Blog[]    @relation("CodeInBlogs")
 }
 
+// Note: Used ChatGPT to understand and implement relations between Blogs and Users, CodeTemplates, Tags, and Comments
 model Blog {
   id              Int       @id @default(autoincrement())
   title           String 
@@ -56,6 +57,7 @@ model Blog {
   reports         Int       @default(0)
   comments        Comment[]
   hidden          Boolean   @default(false)
+  reportExplanation Report  @relation("BlogReport")
 }
 
 model Comment {
@@ -65,17 +67,28 @@ model Comment {
   authorId    Int       // Foreign key field for the author
   blogPost    Blog      @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
   blogPostId  Int
-  parentId    Int?
   replies     Comment[] @relation("CommentReplies") // Comments replying to this one
   parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
+  parentId    Int?
   rating      Int       @default(0)
   reports     Int       @default(0)
   hidden      Boolean   @default(false)
+  reportExplanation Report  @relation("CommentReport")
 }
 
 model Tag {
   id              Int       @id @default(autoincrement())
   name            String    @unique
   codeTemplates   CodeTemplate[] @relation("CodeTemplateTag")
-  blogs           Blog[]
+  blogs           Blog[]   @relation("TagsInBlog")
+
+}
+
+model Report {
+  id         Int        @id @default(autoincrement())
+  content    String
+  blog       Blog?      @relation("BlogReport", fields:[blogId], references: [id])
+  blogId     Int        // Foreign key
+  comment    Comment?   @relation("CommentReport", fields:[commentId], references: [id])
+  commentId  Int
 }

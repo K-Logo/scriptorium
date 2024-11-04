@@ -3,8 +3,8 @@ export default class Blog {
     #blog_id;
     #title;
     #description;
-    #tag;
-    #code_template;
+    #tagId;
+    #codeTemplateId;
     // #author; // username that posted the blog
     #author_id;
     #rating; // upvotes
@@ -18,10 +18,10 @@ export default class Blog {
         this.#title = title;
         this.#description = description;
         if (tag) {
-            this.#tag = tag;
+            this.#tagId = tag;
         }
         if (code_template){
-            this.#code_template = code_template;
+            this.#codeTemplateId = code_template;
         }
         this.#author_id = authorId;
         this.#rating = 0;
@@ -50,19 +50,19 @@ export default class Blog {
     }
 
     get tag(){
-        return this.#tag;
+        return this.#tagId;
     }
 
     set tag(new_tag) {
-        this.#tag = new_tag;
+        this.#tagId = new_tag;
     }
 
-    get code_template() {
-        return this.#code_template;
+    get code_template_id() {
+        return this.#codeTemplateId;
     }
 
-    set code_template(new_template) {
-        this.#code_template = new_template;
+    set code_template_id(new_template) {
+        this.#codeTemplateId = new_template;
     }
 
     get authorId() {

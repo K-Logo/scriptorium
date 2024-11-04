@@ -9,7 +9,7 @@ export async function addComment(commentContent, authorId, blogId, parentId = nu
                 connect: { id: authorId }
             },
             blogPost: {
-                connect: { id: blogId } // Connect the comment to an existing blog post
+                connect: { id: blogId } 
             },
             ...(parentId && { // Connects to a parent comment if it's a reply
                 parent: {
@@ -53,17 +53,6 @@ export async function updateRatingById(id, action) {
     }
 }
 
-export async function updateReportCounter(id) {
-    await prisma.comment.update({
-        where: {id: id },
-        data: {
-            reports: {
-                increment: 1
-            }
-        }
-    });
-}
-
 export async function getSortedComments(order) {
     const allComments = await prisma.comment.findMany({
         orderBy: {
@@ -71,6 +60,7 @@ export async function getSortedComments(order) {
             }
         });
     return allComments;
+}
 
 }
 
