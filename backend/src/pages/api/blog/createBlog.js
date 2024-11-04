@@ -18,12 +18,12 @@ export default async function handler(req, res) {
 
         const blog = new Blog(null, title, description, tag, code_template, authorId);
     
-        try {
+        // try {
           const savedBlog = await addBlogPost(blog);
           return res.status(201).json(savedBlog);
-        } catch (e) {
-          return res.status(409).json({ error: "An error occurred saving your blog post. Please check your inputs." });
-        }
+        // } catch (e) {
+        //   return res.status(409).json({ error: "An error occurred saving your blog post. Please check your inputs." });
+        // }
       } else {
         return res.status(405).json({ error: "Method not allowed." })
       }

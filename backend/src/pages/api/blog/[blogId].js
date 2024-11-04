@@ -14,10 +14,16 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     
+    const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
+
     console.log("jdfkasjfkladsjfkladsjfkladsjfkladsjfkladsjflkadsjf")
     console.log(decodedJWT.id)
     if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot edit this post." });
+    }
+
+    if (blog.hidden) {
+      return res.status(401).json({ error: "The post is currently hidden by the administrator. You cannot edit this post." })
     }
 
     // the following fields will be null there is no change; otherwise, they will be a string w updated value.

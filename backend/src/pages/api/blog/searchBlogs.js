@@ -1,5 +1,5 @@
 // To search for blog post by a query
-
+const jwt = require('jsonwebtoken')
 import { searchBlogPostByCode, searchBlogPostByDescription, searchBlogPostByTag, searchBlogPostByTitle } from "@/service/blogsDb";
 import { getTokenFromReq } from "@/service/jwt";
 

@@ -1,4 +1,17 @@
+import { PrismaClient } from '@prisma/client';
+export const prisma = new PrismaClient();
+import * as blogsDb from '@/service/blogsDb';
+import * as commentsDb from '@/service/commentsDb';
+import { verifyAndDecodeJWTNoId } from '@/service/jwt';
+import { getUserById } from '@/service/usersDb';
+
 export default async function handler(req, res) {
+    const decodedJWT = verifyAndDecodeJWTNoId(req);
+    const user = getUserById(decodedJWT.id);
+    if (user.role !== "ADMIN") {
+        return res.status(401).json({ error: "User is not an administrator; unauthorized" });
+    }
+
     if (req.method === "GET") {
         const allPosts = await prisma.blog.findMany({
             orderBy: {
@@ -15,7 +28,7 @@ export default async function handler(req, res) {
         return res.status(200).json([allPosts, allComments]);
         
     } else if (req.method === "PUT") {
-        const { contentType, contentId, hidden } = req.body;
+        let { contentType, contentId, hidden } = req.body;
         if (!contentId) {
             return res.status(400).json({ error: "Invalid ID" });
         }

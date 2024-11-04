@@ -4,7 +4,6 @@ export const prisma = new PrismaClient();
 export async function addBlogPost(blog){
     const savedDbBlog = await prisma.blog.create({
         data: {
-            authorId: blog.authorId,
             title: blog.title,
             description: blog.description,
             tag: blog.tag,
@@ -25,7 +24,7 @@ export async function searchBlogPostByTitle(title, userId) {
             contains: title
             },
             OR: [
-                { isHidden: false }, // Show public posts
+                { hidden: false }, // Show public posts
                 { authorId: userId } // Show hidden posts for the author
             ]
         },
@@ -33,7 +32,7 @@ export async function searchBlogPostByTitle(title, userId) {
             comments: {
                 where: {
                     OR: [
-                        { isHidden: true },  // Show hidden comments
+                        { hidden: true },  // Show hidden comments
                         { authorId: userId } // Show comments made by the author
                     ]
                 },
@@ -53,7 +52,7 @@ export async function searchBlogPostByDescription(content, userId) {
             contains: content
             },
             OR: [
-                { isHidden: false }, // Show public posts
+                { hidden: false }, // Show public posts
                 { authorId: userId } // Show hidden posts for the author
             ]
         },
@@ -61,7 +60,7 @@ export async function searchBlogPostByDescription(content, userId) {
             comments: {
                 where: {
                     OR: [
-                        { isHidden: true },  // Show hidden comments
+                        { hidden: true },  // Show hidden comments
                         { authorId: userId } // Show comments made by the author
                     ]
                 },
@@ -81,7 +80,7 @@ export async function searchBlogPostByTag(tag, userId) {
             contains: tag
             },
             OR: [
-                { isHidden: false }, // Show public posts
+                { hidden: false }, // Show public posts
                 { authorId: userId } // Show hidden posts for the author
             ]
         },
@@ -89,7 +88,7 @@ export async function searchBlogPostByTag(tag, userId) {
             comments: {
                 where: {
                     OR: [
-                        { isHidden: true },  // Show hidden comments
+                        { hidden: true },  // Show hidden comments
                         { authorId: userId } // Show comments made by the author
                     ]
                 },
@@ -117,7 +116,7 @@ export async function searchBlogPostById(id, userId) {
         where: {
             id: id,
             OR: [
-                { isHidden: false }, // Show public posts
+                { hidden: false }, // Show public posts
                 { authorId: userId } // Show hidden posts for the author
             ]
         },
@@ -125,7 +124,7 @@ export async function searchBlogPostById(id, userId) {
             comments: {
                 where: {
                     OR: [
-                        { isHidden: true },  // Show hidden comments
+                        { hidden: true },  // Show hidden comments
                         { authorId: userId } // Show comments made by the author
                     ]
                 },
