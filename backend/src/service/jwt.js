@@ -35,7 +35,7 @@ export function verifyAndDecodeJWTNoId(req) {
 }
 
 // helper. retrieves token from Authorization header
-function getTokenFromReq(req) {
+export function getTokenFromReq(req) {
   const authorization = req.headers['authorization'];
   if (authorization && authorization.startsWith('Bearer ')) {
     return authorization.replace('Bearer ', '');
