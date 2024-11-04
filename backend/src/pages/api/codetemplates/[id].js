@@ -1,3 +1,4 @@
+import { searchBlogPostByCodeTemplateId } from "@/service/blogsDb";
 import { addTagById, deleteCodeTemplateById, getCodeTemplateById, updateContentById, updateExplanationById, updateTitleById } from "@/service/codeTemplateDb";
 import { verifyAndDecodeJWT } from '@/service/jwt';
 
@@ -12,10 +13,10 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: "Code template not found" });
     }
     if (req.method == "GET") {
-        const allBlogs = searchBlogPostByCode(codeTemplate);
-        return res.status(200).json([codeTemplate, allBlogs]);
+        return res.status(200).json(codeTemplate);
         
-    } else if (req.method == "PUT") {
+    } else 
+    if (req.method == "PUT") {
         const decodedJWT = verifyAndDecodeJWT(req, codeTemplate.userId);
         if (!decodedJWT) {
             return res.status(401).json({ error: "Unauthorized" });

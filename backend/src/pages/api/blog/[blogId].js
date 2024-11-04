@@ -1,6 +1,8 @@
 import * as blogsDb from '@/service/blogsDb';
 import { getCodeTemplateById } from '@/service/codeTemplateDb';
 import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
+import { PrismaClient } from '@prisma/client'
+export const prisma = new PrismaClient();
 
 
 export default async function handler(req, res) {
@@ -30,7 +32,7 @@ export default async function handler(req, res) {
     const { newTitle, newDescription, newTag, newCodeTemplateId } = req.body;
     if (newTitle)   await blogsDb.updateTitleById(blogId, newTitle);
     if (newDescription)    await blogsDb.updateDescriptionById(blogId, newDescription);
-    if (newTag)   await blogsDb.updateTagById(blogId, newTag);
+    if (newTag)   await blogsDb.addTagById(blogId, newTag);
     if (newCodeTemplateId)    await blogsDb.updateCodeById(blogId, newCodeTemplateId);
 
     res.status(200).json({ message: "Blog post edited successfully." });

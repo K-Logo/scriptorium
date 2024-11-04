@@ -17,19 +17,24 @@ export default async function(req, res) {
         if (!comment) {
             res.status(404).json({ error: "Comment not found" });
         }
-
-        if (action == "upvote") {
-            await commentsDb.updateRatingById(commentId, action);
-            res.status(200).json({ message: "Successfully upvoted the comment" });
-        } else if (action == "downvote") {
-            await commentsDb.updateRatingById(commentId, action);
-            res.status(200).json({ message: "Successfully downvoted the comment" });
-        } else if (action == "report") {
-            await commentsDb.updateReportCounter(commentId);
-            res.status(200).json({ message: "Successfully reported the comment" });
-        } else {
-            res.status(404).json({ error: "Incorrect action" });
+        try {
+            if (action == "upvote") {
+                await commentsDb.updateRatingById(commentId, action);
+                res.status(200).json({ message: "Successfully upvoted the comment" });
+            } else if (action == "downvote") {
+                await commentsDb.updateRatingById(commentId, action);
+                res.status(200).json({ message: "Successfully downvoted the comment" });
+            } else if (action == "report") {
+                await commentsDb.updateReportCounter(commentId);
+                res.status(200).json({ message: "Successfully reported the comment" });
+            } else {
+                res.status(404).json({ error: "Incorrect action" });
+            }
+        } catch (e) {
+            res.status(404).json({ error: "Please double-check your parameters and fields." })
         }
+
+        
     } else {
         return res.status(405).json({ error: "Method not allowed." });
     }

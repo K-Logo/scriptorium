@@ -13,14 +13,14 @@ export default async function handler(req, res) {
 
         const codeTemplate = new CodeTemplate(null, title, explanation, content, tags, parentId, userId);
 
-        // try {
+        try {
             console.log("nnnnnnnnn")
             console.log(codeTemplate.userId)
             const savedCodeTemplate = await addCodeTemplate(codeTemplate);
             return res.status(201).json(savedCodeTemplate);
-        // } catch (e) {
-        //     return res.status(409).json({ error: "Please double check your fields." });
-        // }
+        } catch (e) {
+            return res.status(409).json({ error: "Please double check your fields." });
+        }
 
     } else if (req.method == "GET") {
         // Search by only one of the fields

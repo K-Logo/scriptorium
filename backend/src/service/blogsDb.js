@@ -1,15 +1,27 @@
 import { PrismaClient } from '@prisma/client'
 export const prisma = new PrismaClient();
+import { createTagAndGetId } from './codeTemplateDb';
 
-export async function addBlogPost(blog){
+export async function addBlogPost(title, description, tags, codeTemplateIds, authorId){
+    const dbTagIds = [];
+    if (tags) {
+        for (const tag of tags) {
+            dbTagIds.push(await createTagAndGetId(tag));
+        }
+    }
+
     const savedDbBlog = await prisma.blog.create({
         data: {
-            title: blog.title,
-            description: blog.description,
-            tag: blog.tag,
-            code_template: blog.code_template,
+            title: title,
+            description: description,
+            tags: {
+                connect: dbTagIds.map(tagId => ({ id: tagId }))
+            },
+            codeTemplates: {
+                connect: codeTemplateIds.map(codeTemplateId => ({ id: codeTemplateId }))
+            },
             author: {
-                connect: { id: blog.authorId }
+                connect: { id: authorId }
             }
         }
     });
@@ -76,8 +88,12 @@ export async function searchBlogPostByDescription(content, userId) {
 export async function searchBlogPostByTag(tag, userId) {
     const blogs = await prisma.blog.findMany({
         where: {
-            tag: {
-            contains: tag
+            tags: {
+                some: {
+                    name: {
+                        contains: tag
+                    }
+                }
             },
             OR: [
                 { hidden: false }, // Show public posts
@@ -101,11 +117,28 @@ export async function searchBlogPostByTag(tag, userId) {
     return blogs;
 }
 
-export async function searchBlogPostByCode(template) {
+export async function searchBlogPostByCodeTemplateId(templateId, userId) {
     const blogs = await prisma.blog.findMany({
         where: {
-            code_template: template
-        }
+            codeTemplates: {
+                some: {
+                    id: templateId
+                }
+            }
+        },
+        include: {
+            comments: {
+                where: {
+                    OR: [
+                        { hidden: true },  // Show hidden comments
+                        { authorId: userId } // Show comments made by the author
+                    ]
+                },
+                include: {
+                    author: true, // Include the author of each comment
+                },
+            },
+        },
     })
 
     return blogs;
@@ -156,11 +189,16 @@ export async function updateDescriptionById(id, desc) {
     });
 }
 
-export async function updateTagById(id, tag) {
+export async function addTagById(id, newTag) {
+
+    const newTagId = await createTagAndGetId(newTag);
+
     await prisma.blog.update({
         where: { id: id },
         data: {
-            tag: tag
+            tags: {
+                connect: { id: newTagId }
+            }
         }
     });
 }
@@ -169,8 +207,8 @@ export async function updateCodeById(id, codeTemplateId) {
     await prisma.blog.update({
         where: { id: id },
         data: {
-            code_template: {
-                connect: {id: codeTemplateId}
+            codeTemplates: {
+                connect: { id: codeTemplateId }
             }
         }
     });
@@ -209,14 +247,17 @@ export async function updateReportCounter(id) {
     });
 }
 
-export async function getSortedBlogs() {
+export async function getSortedBlogs(order) {
+    // order is asc or desc
     const allBlogs = await prisma.blog.findMany({
         orderBy: {
-            reports: "desc"
+            rating: order
           }
     });
     return allBlogs;
   
+}
+
 export async function hidePostById(id, hidden) {
     await prisma.blog.update({
         where: { id: id },

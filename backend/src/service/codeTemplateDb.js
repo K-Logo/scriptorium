@@ -24,8 +24,6 @@ export async function addCodeTemplate(codeTemplate) {
     console.log(codeTemplate.tags)
     if (codeTemplate.tags) {
         for (const tag of codeTemplate.tags) {
-            console.log("fjdkldjfl")
-            console.log(tag)
             dbTagIds.push(await createTagAndGetId(tag));
         }
     }

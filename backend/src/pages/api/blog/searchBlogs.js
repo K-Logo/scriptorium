@@ -1,10 +1,10 @@
 // To search for blog post by a query
 const jwt = require('jsonwebtoken')
-import { searchBlogPostByCode, searchBlogPostByDescription, searchBlogPostByTag, searchBlogPostByTitle } from "@/service/blogsDb";
+import { searchBlogPostByCodeTemplateId, searchBlogPostByDescription, searchBlogPostByTag, searchBlogPostByTitle } from "@/service/blogsDb";
 import { getTokenFromReq } from "@/service/jwt";
 
 export default async function handler(req, res) {
-    if (req.method === "POST") {
+    if (req.method === "GET") {
         const token = getTokenFromReq(req);
         const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
 
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         } else if (searchBy === "description") {
             blogs = blogs.concat(await searchBlogPostByDescription(searchContent, decodedJWT.id));
         } else if (searchBy === "code") {
-            blogs = blogs.concat(await searchBlogPostByCode(searchContent, decodedJWT.id));
+            blogs = blogs.concat(await searchBlogPostByCodeTemplateId(searchContent, decodedJWT.id));
         } else if (searchBy === "tag") {
             blogs = blogs.concat(await searchBlogPostByTag(searchContent, decodedJWT.id));
         } else {
