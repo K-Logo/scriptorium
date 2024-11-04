@@ -65,3 +65,12 @@ export async function updateReportCounter(id) {
         }
     });
 }
+
+export async function getSortedComments() {
+    const allComments = await prisma.comment.findMany({
+        orderBy: {
+            reports: "desc"
+            }
+        });
+    return allComments;
+}
