@@ -15,7 +15,7 @@ async function addUser() {
   const savedDbUser = await prisma.user.create({
     data: {
       username: 'admin',
-      passwordHash: '$2b$10$78dr.tiwU7.nYIxvySDMqOzoNpFlg23sASqipKOjif2jFs0IO5H8y',
+      passwordHash: '\$2b\$10\$78dr.tiwU7.nYIxvySDMqOzoNpFlg23sASqipKOjif2jFs0IO5H8y',
       firstName: 'admin',
       lastName: 'admin',
       email: 'admin',
