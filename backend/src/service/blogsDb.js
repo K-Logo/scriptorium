@@ -240,7 +240,7 @@ export async function updateReportCounter(id) {
     await prisma.blog.update({
         where: {id: id },
         data: {
-            reports: {
+            numReports: {
                 increment: 1
             }
         }

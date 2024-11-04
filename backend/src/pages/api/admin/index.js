@@ -15,13 +15,19 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
         const allPosts = await prisma.blog.findMany({
             orderBy: {
-                reports: "desc"
-              }
+                numReports: "desc"
+            },
+            include: {
+                reports: true
+            }
           });
 
         const allComments = await prisma.comment.findMany({
-        orderBy: {
-            reports: "desc"
+            orderBy: {
+                numReports: "desc"
+            },
+            include: {
+                reports: true
             }
         });
 

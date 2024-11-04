@@ -62,7 +62,6 @@ export async function getSortedComments(order) {
     return allComments;
 }
 
-}
 
 export async function hideCommentById(id, hidden) {
     await prisma.comment.update({

@@ -49,15 +49,15 @@ model Blog {
   id              Int       @id @default(autoincrement())
   title           String 
   description     String
-  tags            Tag[]
-  codeTemplates   CodeTemplate[]
+  tags            Tag[]     @relation("TagsInBlog")
+  codeTemplates   CodeTemplate[] @relation("CodeInBlogs")
   author          User      @relation("UserBlogPosts", fields: [authorId], references: [id])
   authorId        Int       // Foreign key field for the author
   rating          Int       @default(0)
-  reports         Int       @default(0)
+  numReports      Int       @default(0)
   comments        Comment[]
   hidden          Boolean   @default(false)
-  reportExplanation Report  @relation("BlogReport")
+  reports         Report[]  @relation("BlogReport")
 }
 
 model Comment {
@@ -71,9 +71,9 @@ model Comment {
   parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
   parentId    Int?
   rating      Int       @default(0)
-  reports     Int       @default(0)
+  numReports  Int       @default(0)
   hidden      Boolean   @default(false)
-  reportExplanation Report  @relation("CommentReport")
+  reports     Report[]  @relation("CommentReport")
 }
 
 model Tag {
@@ -81,14 +81,13 @@ model Tag {
   name            String    @unique
   codeTemplates   CodeTemplate[] @relation("CodeTemplateTag")
   blogs           Blog[]   @relation("TagsInBlog")
-
 }
 
 model Report {
   id         Int        @id @default(autoincrement())
   content    String
   blog       Blog?      @relation("BlogReport", fields:[blogId], references: [id])
-  blogId     Int        // Foreign key
+  blogId     Int?        // Foreign key
   comment    Comment?   @relation("CommentReport", fields:[commentId], references: [id])
-  commentId  Int
+  commentId  Int?
 }
