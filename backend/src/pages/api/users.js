@@ -1,1 +1,0 @@
-// To search for blog posts with a query
