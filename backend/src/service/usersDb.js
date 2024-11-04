@@ -10,7 +10,8 @@ export async function addUser(user) {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      phoneNumber: user.phoneNumber
+      phoneNumber: user.phoneNumber,
+      avatarPath: user.avatarPath
     }
   });
 
@@ -27,7 +28,14 @@ export async function getUserByUsername(username) {
 
 export async function getUserById(id) {
   const dbUser = await prisma.user.findFirst({
-    where: { id: id }
+    where: { id: id },
+    include: {
+      codeTemplates: {
+        include: {
+          tags: true,
+        },
+      },
+    },
   });
 
   return toUser(dbUser);
@@ -57,6 +65,15 @@ export async function updatePhoneNumberById(id, newPhoneNumber) {
     where: { id: id },
     data: {
       phoneNumber: newPhoneNumber
+    }
+  });
+}
+
+export async function updateAvatarPathById(id, newAvatarPath) {
+  await prisma.user.update({
+    where: { id: id },
+    data: {
+      avatarPath: newAvatarPath
     }
   });
 }
@@ -91,7 +108,15 @@ export async function updatePasswordHashById(id, newPasswordHash) {
 
 function toUser(dbUser) {
   return new User(dbUser.id, dbUser.username, dbUser.passwordHash, dbUser.firstName,
-     dbUser.lastName, dbUser.email, dbUser.phoneNumber, dbUser.role);
+     dbUser.lastName, dbUser.email, dbUser.phoneNumber, dbUser.avatarPath, dbUser.role);
+}
+
+export async function deleteUserById(id) {
+  await prisma.user.delete({
+      where: {
+          id: id
+      }
+  });
 }
 
 // private "logging" util
@@ -100,7 +125,12 @@ export async function getAllUsers() {
     include: {
       blogPosts: {
         include: true
-      }
+      },
+      codeTemplates: {
+        include: {
+          tags: true,
+        },
+      },
     },
   });
   return allUsers;

@@ -19,9 +19,20 @@ model User {
   passwordHash    String
   firstName       String
   lastName        String
-  email           String    @unique                           // we can validate in frontend
-  phoneNumber     String    @unique                           // we can validate in frontend
-  role            String    @default("USER")                  // avail enums: "USER", "ADMIN"
+  email           String    @unique                                         // we can validate in frontend
+  phoneNumber     String    @unique                                         // we can validate in frontend
+  avatarPath      String    @default("localhost:3000/avatars/amongus.jpg")
+  role            String    @default("USER")                                // avail enums: "USER", "ADMIN"
+  createdAt       DateTime  @default(now())                                 // maybe make this optional
+  codeTemplates   CodeTemplate[] @relation("UserCodeTemplates")
+}
+
+model CodeTemplate {
+  id              Int       @id @default(autoincrement())
+  title           String
+  explanation     String
+  content         String
+  tags            Tag[]     @relation("CodeTemplateTag")
   createdAt       DateTime  @default(now())                   // maybe make this optional
   comments        Comment[] @relation("UserComments")
   blogPosts       Blog[]    @relation("UserBlogPosts")
@@ -38,6 +49,11 @@ model Blog {
   rating          Int       @default(0)
   reports         Int       @default(0)
   comments        Comment[]
+  parent          CodeTemplate? @relation("CodeTemplateFork", fields: [parentId], references: [id])
+  parentId        Int?
+  children        CodeTemplate[] @relation("CodeTemplateFork")
+  user            User      @relation("UserCodeTemplates", fields: [userId], references: [id])
+  userId          Int
 }
 
 model Comment {
@@ -52,4 +68,10 @@ model Comment {
   parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id]) // Parent comment
   rating      Int       @default(0)
   reports     Int       @default(0)
+}
+
+model Tag {
+  id              Int       @id @default(autoincrement())
+  name            String    @unique
+  codeTemplates    CodeTemplate[] @relation("CodeTemplateTag")
 }

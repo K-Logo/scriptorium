@@ -8,6 +8,7 @@ export function getJWT(user, expiryInMinutes) {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
+    avatarPath: user.avatarPath,
     role: user.role
   }
 
@@ -19,6 +20,15 @@ export function verifyAndDecodeJWT(req, userId) {
   const token = getTokenFromReq(req);
   const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
   if (!decodedJWT || decodedJWT.id != userId) {
+    return null;
+  }
+  return decodedJWT;
+}
+
+export function verifyAndDecodeJWTNoId(req) {
+  const token = getTokenFromReq(req);
+  const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
+  if (!decodedJWT) {
     return null;
   }
   return decodedJWT;

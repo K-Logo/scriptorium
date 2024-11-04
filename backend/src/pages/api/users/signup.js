@@ -13,13 +13,13 @@ export default async function signup(req, res) {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    const user = new User(null, username, passwordHash, firstName, lastName, email, phoneNumber, "USER");
+    const user = new User(null, username, passwordHash, firstName, lastName, email, phoneNumber, "localhost:3000/avatars/amongus.jpg", "USER");
 
     try {
       const savedUser = await addUser(user);
       return res.status(201).json(savedUser);
     } catch (e) {
-      return res.status(409).json({ error: "Username, email or phone number already taken." });
+      return res.status(409).json({ error: "Username, email or phone number already taken.", e: e });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed." })
