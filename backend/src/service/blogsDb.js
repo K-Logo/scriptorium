@@ -139,3 +139,12 @@ export async function updateReportCounter(id) {
         }
     });
 }
+
+export async function getSortedBlogs() {
+    const allBlogs = await prisma.blog.findMany({
+        orderBy: {
+            reports: "desc"
+          }
+    });
+    return allBlogs;
+}
