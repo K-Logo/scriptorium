@@ -12,7 +12,8 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: "Code template not found" });
     }
     if (req.method == "GET") {
-        return res.status(200).json(codeTemplate);
+        const allBlogs = searchBlogPostByCode(codeTemplate);
+        return res.status(200).json([codeTemplate, allBlogs]);
         
     } else if (req.method == "PUT") {
         const decodedJWT = verifyAndDecodeJWT(req, codeTemplate.userId);

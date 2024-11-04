@@ -4,7 +4,7 @@ import { searchBlogPostByCode, searchBlogPostByDescription, searchBlogPostByTag,
 import { getTokenFromReq } from "@/service/jwt";
 
 export default async function handler(req, res) {
-    if (req.method === "GET") {
+    if (req.method === "POST") {
         const token = getTokenFromReq(req);
         const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
 

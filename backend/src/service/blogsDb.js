@@ -102,8 +102,13 @@ export async function searchBlogPostByTag(tag, userId) {
 }
 
 export async function searchBlogPostByCode(template) {
-    // ManyToMany fields
-    // TODO: waiting for the code templates implementation
+    const blogs = await prisma.blog.findMany({
+        where: {
+            code_template: template
+        }
+    })
+
+    return blogs;
 }
 
 export async function searchBlogPostById(id, userId) {
@@ -204,6 +209,14 @@ export async function updateReportCounter(id) {
     });
 }
 
+export async function getSortedBlogs() {
+    const allBlogs = await prisma.blog.findMany({
+        orderBy: {
+            reports: "desc"
+          }
+    });
+    return allBlogs;
+  
 export async function hidePostById(id, hidden) {
     await prisma.blog.update({
         where: { id: id },
