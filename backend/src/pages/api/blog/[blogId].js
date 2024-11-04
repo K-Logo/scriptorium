@@ -11,18 +11,20 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     
-    const blog = blogsDb.searchBlogPostById(blogId);
+    const blog = await blogsDb.searchBlogPostById(blogId);
 
-    if (decodedJWT.id != blog.author_id) {
+    console.log("jdfkasjfkladsjfkladsjfkladsjfkladsjfkladsjflkadsjf")
+    console.log(decodedJWT.id)
+    if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot edit this post." });
     }
 
     // the following fields will be null there is no change; otherwise, they will be a string w updated value.
-    const { newTitle, newDescription, newTag, newCodeTemplate } = req.body;
+    const { newTitle, newDescription, newTag, newCodeTemplateId } = req.body;
     if (newTitle)   await blogsDb.updateTitleById(blogId, newTitle);
     if (newDescription)    await blogsDb.updateDescriptionById(blogId, newDescription);
     if (newTag)   await blogsDb.updateTagById(blogId, newTag);
-    if (newCodeTemplate)    await blogsDb.updateCodeById(blogId, newCodeTemplate);
+    if (newCodeTemplateId)    await blogsDb.updateCodeById(blogId, newCodeTemplateId);
 
     res.status(200).json({ message: "Blog post edited successfully." });
   } else if (req.method == 'DELETE') {
@@ -34,8 +36,8 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const blog = blogsDb.searchBlogPostById(blogId);
-    if (decodedJWT.id != blog.author_id) {
+    const blog = await blogsDb.searchBlogPostById(blogId);
+    if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot delete this post." });
     }
     
@@ -52,7 +54,9 @@ export default async function handler(req, res) {
       res.status(500).json({ error: "Failed to delete the blog post" });
     }
   } else if (req.method === 'POST') {
-    const { action, blogId } = req.body;
+    let { blogId } = req.query; // get blog's id
+    blogId = Number.parseInt(blogId);
+    const { action } = req.body;
 
     const blog = blogsDb.searchBlogPostById(blogId);
 
@@ -72,7 +76,6 @@ export default async function handler(req, res) {
     } else {
       res.status(404).json({ error: "Incorrect action" });
     }
-
   }
   
   else {

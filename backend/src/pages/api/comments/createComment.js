@@ -1,4 +1,5 @@
 import { addComment } from '@/service/commentsDb';
+import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {

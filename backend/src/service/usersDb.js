@@ -96,6 +96,12 @@ function toUser(dbUser) {
 
 // private "logging" util
 export async function getAllUsers() {
-  const allUsers = await prisma.user.findMany();
+  const allUsers = await prisma.user.findMany({
+    include: {
+      blogPosts: {
+        include: true
+      }
+    },
+  });
   return allUsers;
 }

@@ -4,13 +4,13 @@ export const prisma = new PrismaClient();
 export async function addBlogPost(blog){
     const savedDbBlog = await prisma.blog.create({
         data: {
-            authorId: blog.author_id,
+            authorId: blog.authorId,
             title: blog.title,
             description: blog.description,
             tag: blog.tag,
             code_template: blog.code_template,
             author: {
-                connect: { id: blog.author_id }
+                connect: { id: blog.authorId }
             }
         }
     });
@@ -22,8 +22,7 @@ export async function searchBlogPostByTitle(title) {
     const blogs = await prisma.blog.findMany({
         where: {
             title: {
-            contains: title,
-            mode: 'insensitive' // doesn't matter if there are capitals in the title
+            contains: title
             }
         }
         });
@@ -34,8 +33,7 @@ export async function searchBlogPostByDescription(content) {
     const blogs = await prisma.blog.findMany({
         where: {
             description: {
-            contains: content,
-            mode: 'insensitive' // doesn't matter if there are capitals in the title
+            contains: content
             }
         }
         });
@@ -46,8 +44,7 @@ export async function searchBlogPostByTag(tag) {
     const blogs = await prisma.blog.findMany({
         where: {
             tag: {
-            contains: tag,
-            mode: 'insensitive' // doesn't matter if there are capitals in the title
+            contains: tag
             }
         }
         });
@@ -96,11 +93,13 @@ export async function updateTagById(id, tag) {
     });
 }
 
-export async function updateCodeById(id, code) {
+export async function updateCodeById(id, codeTemplateId) {
     await prisma.blog.update({
         where: { id: id },
         data: {
-            code_template: code
+            code_template: {
+                connect: {id: codeTemplateId}
+            }
         }
     });
 }
@@ -131,7 +130,7 @@ export async function updateReportCounter(id) {
     await prisma.blog.update({
         where: {id: id },
         data: {
-            report: {
+            reports: {
                 increment: 1
             }
         }
