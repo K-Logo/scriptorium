@@ -253,7 +253,9 @@ export async function getSortedBlogs(order) {
         orderBy: {
             rating: order
         },
-        hidden: false
+        where: {
+            hidden: false
+        }
     });
     return allBlogs;
   
