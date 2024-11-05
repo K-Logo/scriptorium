@@ -8,18 +8,14 @@ export const prisma = new PrismaClient();
 export default async function handler(req, res) {
   let { blogId } = req.query; // get blog's id
   blogId = Number.parseInt(blogId);
-  const blog = await blogsDb.searchBlogPostById(blogId);
 
+  const decodedJWT = verifyAndDecodeBlogJWT(req);
+  if (!decodedJWT) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  
+  const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
   if (req.method === "PUT") {
-    const decodedJWT = verifyAndDecodeBlogJWT(req);
-    if (!decodedJWT) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    
-    const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
-
-    console.log("jdfkasjfkladsjfkladsjfkladsjfkladsjfkladsjflkadsjf")
-    console.log(decodedJWT.id)
     if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot edit this post." });
     }
@@ -39,12 +35,6 @@ export default async function handler(req, res) {
   } else if (req.method == 'DELETE') {
     let { blogId } = req.query; // get blog's id
     blogId = Number.parseInt(blogId);
-
-    const decodedJWT = verifyAndDecodeBlogJWT(req);
-    if (!decodedJWT) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
     if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot delete this post." });
     }

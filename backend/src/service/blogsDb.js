@@ -157,7 +157,7 @@ export async function searchBlogPostById(id, userId) {
             comments: {
                 where: {
                     OR: [
-                        { hidden: true },  // Show hidden comments
+                        { hidden: false },  // Show public comments
                         { authorId: userId } // Show comments made by the author
                     ]
                 },
