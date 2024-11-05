@@ -57,7 +57,8 @@ export async function getSortedComments(order) {
     const allComments = await prisma.comment.findMany({
         orderBy: {
             rating: order
-            }
+            },
+            hidden: false
         });
     return allComments;
 }

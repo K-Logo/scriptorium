@@ -252,7 +252,8 @@ export async function getSortedBlogs(order) {
     const allBlogs = await prisma.blog.findMany({
         orderBy: {
             rating: order
-          }
+        },
+        hidden: false
     });
     return allBlogs;
   
