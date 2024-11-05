@@ -1,0 +1,1266 @@
+{
+	"info": {
+		"_postman_id": "a951f8de-0f6a-4f0c-bda4-ac9decd5c789",
+		"name": "Scriptorium APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25321354"
+	},
+	"item": [
+		{
+			"name": "/admin hide blog post",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contentType\": \"post\",\n    \"contentId\": 1,\n    \"hidden\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin hide comment",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contentType\": \"comment\",\n    \"contentId\": 1,\n    \"hidden\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin show all posts and comments sorted by reports",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/api/admin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/blog create blog post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"testaasdfaasdfadsfsdf\",\r\n    \"description\": \"abcdesadfasdfasdfasdffasdf\",\r\n    \"authorId\": 1,\r\n    \"tags\": [\"hello\", \"hi\", \"python\"],\r\n    \"codeTemplateIds\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/blog/createBlog",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"createBlog"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/blog edit blog post",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"newTitle\": \"super cool blog title guys!!!\",\r\n    \"newDescription\": \"new des222\",\r\n    \"newTag\": \"new tag222\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/blog/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/blog upvote blog post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"action\": \"upvote\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/blog/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/blog downvote blog post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"action\": \"downvote\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/blog/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/blog search blog post",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchContent\": \"pyt\",\r\n    \"searchBy\": \"tag\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/blog/searchBlogs",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"searchBlogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/blog sort blog posts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"order\": \"desc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/blog/sortBlogs",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"sortBlogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/blog delete blog post",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/api/blog/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates create a code template",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"printing in java\",\n    \"explanation\": \"printing hello world in java\",\n    \"content\": \"print('hello world')\",\n    \"tags\": [\"python\", \"beginner\"],\n    \"userId\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates fork a code template",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"parentId\": 1,\n    \"userId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates edit code template",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"newTitle\": \"working with python\",\n    \"newExplanation\": \"this is a new explanation\",\n    \"newContent\": \"goodbye world!\",\n    \"newTag\": \"coding\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates get all code templates of a user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/users/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates search code template by title",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"w\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates search code template by tag",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tag\": \"beg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates search code template by content",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"print\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates get code template by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/codetemplates delete code template",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/codetemplates/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"codetemplates",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/comments create comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"amazing amazing post!\",\n    \"blogId\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/comments/createComment",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"comments",
+						"createComment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/comments upvote comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"action\": \"upvote\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/comments/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/comments downvote comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"action\": \"downvote\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/comments/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/comments reply to a comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"amazing amazing amazing asdfdsfdasfadsfadsfasfamazing post!\",\n    \"blogId\": 2,\n    \"parentCommentId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/comments/createComment",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"comments",
+						"createComment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/comments sort comments",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"order\": \"desc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/comments/sortComments",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"comments",
+						"sortComments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/exec execute python",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lang\": \"py3\",\n    \"code\": \"import sys\\n \\nctr=0\\nw1=None\\nw2=None\\nfor line in sys.stdin:\\n    if 'q' == line.rstrip():\\n        break\\n    elif ctr==0:\\n        ctr+=1\\n        w1=line\\n\\ndef reverseVowels(s: str) -> str:\\n    S = []\\n    replace = set()\\n    for i in range(len(s)):\\n        if s[i] in {\\\"a\\\", \\\"e\\\", \\\"i\\\", \\\"o\\\", \\\"u\\\", \\\"A\\\", \\\"E\\\", \\\"I\\\", \\\"O\\\", \\\"U\\\"}:\\n            S.append(s[i])\\n            replace.add(i)\\n    newS = \\\"\\\"\\n    for i in range(len(s)):\\n        if i not in replace:\\n            newS += s[i]\\n        else:\\n            newS += S.pop()\\n    return newS\\n\\nprint(reverseVowels(w1),end=\\\"\\\")\\n\",\n    \"data_in\": \"\\\"IceCreAm\\\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/exec/execute-code",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"exec",
+						"execute-code"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/exec execute js",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lang\": \"javascript\",\n    \"code\": \"process.stdin.resume();\\nprocess.stdin.setEncoding('utf-8');\\n\\nlet inputString = '';\\nlet currentLine = 0;\\n\\nprocess.stdin.on('data', function(inputStdin) {\\n    inputString += inputStdin;\\n});\\n\\nprocess.stdin.on('end', function() {\\n    inputString = inputString.split('\\\\n');\\n\\n    main();\\n});\\n\\nfunction readLine() {\\n    return inputString[currentLine++];\\n}\\n\\nfunction fizzBuzz(n) {\\n    // Write your code here\\n    console.log(n % 3);\\n}\\n\\nfunction main() {\\n    const n = parseInt(readLine().trim(), 10);\\n\\n    fizzBuzz(n);\\n}\\n\",\n    \"data_in\": \"15\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/exec/execute-code",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"exec",
+						"execute-code"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/exec execute c",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lang\": \"c\",\n    \"code\": \n\"#include <assert.h>\\n#include <ctype.h>\\n#include <limits.h>\\n#include <math.h>\\n#include <stdbool.h>\\n#include <stddef.h>\\n#include <stdint.h>\\n#include <stdio.h>\\n#include <stdlib.h>\\n#include <string.h>\\n\\nchar* readline();\\nchar* ltrim(char*);\\nchar* rtrim(char*);\\n\\nint parse_int(char*);\\n\\n\\nvoid fizzBuzz(int n) {\\n    printf(\\\"%d\\\",n);\\n}\\n\\nint main()\\n{\\n    int n = parse_int(ltrim(rtrim(readline())));\\n\\n    fizzBuzz(n);\\n\\n    return 0;\\n}\\n\\nchar* readline() {\\n    size_t alloc_length = 1024;\\n    size_t data_length = 0;\\n\\n    char* data = malloc(alloc_length);\\n\\n    while (true) {\\n        char* cursor = data + data_length;\\n        char* line = fgets(cursor, alloc_length - data_length, stdin);\\n\\n        if (!line) {\\n            break;\\n        }\\n\\n        data_length += strlen(cursor);\\n\\n        if (data_length < alloc_length - 1 || data[data_length - 1] == '\\\\n') {\\n            break;\\n        }\\n\\n        alloc_length <<= 1;\\n\\n        data = realloc(data, alloc_length);\\n\\n        if (!data) {\\n            data = '\\\\0';\\n\\n            break;\\n        }\\n    }\\n\\n    if (data[data_length - 1] == '\\\\n') {\\n        data[data_length - 1] = '\\\\0';\\n\\n        data = realloc(data, data_length);\\n\\n        if (!data) {\\n            data = '\\\\0';\\n        }\\n    } else {\\n        data = realloc(data, data_length + 1);\\n\\n        if (!data) {\\n            data = '\\\\0';\\n        } else {\\n            data[data_length] = '\\\\0';\\n        }\\n    }\\n\\n    return data;\\n}\\n\\nchar* ltrim(char* str) {\\n    if (!str) {\\n        return '\\\\0';\\n    }\\n\\n    if (!*str) {\\n        return str;\\n    }\\n\\n    while (*str != '\\\\0' && isspace(*str)) {\\n        str++;\\n    }\\n\\n    return str;\\n}\\n\\nchar* rtrim(char* str) {\\n    if (!str) {\\n        return '\\\\0';\\n    }\\n\\n    if (!*str) {\\n        return str;\\n    }\\n\\n    char* end = str + strlen(str) - 1;\\n\\n    while (end >= str && isspace(*end)) {\\n        end--;\\n    }\\n\\n    *(end + 1) = '\\\\0';\\n\\n    return str;\\n}\\n\\nint parse_int(char* str) {\\n    char* endptr;\\n    int value = strtol(str, &endptr, 10);\\n\\n    if (endptr == str || *endptr != '\\\\0') {\\n        exit(EXIT_FAILURE);\\n    }\\n\\n    return value;\\n}\",\n    \"data_in\": \"15\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/exec/execute-code",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"exec",
+						"execute-code"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/exec execute c++",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lang\": \"cpp\",\n    \"code\": \"\\n#include <string>\\n#include <iostream>\\n#include <algorithm>\\n\\nusing namespace std;\\n\\nstring ltrim(const string &);\\nstring rtrim(const string &);\\n/*\\n * Complete the 'fizzBuzz' function below.\\n *\\n * The function accepts INTEGER n as parameter.\\n */\\n\\nvoid fizzBuzz(int n) {\\n    cout<<n;\\n}\\n\\nint main()\\n{\\n    string n_temp;\\n    getline(cin, n_temp);\\n\\n    int n = stoi(ltrim(rtrim(n_temp)));\\n\\n    fizzBuzz(n);\\n\\n    return 0;\\n}\\n\\nstring ltrim(const string &str) {\\n    string s(str);\\n\\n    s.erase(\\n        s.begin(),\\n        find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))\\n    );\\n\\n    return s;\\n}\\n\\nstring rtrim(const string &str) {\\n    string s(str);\\n\\n    s.erase(\\n        find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),\\n        s.end()\\n    );\\n\\n    return s;\\n}\\n\",\n    \"data_in\": \"15\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/exec/execute-code",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"exec",
+						"execute-code"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/exec execute java",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lang\": \"java\",\n    \"code\": \"import java.io.*;\\nimport java.math.*;\\nimport java.security.*;\\nimport java.text.*;\\nimport java.util.*;\\nimport java.util.concurrent.*;\\nimport java.util.function.*;\\nimport java.util.regex.*;\\nimport java.util.stream.*;\\nimport static java.util.stream.Collectors.joining;\\nimport static java.util.stream.Collectors.toList;\\n\\nclass Result {\\n\\n    /*\\n     * Complete the 'fizzBuzz' function below.\\n     *\\n     * The function accepts INTEGER n as parameter.\\n     */\\n\\n    public static void fizzBuzz(int n) {\\n    // Write your code here\\n        System.out.println(n);\\n    }\\n\\n}\\n\\npublic class test {\\n    public static void main(String[] args) throws IOException {\\n        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));\\n\\n        int n = Integer.parseInt(bufferedReader.readLine().trim());\\n\\n        Result.fizzBuzz(n);\\n\\n        bufferedReader.close();\\n    }\\n}\",\n    \"data_in\": \"15\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/exec/execute-code",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"exec",
+						"execute-code"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/report report blog post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"this is an inappropriate post\",\r\n    \"blogId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/report/createReport",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"report",
+						"createReport"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/report report comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"this is an inappropriate comment\",\n    \"commentId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/report/createReport",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"report",
+						"createReport"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users valid signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"a\",\n    \"email\": \"a\",\n    \"phoneNumber\": \"a\",\n    \"password\": \"abba\",\n    \"firstName\": \"z\",\n    \"lastName\": \"z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/users/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const environmentToken = \"bearerToken\"; // the name of the environment variable",
+							"const newToken = pm.response.json().token;",
+							"",
+							"// verify that we have a token value",
+							"pm.test(\"access token value should be present\", function() {",
+							"  pm.expect(newToken.length > 0);",
+							"});",
+							"",
+							"// save the new token in our environment variable",
+							"pm.collectionVariables.set(environmentToken, newToken);",
+							"",
+							"// simple verification that the value was saved as intended",
+							"pm.test(\"Token environment variable should be updated\", function() {",
+							"  const checkToken = pm.collectionVariables.get(environmentToken);",
+							"  pm.expect(checkToken).to.eql(newToken);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"ab\",\n    \"password\": \"abba\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/users/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const environmentToken = \"bearerToken\"; // the name of the environment variable",
+							"const newToken = pm.response.json().token;",
+							"",
+							"// verify that we have a token value",
+							"pm.test(\"access token value should be present\", function() {",
+							"  pm.expect(newToken.length > 0);",
+							"});",
+							"",
+							"// save the new token in our environment variable",
+							"pm.collectionVariables.set(environmentToken, newToken);",
+							"",
+							"// simple verification that the value was saved as intended",
+							"pm.test(\"Token environment variable should be updated\", function() {",
+							"  const checkToken = pm.collectionVariables.get(environmentToken);",
+							"  pm.expect(checkToken).to.eql(newToken);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"newAvatarPath\": \"localhost:3000/avatars/makima.jpg\",\n    \"newUsername\": \"ba\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users get avatars",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/api/users/avatars",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"avatars"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "bearerToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
