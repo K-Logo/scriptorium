@@ -63,8 +63,8 @@ export default async function signup(req, res) {
     const user = new User(null, username, passwordHash, firstName, lastName, email, parsedPhoneNumber,
        "localhost:3000/avatars/amongus.jpg", "USER");
     try {
-      const savedUser = await addUser(user);
-      return res.status(201).json(savedUser);
+      await addUser(user);
+      return res.status(201).json();  // .json() required; else, next will hang. 201 ==> successful creation. info in JWT on login
     } catch (e) {
       return res.status(409).json({ error: "Username, email or phone number already taken." });
     }
