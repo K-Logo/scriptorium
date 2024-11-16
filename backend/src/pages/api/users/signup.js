@@ -2,6 +2,30 @@ import User from '@/model/user';
 import { addUser } from '@/service/usersDb';
 const bcrypt = require('bcrypt');
 
+// accepts something@something.com, and in particular, prevents multiple @ signs.
+const validateEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    );
+};
+
+/**
+ * Accepts:
+ * xxxxxxxxxx
+ * xxx-xxx-xxxx
+ * (xxx) xxx-xxxx 
+ * ... or any 10-digits of any format
+ */
+const validateAndParsePhoneNumber = (phoneNumber) => {
+  var targ = phoneNumber.replace(/[^\d]/g,''); // remove all non-digits
+  if (targ && targ.length===10) {           // phone numbers are 10 digits long
+    return targ;
+  }
+  return null;
+}
+
 /*
 * Accepts bodies with *mandatory* username, password, firstName, lastName, email and phoneNumber fields.
 * The user may upload an avatar after signing up, in the edit profile flow.
@@ -10,16 +34,23 @@ export default async function signup(req, res) {
   if (req.method === "POST") {
     const { username, password, firstName, lastName, email, phoneNumber } = req.body;
 
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    if (!validateEmail(email)) {
+      return res.status(400).json({ error: "Please specify a proper email format." });
+    }
 
-    const user = new User(null, username, passwordHash, firstName, lastName, email, phoneNumber, "localhost:3000/avatars/amongus.jpg", "USER");
+    const parsedPhoneNumber = validateAndParsePhoneNumber(phoneNumber);  // returns null if validation failed
+    if (!parsedPhoneNumber) {
+      return res.status(400).json({ error: "Please specify a 10-digit phone number." });
+    }
 
+    const passwordHash = await bcrypt.hash(password, parseInt(process.env.SALTROUNDS));
+    const user = new User(null, username, passwordHash, firstName, lastName, email, parsedPhoneNumber,
+       "localhost:3000/avatars/amongus.jpg", "USER");
     try {
       const savedUser = await addUser(user);
       return res.status(201).json(savedUser);
     } catch (e) {
-      return res.status(409).json({ error: "Username, email or phone number already taken.", e: e });
+      return res.status(409).json({ error: "Username, email or phone number already taken." });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed." })
