@@ -26,6 +26,17 @@ const validateAndParsePhoneNumber = (phoneNumber) => {
   return null;
 }
 
+/**
+ * Valid passwords have one uppercase, one lowercase, one digit, one special character, and length >= 8
+ */
+const validatePassword = (password) => {
+  return /[A-Z]/       .test(password) &&
+          /[a-z]/       .test(password) &&
+          /[0-9]/       .test(password) &&
+          /[^A-Za-z0-9]/.test(password) &&
+          password.length > 7;
+}
+
 /*
 * Accepts bodies with *mandatory* username, password, firstName, lastName, email and phoneNumber fields.
 * The user may upload an avatar after signing up, in the edit profile flow.
@@ -41,6 +52,11 @@ export default async function signup(req, res) {
     const parsedPhoneNumber = validateAndParsePhoneNumber(phoneNumber);  // returns null if validation failed
     if (!parsedPhoneNumber) {
       return res.status(400).json({ error: "Please specify a 10-digit phone number." });
+    }
+
+    if (!validatePassword(password)) {
+      return res.status(400).json({ error: "Please ensure your password has one uppercase, one lowercase, one digit,"
+      +" one special character, and is at least 8 characters long."});
     }
 
     const passwordHash = await bcrypt.hash(password, parseInt(process.env.SALTROUNDS));
