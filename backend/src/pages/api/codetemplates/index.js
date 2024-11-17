@@ -1,6 +1,7 @@
 import CodeTemplate from "@/model/codeTemplate";
 import { addCodeTemplate, getCodeTemplateByContent, getCodeTemplateByTag, getCodeTemplateByTitle } from "@/service/codeTemplateDb";
 import { verifyAndDecodeJWT } from "@/service/jwt";
+import { paginate } from "@/service/paginate";
 
 export default async function handler(req, res) {
     if (req.method == "POST") {
@@ -23,28 +24,33 @@ export default async function handler(req, res) {
     } else if (req.method == "GET") {
         // Search by only one of the fields
         const { title, content, tag } = req.body;
+        const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
+        const pno = new URL("https://localhost:3000" + req.url).searchParams.get("pno");
 
         let codeTemplate = null;
         if (title) {
             try {
-                codeTemplate = await getCodeTemplateByTitle(title);
-                return res.status(200).json(codeTemplate);
+                codeTemplate = paginate(epp, pno, await getCodeTemplateByTitle(title));  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+                if (!codeTemplate)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+                return res.status(200).json({ codeTemplate: codeTemplate[0], pageNum: codeTemplate[1], numEntries: codeTemplate[2] });        
             } catch (e) {
                 res.status(401).json({ error: "Invalid title." });
                 return;
             }
         } else if (content) {
             try {
-                codeTemplate = await getCodeTemplateByContent(content);
-                return res.status(200).json(codeTemplate);
+                codeTemplate = paginate(epp, pno, await getCodeTemplateByContent(content));  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+                if (!codeTemplate)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+                return res.status(200).json({ codeTemplate: codeTemplate[0], pageNum: codeTemplate[1], numEntries: codeTemplate[2] });        
             } catch (e) {
                 res.status(401).json({ error: "Invalid content." });
                 return;
             }
         } else if (tag) {
             try {
-                codeTemplate = await getCodeTemplateByTag(tag);
-                return res.status(200).json(codeTemplate);
+                codeTemplate = paginate(epp, pno, await getCodeTemplateByTag(tag));  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+                if (!codeTemplate)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+                return res.status(200).json({ codeTemplate: codeTemplate[0], pageNum: codeTemplate[1], numEntries: codeTemplate[2] });        
             } catch (e) {
                 res.status(401).json({ error: "Invalid tag." });
                 return;
