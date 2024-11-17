@@ -1,5 +1,5 @@
 import { searchBlogPostByCodeTemplateId } from "@/service/blogsDb";
-import { addTagById, deleteCodeTemplateById, getCodeTemplateById, updateContentById, updateExplanationById, updateTitleById } from "@/service/codeTemplateDb";
+import { addTagById,deleteTagById, deleteCodeTemplateById, getCodeTemplateById, updateContentById, updateExplanationById, updateTitleById } from "@/service/codeTemplateDb";
 import { verifyAndDecodeJWT } from '@/service/jwt';
 
 export default async function handler(req, res) {
@@ -22,11 +22,16 @@ export default async function handler(req, res) {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        const { newTitle, newExplanation, newContent, newTag } = req.body;
-        if (newTitle)       await updateTitleById(id, newTitle);
-        if (newExplanation) await updateExplanationById(id, newExplanation);
-        if (newContent)     await updateContentById(id, newContent);
-        if (newTag)         await addTagById(id, newTag);
+        const { newTitle, newExplanation, newContent, oldTag, newTag, deleteTag } = req.body;
+        if (newTitle)           await updateTitleById(id, newTitle);
+        if (newExplanation)     await updateExplanationById(id, newExplanation);
+        if (newContent)         await updateContentById(id, newContent);
+        if (oldTag && newTag) {  // UPDATE a tag
+            await deleteTagById(id, oldTag);  // oldTag must match exactly
+            await addTagById(id, newTag);
+        }
+        if (newTag)             await addTagById(id, newTag);
+        if (deleteTag)          await deleteTagById(id, deleteTag);
         
         codeTemplate = await getCodeTemplateById(id);
         if (!codeTemplate) {

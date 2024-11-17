@@ -248,6 +248,20 @@ export async function addTagById(id, newTag) {
     });
 }
 
+export async function deleteTagById(id, oldTag) {
+    console.log(oldTag);
+    await prisma.blog.update({
+        where: { id: id },
+        data: {
+            tags: {
+                disconnect: {
+                    name: oldTag
+                }
+            }
+        }
+    })
+}
+
 export async function updateCodeById(id, codeTemplateId) {
     await prisma.blog.update({
         where: { id: id },
