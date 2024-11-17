@@ -16,7 +16,17 @@ export async function addComment(commentContent, authorId, blogId, parentId = nu
                     connect: { id: parentId },
                 }
             })
-        }
+        },
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
+        },
     });
     return savedComment;
 }
@@ -25,6 +35,16 @@ export async function searchCommentById(id) {
     const comment = await prisma.comment.findFirst({
         where: {
             id: id
+        },
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
 
@@ -60,7 +80,17 @@ export async function getSortedComments(order) {
         },
         where : {
             hidden: false
-        }
+        },
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
+        },
         });
     return allComments;
 }

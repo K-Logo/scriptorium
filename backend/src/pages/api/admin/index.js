@@ -17,7 +17,15 @@ export default async function handler(req, res) {
                 numReports: "desc"
             },
             include: {
-                reports: true
+                reports: true,
+                author: {
+                    select: {
+                        id: true,
+                        username: true,
+                        avatarPath: true,
+                        role: true
+                    }
+                }
             }
           });
 
@@ -26,7 +34,15 @@ export default async function handler(req, res) {
                 numReports: "desc"
             },
             include: {
-                reports: true
+                reports: true,
+                author: {
+                        select: {
+                            id: true,
+                            username: true,
+                            avatarPath: true,
+                            role: true
+                        }
+                    }
             }
         });
 
