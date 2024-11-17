@@ -1,7 +1,8 @@
 import * as usersDb from '@/service/usersDb';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
 import { getCodeTemplateByUserId } from '@/service/codeTemplateDb';
-import { deleteUserById, getUserById } from '@/service/usersDb';
+import { deleteUserById, getUserById, getUserByIdRaw } from '@/service/usersDb';
+import { searchBlogPostByUserId } from '@/service/blogsDb';
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const files = fs.readdirSync('./public/avatars')
@@ -79,13 +80,23 @@ export default async function handler(req, res) {
   } else if (req.method === "GET") {
     let { id } = req.query;
     id = Number.parseInt(id);
-    const decodedJWT = verifyAndDecodeJWT(req, id);
-    if (!decodedJWT) {
-      return res.status(401).json({ error: "Unauthorized" });
+    const { type } = req.query;
+
+    if (type === "user") {
+      const user = await getUserByIdRaw(id);
+      res.status(200).json(user);
+    } else if (type === "code-templates") {
+      const codeTemplates = await getCodeTemplateByUserId(id);
+      res.status(200).json(codeTemplates);
+    } else if (type === "blogs") {
+      const blogs = await searchBlogPostByUserId(id);
+      res.status(200).json(blogs);
+
+    } else {
+      return res.status(400).json({ error: "Invalid type. Please select from user, code-templates, and blogs." })
     }
 
-    const codeTemplates = await getCodeTemplateByUserId(id);
-    res.status(200).json(codeTemplates);
+    
 
   } else {
     return res.status(405).json({ error: "Method not allowed." });

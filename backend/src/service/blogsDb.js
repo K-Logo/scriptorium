@@ -57,6 +57,32 @@ export async function searchBlogPostByTitle(title, userId) {
     return blogs;
 };
 
+export async function searchBlogPostByUserId(userId) {
+    const blogs = await prisma.blog.findMany({
+        where: {
+            authorId: userId,
+            OR: [
+                { hidden: false }, // Show public posts
+                { authorId: userId } // Show hidden posts for the author
+            ]
+        },
+        include: {
+            comments: {
+                where: {
+                    OR: [
+                        { hidden: true },  // Show hidden comments
+                        { authorId: userId } // Show comments made by the author
+                    ]
+                },
+                include: {
+                    author: true, // Include the author of each comment
+                },
+            },
+        },
+    });
+    return blogs;
+};
+
 export async function searchBlogPostByDescription(content, userId) {
     const blogs = await prisma.blog.findMany({
         where: {
