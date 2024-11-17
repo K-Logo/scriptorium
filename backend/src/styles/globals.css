@@ -7,7 +7,7 @@ html, body {
 }
 
 section {
-    @apply py-16; 
+    @apply py-16;
   }
   
 /* Container Styling */
