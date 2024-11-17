@@ -17,21 +17,29 @@ export function getJWT(user, expiryInMinutes) {
 
 // returns null if the token is not valid; otherwise, returns the decoded token
 export function verifyAndDecodeJWT(req, userId) {
-  const token = getTokenFromReq(req);
-  const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
-  if (!decodedJWT || decodedJWT.id != userId) {
+  try {
+    const token = getTokenFromReq(req);
+    const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
+    if (!decodedJWT || decodedJWT.id != userId) {
+      return null;
+    }
+    return decodedJWT;
+  } catch (e) {
     return null;
   }
-  return decodedJWT;
 }
 
-export function verifyAndDecodeJWTNoId(req) {
-  const token = getTokenFromReq(req);
-  const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
-  if (!decodedJWT) {
+export function verifyAndDecodeJWTNoId(req) { 
+  try {
+    const token = getTokenFromReq(req);
+    const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
+    if (!decodedJWT) {
+      return null;
+    }
+    return decodedJWT;
+  } catch (e) {
     return null;
   }
-  return decodedJWT;
 }
 
 // helper. retrieves token from Authorization header
@@ -44,10 +52,14 @@ export function getTokenFromReq(req) {
 }
 
 export function verifyAndDecodeBlogJWT(req) {
-  const token = getTokenFromReq(req);
-  const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
-  if (!decodedJWT) {
+  try {
+    const token = getTokenFromReq(req);
+    const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
+    if (!decodedJWT) {
+      return null;
+    }
+    return decodedJWT;
+  } catch (e) {
     return null;
   }
-  return decodedJWT;
 }

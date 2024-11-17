@@ -9,7 +9,7 @@ export default async function(req, res) {
 
         const decodedJWT = verifyAndDecodeBlogJWT(req);
         if (!decodedJWT) {
-            return res.status(403).json({ error: "Must be a logged in user to comment." });
+            return res.status(401).json({ error: "Unauthorized" });
         }
 
         const comment = commentsDb.searchCommentById(commentId);
