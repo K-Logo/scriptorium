@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    @apply bg-[#1e1b24] text-white h-full;
+}
+
+section {
+    @apply py-16; 
+  }
+  
+/* Container Styling */
+.container {
+    @apply mx-auto px-6 text-center; 
+}
+
+/* Heading Styling */
+h1 {
+    @apply text-4xl font-bold mb-2; 
+}
+/* Paragraph Styling */
+p {
+    @apply text-xl mb-6; 
+}
+
+.blue-button {
+    @apply bg-[#5050de] w-32 py-2 px-4 mx-2 rounded hover:bg-[#3030c7] transition duration-300;
+}
+
+#header {
+    @apply bg-[#2d263d] flex justify-between items-center p-4
+}
+
+#nav-links {
+    @apply hidden sm:flex space-x-10
+}
+
+#hamburger-menu {
+    @apply block sm:hidden
+}
+
+#nav-links-sm {
+    @apply bg-[#2d263d] hidden md:hidden w-full flex flex-col justify-start px-6 py-2
+}
+
+#nav-links-sm > li {
+    @apply w-full h-10 flex items-center
+}
+
+.icon {
+    @apply w-10 h-10
+}
