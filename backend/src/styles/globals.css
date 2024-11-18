@@ -33,31 +33,39 @@ p {
 }
 
 #header {
-    @apply bg-[#2d263d] flex justify-between items-center p-4 h-[7vh]
+    @apply bg-[#2d263d] flex justify-between items-center h-[7vh]
 }
 
 #nav-links {
-    @apply hidden sm:flex space-x-10 items-center
+    @apply hidden sm:flex items-center h-full
 }
 
-#nav-links > * {
+#nav-links > a {
+    @apply flex items-center justify-center h-full w-40 hover:bg-[#3e315c] transition duration-300;
+}
+
+#nav-links > li {
     @apply flex items-center justify-center
 }
 
-#hamburger-menu {
-    @apply block sm:hidden
+#hamburger-menu, #mobile-user-icon {
+    @apply sm:hidden
 }
 
-#nav-links-sm {
-    @apply bg-[#2d263d] hidden md:hidden w-full flex flex-col justify-start px-6 py-2
+#nav-links-sm, #user-mobile-dropdown {
+    @apply bg-[#2d263d] w-full flex flex-col justify-start sm:hidden
 }
 
-#nav-links-sm > li {
-    @apply w-full h-10 flex items-center
+#nav-links-sm > *, #user-mobile-dropdown > *{
+    @apply w-full h-10 flex items-center px-6 py-2
+}
+
+#nav-links-sm > a, #user-mobile-dropdown > a{
+    @apply bg-[#3e315c] hover:bg-[#533b8a]
 }
 
 .icon {
-    @apply w-10 h-10
+    @apply w-10 h-10 m-2
 }
 
 input {
@@ -82,4 +90,16 @@ form > * {
 
 .big-icon {
     @apply w-52 h-52 my-10
+}
+
+#user-dropdown {
+    @apply hidden sm:block absolute right-0 top-[7vh] m-2 w-64 bg-[#2d263d]
+}
+
+#user-dropdown > * {
+    @apply p-4 h-12 flex items-center;
+}
+
+#user-dropdown > a {
+    @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300
 }
