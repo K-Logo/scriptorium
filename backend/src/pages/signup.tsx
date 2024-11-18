@@ -18,7 +18,9 @@ function SignUp() {
 }
 
 function SignUpForm() {
-    async function handleSubmit(formData) {
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
         const username = formData.get("username");
         const email = formData.get("email");
         const phoneNumber = formData.get("phone-number");
@@ -26,21 +28,36 @@ function SignUpForm() {
         const firstName = formData.get("first-name");
         const lastName = formData.get("last-name");
 
-        const response = await fetch("", {
+        console.log('Username:', username);
+        console.log('Email:', email);
+        console.log('Phone Number:', phoneNumber);
+        console.log('Password:', password); // Be cautious about logging sensitive data like passwords!
+        console.log('First Name:', firstName);
+        console.log('Last Name:', lastName);
+        const response = await fetch("http://localhost:3000/api/users/signup", {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
                 username: username,
-                email: email,
-                phoneNumber: phoneNumber,
                 password: password,
                 firstName: firstName,
-                lastName: lastName
+                lastName: lastName,
+                email: email,
+                phoneNumber: phoneNumber,
             })
-        })
+        });
+        const json = await response.json();
+        if (response.ok) {
+            alert(json.message);
+        } else {
+            alert(json.error);
+        }
     }
 
     return (
-        <form action={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <label>
                 First name:
                 <input name="first-name"/>
@@ -65,6 +82,7 @@ function SignUpForm() {
                 Password:
                 <input name="password"/>
             </label>
+            <button type="submit" className="blue-button">Submit</button>
         </form>
     )
 }

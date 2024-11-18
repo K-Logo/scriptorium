@@ -44,6 +44,14 @@ const validatePassword = (password) => {
 export default async function signup(req, res) {
   if (req.method === "POST") {
     const { username, password, firstName, lastName, email, phoneNumber } = req.body;
+    console.log(req.body);
+    
+    console.log('Username:', username);
+    console.log('Email:', email);
+    console.log('Phone Number:', phoneNumber);
+    console.log('Password:', password); // Be cautious about logging sensitive data like passwords!
+    console.log('First Name:', firstName);
+    console.log('Last Name:', lastName);
 
     if (!validateEmail(email)) {
       return res.status(400).json({ error: "Please specify a proper email format." });
@@ -64,7 +72,7 @@ export default async function signup(req, res) {
        "localhost:3000/avatars/amongus.jpg", "USER");
     try {
       await addUser(user);
-      return res.status(201).json();  // .json() required; else, next will hang. 201 ==> successful creation. info in JWT on login
+      return res.status(201).json({ message: "Sign up successful. Please log in!" });  // .json() required; else, next will hang. 201 ==> successful creation. info in JWT on login
     } catch (e) {
       return res.status(409).json({ error: "Username, email or phone number already taken." });
     }
