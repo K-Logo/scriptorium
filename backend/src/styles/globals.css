@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 html, body {
-    @apply bg-[#1e1b24] text-white h-full;
+    @apply bg-[#1e1b24] text-white h-full
+}
+
+main {
+    @apply h-[93vh] flex items-center justify-center
 }
 
 section {
@@ -12,7 +16,7 @@ section {
   
 /* Container Styling */
 .container {
-    @apply mx-auto px-6 text-center; 
+    @apply mx-auto px-6 text-center flex flex-col justify-center items-center; 
 }
 
 /* Heading Styling */
@@ -29,11 +33,15 @@ p {
 }
 
 #header {
-    @apply bg-[#2d263d] flex justify-between items-center p-4
+    @apply bg-[#2d263d] flex justify-between items-center p-4 h-[7vh]
 }
 
 #nav-links {
-    @apply hidden sm:flex space-x-10
+    @apply hidden sm:flex space-x-10 items-center
+}
+
+#nav-links > * {
+    @apply flex items-center justify-center
 }
 
 #hamburger-menu {
@@ -53,5 +61,25 @@ p {
 }
 
 input {
-    @apply bg-[#302a3d]
+    @apply bg-[#302a3d] w-72 h-8 mx-2 px-2
+}
+
+form {
+    @apply flex flex-col justify-center items-center
+}
+
+#input-fields > * {
+    @apply my-4
+}
+
+form > * {
+    @apply my-2
+}
+
+#input-fields {
+    @apply flex flex-col items-end
+}
+
+.big-icon {
+    @apply w-52 h-52 my-10
 }

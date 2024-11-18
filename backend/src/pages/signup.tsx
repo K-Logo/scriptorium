@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import Navbar from "../components/Navbar";
 import { UserContext, UserProvider } from "../contexts/user";
 
-function SignUp() {
+export default function SignUp() {
   return (
     <>
       <Head>
@@ -18,6 +18,7 @@ function SignUp() {
 }
 
 function SignUpForm() {
+    const router = useRouter();
     async function handleSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -51,6 +52,7 @@ function SignUpForm() {
         const json = await response.json();
         if (response.ok) {
             alert(json.message);
+            router.push("/login")
         } else {
             alert(json.error);
         }
@@ -58,40 +60,37 @@ function SignUpForm() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <label>
-                First name:
-                <input name="first-name"/>
-            </label>
-            <label>
-                Last name:
-                <input name="last-name"/>
-            </label>
-            <label>
-                Username:
-                <input name="username"/>
-            </label>
-            <label>
-                Email:
-                <input name="email"/>
-            </label>
-            <label>
-                Phone number:
-                <input name="phone-number"/>
-            </label>
-            <label>
-                Password:
-                <input name="password"/>
-            </label>
+            <h1>
+                Sign up
+            </h1>
+            <div id="input-fields">
+                <label>
+                    First name:
+                    <input name="first-name"/>
+                </label>
+                <label>
+                    Last name:
+                    <input name="last-name"/>
+                </label>
+                <label>
+                    Username:
+                    <input name="username"/>
+                </label>
+                <label>
+                    Email:
+                    <input name="email"/>
+                </label>
+                <label>
+                    Phone number:
+                    <input name="phone-number"/>
+                </label>
+                <label>
+                    Password:
+                    <input type="password" name="password"/>
+                </label>
+            </div>
             <button type="submit" className="blue-button">Submit</button>
+            <br/><br/><br/><br/><br/>
         </form>
     )
 }
-
-export default function SignUpWithContext() {
-    return (
-        <UserProvider>
-            <SignUp />
-        </UserProvider>
-    )
-}
-

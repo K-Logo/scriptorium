@@ -2,9 +2,10 @@ import React, { useContext } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../components/Navbar";
-import { UserContext, UserProvider } from "../contexts/user";
+import { UserContext } from "../contexts/user";
+import Link from "next/link";
 
-function Home() {
+export default function Home() {
   return (
     <>
       <main>
@@ -21,18 +22,26 @@ function Welcome() {
     if (user.id === undefined) {
         return (
             <div className="container">
+                <img className="big-icon" src="https://www.cs.toronto.edu/~kianoosh/courses/csc309/resources/handouts/pp1/logo.jpg" alt="Icon"></img>
                 <h1>
                 Welcome to Scriptorium!
                 </h1>
                 <p>
-                Scriptorium is an innovative online platform where you can write, execute, and share code in multiple programming languages.
+                Scriptorium is an innovative online platform where you can write, <br/>execute, and share code in multiple programming languages.
                 </p>
-                <button className="blue-button">
-                Login
-                </button>
-                <button className="blue-button">
-                Sign Up
-                </button>
+                <div className="button-container">
+                    <Link href="/login">
+                        <button className="blue-button">
+                            Login
+                        </button>
+                    </Link>
+                    <Link href="/signup">
+                        <button className="blue-button">
+                            Sign Up
+                        </button>
+                    </Link>
+                </div>
+                <br/><br/><br/><br/><br/>
             </div>
         );
     } else {
@@ -47,13 +56,5 @@ function Welcome() {
             </div>
         );
     }
-}
-
-export default function HomeWithContext() {
-    return (
-        <UserProvider>
-            <Home />
-        </UserProvider>
-    )
 }
 
