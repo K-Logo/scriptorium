@@ -12,12 +12,6 @@ export async function addCodeTemplate(codeTemplate) {
         codeTemplate.explanation = parentCodeTemplate.explanation;
         codeTemplate.content = parentCodeTemplate.content;
         codeTemplate.tags = parentCodeTemplate.tags;
-        console.log("47592374809321074891327098471238904")
-        console.log(parentCodeTemplate.title)
-        console.log(parentCodeTemplate.explanation)
-        console.log(parentCodeTemplate.content)
-        console.log(parentCodeTemplate.tags)
-        console.log(parentCodeTemplate.userId)
     }
 
     const dbTagIds = [];
@@ -27,10 +21,6 @@ export async function addCodeTemplate(codeTemplate) {
             dbTagIds.push(await createTagAndGetId(tag));
         }
     }
-    console.log(dbTagIds);
-
-    console.log("oooooooooo")
-    console.log(codeTemplate.userId)
 
     const savedDbCodeTemplate = await prisma.codeTemplate.create({
         data: {
@@ -42,7 +32,17 @@ export async function addCodeTemplate(codeTemplate) {
             },
             parentId: codeTemplate.parentId,
             userId: codeTemplate.userId
-        }
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
+        },
     });
 
     return savedDbCodeTemplate;
@@ -74,6 +74,14 @@ export async function getCodeTemplateById(id) {
         where: { id: id },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
 
@@ -87,6 +95,14 @@ export async function getCodeTemplateByUserId(userId) {
         },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
     return codeTemplates;
@@ -109,17 +125,20 @@ export async function getCodeTemplateByTitle(substring) {
         },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
-
-    console.log(dbCodeTemplates);
-
     const codeTemplates = [];
     for (const dbCodeTemplate of dbCodeTemplates) {
         codeTemplates.push(dbCodeTemplate);
     }
-
-    console.log(codeTemplates);
 
     return codeTemplates;
 }
@@ -137,6 +156,14 @@ export async function getCodeTemplateByTag(substring) {
         },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
 
@@ -153,6 +180,16 @@ export async function getCodeTemplateByContent(substring) {
         where: {
             content: {
                 contains: substring,  // Look for code templates containing substring
+            }
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
             }
         }
     });
@@ -205,6 +242,19 @@ export async function addTagById(id, newTag) {
             }
         }
     });
+}
+
+export async function deleteTagById(id, oldTag) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            tags: {
+                disconnect: {
+                    name: oldTag
+                }
+            }
+        }
+    })
 }
 
 export async function updateParentById(id, newParentId) {

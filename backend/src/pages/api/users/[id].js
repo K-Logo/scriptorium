@@ -3,6 +3,7 @@ import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
 import { getCodeTemplateByUserId } from '@/service/codeTemplateDb';
 import { deleteUserById, getUserById, getUserByIdRaw } from '@/service/usersDb';
 import { searchBlogPostByUserId } from '@/service/blogsDb';
+import { paginate } from "@/service/paginate";
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const files = fs.readdirSync('./public/avatars')
@@ -79,6 +80,8 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     let { id } = req.query;
+    const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
+    const pno = new URL("https://localhost:3000" + req.url).searchParams.get("pno");
     id = Number.parseInt(id);
     const { type } = req.query;
 
@@ -86,18 +89,20 @@ export default async function handler(req, res) {
       const user = await getUserByIdRaw(id);
       res.status(200).json(user);
     } else if (type === "code-templates") {
-      const codeTemplates = await getCodeTemplateByUserId(id);
-      res.status(200).json(codeTemplates);
-    } else if (type === "blogs") {
-      const blogs = await searchBlogPostByUserId(id);
-      res.status(200).json(blogs);
+      let codeTemplates = await getCodeTemplateByUserId(id);
 
-    } else {
+      codeTemplates = paginate(epp, pno, codeTemplates);  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+      if (!codeTemplates)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+      return res.status(200).json({ codeTemplates: codeTemplates[0], pageNum: codeTemplates[1], numEntries: codeTemplates[2] });  
+    } else if (type === "blogs") {
+      let blogs = await searchBlogPostByUserId(id);
+
+      blogs = paginate(epp, pno, blogs);  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+      if (!blogs)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+      return res.status(200).json({ blogs: blogs[0], pageNum: blogs[1], numEntries: blogs[2] });
+      } else {
       return res.status(400).json({ error: "Invalid type. Please select from user, code-templates, and blogs." })
     }
-
-    
-
   } else {
     return res.status(405).json({ error: "Method not allowed." });
   }
