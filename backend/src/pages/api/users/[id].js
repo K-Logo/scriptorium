@@ -1,7 +1,8 @@
 import * as usersDb from '@/service/usersDb';
 import { getJWT, verifyAndDecodeJWT } from '@/service/jwt';
 import { getCodeTemplateByUserId } from '@/service/codeTemplateDb';
-import { deleteUserById, getUserById } from '@/service/usersDb';
+import { deleteUserById, getUserById, getUserByIdRaw } from '@/service/usersDb';
+import { searchBlogPostByUserId } from '@/service/blogsDb';
 import { paginate } from "@/service/paginate";
 const bcrypt = require('bcrypt');
 const fs = require('fs');
@@ -82,16 +83,26 @@ export default async function handler(req, res) {
     const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
     const pno = new URL("https://localhost:3000" + req.url).searchParams.get("pno");
     id = Number.parseInt(id);
-    const decodedJWT = verifyAndDecodeJWT(req, id);
-    if (!decodedJWT) {
-      return res.status(401).json({ error: "Unauthorized" });
+    const { type } = req.query;
+
+    if (type === "user") {
+      const user = await getUserByIdRaw(id);
+      res.status(200).json(user);
+    } else if (type === "code-templates") {
+      let codeTemplates = await getCodeTemplateByUserId(id);
+
+      codeTemplates = paginate(epp, pno, codeTemplates);  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+      if (!codeTemplates)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+      return res.status(200).json({ codeTemplates: codeTemplates[0], pageNum: codeTemplates[1], numEntries: codeTemplates[2] });  
+    } else if (type === "blogs") {
+      let blogs = await searchBlogPostByUserId(id);
+
+      blogs = paginate(epp, pno, blogs);  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+      if (!blogs)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+      return res.status(200).json({ blogs: blogs[0], pageNum: blogs[1], numEntries: blogs[2] });
+      } else {
+      return res.status(400).json({ error: "Invalid type. Please select from user, code-templates, and blogs." })
     }
-
-    let codeTemplates = await getCodeTemplateByUserId(id);
-
-    codeTemplates = paginate(epp, pno, codeTemplates);  // if entries per page or page number are null, their defaults are 20 and 1, respectively
-    if (!codeTemplates)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
-    return res.status(200).json({ codeTemplates: codeTemplates[0], pageNum: codeTemplates[1], numEntries: codeTemplates[2] });
   } else {
     return res.status(405).json({ error: "Method not allowed." });
   }

@@ -41,6 +41,21 @@ export async function getUserById(id) {
   return toUser(dbUser);
 }
 
+export async function getUserByIdRaw(id) {
+  const dbUser = await prisma.user.findFirst({
+    where: { id: id },
+    include: {
+      codeTemplates: {
+        include: {
+          tags: true,
+        },
+      },
+    },
+  });
+
+  return dbUser;
+}
+
 // id as int.
 export async function updateUsernameById(id, newUsername) {
   await prisma.user.update({
