@@ -101,3 +101,25 @@ form > * {
 #user-dropdown > a {
     @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300
 }
+
+#run-container {
+    @apply flex flex-row items-center w-[100vw] h-[93vh] p-0
+}
+
+#run-container > * {
+    @apply resize-x w-1/2 h-[100%]
+}
+
+#editor-container > section {
+    @apply p-0 !h-[90%]
+}
+
+.run-headers {
+    @apply h-[10%] flex items-center justify-start
+}
+
+#output {
+    @apply bg-[#000000] p-5 font-mono w-full h-[90%]
+}
+
+

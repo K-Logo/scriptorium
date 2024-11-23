@@ -14,16 +14,11 @@ const CodeEditor = () => {
     }
 
     return (
-        <>
-            <Editor
-            width="40vw"
-            height="95vh"
+        <Editor
             theme="vs-dark"
             defaultLanguage="javascript"
             defaultValue="// some comment"
-            />
-            
-        </>
+        />
         
     );
 }

@@ -13,8 +13,30 @@ export default function Run() {
       </Head>
       <main>
         <div id="run-container">
-            <CodeEditor />
+          <div id="editor-container">
+              <div className="run-headers">
+                <button className="blue-button">
+                  Run
+                </button>
+              </div>
+              <CodeEditor />
+          </div>
+          <div id="output-container">
+            <div className="run-headers">
+              <h2>
+                Output
+              </h2>
+              <button className="blue-button">
+                Clear
+              </button>
+            </div>
+            <div id="output">
+              Hello world!
+            </div>
+          </div>
+          
         </div>
+        
       </main>
     </>
   );
