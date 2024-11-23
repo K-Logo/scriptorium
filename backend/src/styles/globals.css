@@ -58,11 +58,11 @@ p {
     @apply bg-[#2d263d] w-full flex flex-col justify-start sm:hidden
 }
 
-#nav-links-sm > *, #user-mobile-dropdown > *{
+#nav-links-sm > *, #user-mobile-dropdown > *, #code-search-type-dropdown > *{
     @apply w-full h-10 flex items-center px-6 py-2
 }
 
-#nav-links-sm > a, #user-mobile-dropdown > a{
+#nav-links-sm > a, #user-mobile-dropdown > a, #code-search-type-dropdown > *{
     @apply bg-[#3e315c] hover:bg-[#533b8a]
 }
 
@@ -71,7 +71,7 @@ p {
 }
 
 input {
-    @apply bg-[#302a3d] w-72 h-8 mx-2 px-2
+    @apply bg-[#302a3d] w-72 h-8 mx-2 px-2 rounded
 }
 
 form {
@@ -138,4 +138,43 @@ form > * {
     @apply bg-[#000000] font-mono w-full h-[15%] p-5 resize-none
 }
 
+#code-templates-container {
+    @apply flex w-full h-full justify-center
+}
+
+#middle-column {
+    @apply w-[80vw] flex flex-col items-center py-10
+}
+
+.search-bar {
+    @apply p-0 w-[100%] flex justify-between 
+}
+
+#search-text {
+    @apply h-[60px] rounded text-[20px] w-[67%] p-5
+}
+
+.search-button {
+    @apply bg-[#5050de] w-32 h-[60px] py-2 px-4 rounded hover:bg-[#3030c7] transition duration-300 text-[20px]
+}
+
+#code-search-type-dropdown-button {
+    @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300 h-[60px] w-32 text-[20px]
+}
+
+#code-search-type-dropdown {
+    @apply relative left-0 w-32 bg-[#2d263d] z-10
+}
+
+#code-search-type-dropdown > *{
+    @apply w-full h-[60px] flex items-center px-6 py-2 text-[20px]
+}
+
+#code-search-type-dropdown > *{
+    @apply bg-[#3e315c] hover:bg-[#533b8a]
+}
+
+#code-templates-results {
+    @apply w-[100%]
+}
 
