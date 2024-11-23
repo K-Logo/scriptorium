@@ -18,8 +18,11 @@ export default function Run() {
           <div id="editor-container">
               <div className="run-headers">
               <LangDropdown/>
-                <button className="blue-button">
+                <button id="run-button" className="blue-button">
                   Run
+                </button>
+                <button className="blue-button">
+                  Save
                 </button>
               </div>
               <CodeEditor />

@@ -30,6 +30,10 @@ p {
     @apply bg-[#5050de] w-32 py-2 px-4 mx-2 rounded hover:bg-[#3030c7] transition duration-300;
 }
 
+#run-button {
+    @apply bg-[#1a8234] hover:bg-[#045934]
+}
+
 #header {
     @apply bg-[#2d263d] flex justify-between items-center h-[7vh]
 }
