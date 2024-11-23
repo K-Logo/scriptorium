@@ -31,6 +31,9 @@ export default function Run() {
                 </button>
               </div>
               <CodeEditor />
+              <textarea id="input" placeholder="Insert input here (each input on its own line)...">
+                
+              </textarea>
           </div>
           <div id="output-container">
             <div className="run-headers">
