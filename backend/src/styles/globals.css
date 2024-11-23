@@ -90,16 +90,24 @@ form > * {
     @apply w-52 h-52 my-10
 }
 
-#user-dropdown {
+#user-dropdown{
     @apply hidden sm:block absolute right-0 top-[7vh] m-2 w-64 bg-[#2d263d]
 }
 
-#user-dropdown > * {
+#language-dropdown {
+    @apply hidden sm:block absolute left-0 top-[16.3vh] mx-2 w-36 bg-[#2d263d] z-10
+}
+
+#user-dropdown > *, #language-dropdown > * {
     @apply p-4 h-12 flex items-center;
 }
 
-#user-dropdown > a {
-    @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300
+#user-dropdown > a, #language-dropdown > * {
+    @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300 w-full
+}
+
+#dropdown-button {
+    @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300 h-12 w-36
 }
 
 #run-container {
@@ -115,7 +123,7 @@ form > * {
 }
 
 .run-headers {
-    @apply h-[10%] flex items-center justify-start
+    @apply h-[10%] flex items-center justify-between px-2
 }
 
 #output {
