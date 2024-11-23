@@ -1,23 +1,25 @@
 import { Editor } from "@monaco-editor/react";
-import React, { useState } from 'react';  // Ensure this line is present at the top
+import React, { useState, useEffect, useContext } from 'react';
+import { LanguageContext } from "@/contexts/language";
 
 const CodeEditor = () => {
     const [code, setCode] = useState("");
-    const [language, setLanguage] = useState("javascript");
+    const { language, setLanguage } = useContext(LanguageContext);
 
     const handleCodeChange = (value) => {
         setCode(value);
     }
 
-    const handleLanguageChange = (event) => {
-        setLanguage(event.target.value);
-    }
+    useEffect(() => {
+        console.log(language);
+    
+      }, [language]) ;
 
     return (
         <Editor
             theme="vs-dark"
-            defaultLanguage="javascript"
-            defaultValue="// some comment"
+            language={language}
+            defaultValue=""
         />
         
     );

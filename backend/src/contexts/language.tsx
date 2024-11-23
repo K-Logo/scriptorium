@@ -6,12 +6,12 @@ interface LanguageContextState {
 }
 
 export const LanguageContext = createContext<LanguageContextState>({
-    language: "JavaScript",
+    language: "javascript",
     setLanguage: () => {}
 })
 
 export function LanguageProvider({ children }) {
-    const [language, setLanguage] = useState<string>("JavaScript");
+    const [language, setLanguage] = useState<string>("javascript");
 
     return (
         <LanguageContext.Provider value={{ language, setLanguage }}>

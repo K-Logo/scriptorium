@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../components/Navbar";
 import CodeEditor from "@/components/CodeEditor";
 import { LanguageProvider } from "@/contexts/language";
 import LangDropdown from "@/components/LangDropdown";
+import { LanguageContext } from "@/contexts/language";
 
 
 export default function Run() {
+  const { language, setLanguage } = useContext(LanguageContext);
+
+
+
   return (
-    <LanguageProvider>
+    <>
       <Head>
         <title>Scriptorium Run Code</title>
       </Head>
@@ -42,9 +47,9 @@ export default function Run() {
           </div>
           
         </div>
-        
       </main>
-    </LanguageProvider>
+    </>
+
   );
 }
 
