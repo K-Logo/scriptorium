@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
     } else if (req.method == "GET") {
         // Search by only one of the fields
-        const { title, content, tag } = req.body;
+        const { title, content, tag } = req.query;
         const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
         const pno = new URL("https://localhost:3000" + req.url).searchParams.get("pno");
 
