@@ -143,7 +143,7 @@ form > * {
 }
 
 #middle-column {
-    @apply w-[80vw] flex flex-col items-center py-10
+    @apply w-[85vw] flex flex-col items-center py-10
 }
 
 .search-bar {
@@ -163,7 +163,7 @@ form > * {
 }
 
 #code-search-type-dropdown {
-    @apply relative left-0 w-32 bg-[#2d263d] z-10
+    @apply relative left-0 w-32 bg-[#2d263d] z-20
 }
 
 #code-search-type-dropdown > *{
@@ -175,6 +175,25 @@ form > * {
 }
 
 #code-templates-results {
-    @apply w-[100%]
+    @apply w-[100%] relative
 }
 
+#code-templates-grid {
+    @apply z-10 absolute top-0 p-10 flex flex-wrap items-center justify-start
+}
+
+.code-template-item {
+    @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300 p-5 m-2 text-[16px] rounded
+}
+
+.code-template-item > h3 {
+    @apply text-[20px] font-bold
+}
+
+.tag-container {
+    @apply flex flex-wrap justify-start items-center
+}
+
+.tag {
+    @apply bg-[#271840] py-1 px-3 m-1 rounded
+}

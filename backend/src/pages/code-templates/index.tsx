@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Navbar";
 
 export default function CodeTemplates() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [codeTemplates, setCodeTemplates] = useState([]);
   const typeToDisplayName = {
       "title": "Title",
       "content": "Content",
@@ -33,6 +34,30 @@ export default function CodeTemplates() {
     setSearchTerm(event.target.value);
   }
 
+  async function handleSubmit() {
+    let params: string = "";
+    if (searchType === "title") {
+      params = `?title=${searchTerm}`
+    } else if (searchType === "content") {
+      params = `?content=${searchTerm}`
+    } else if (searchType === "tag") {
+      params = `?tag=${searchTerm}`
+    }
+
+    const response = await fetch(`http://localhost:3000/api/codetemplates${params}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    const json = await response.json();
+    if (response.ok) {
+        setCodeTemplates(json);
+    } else {
+        alert(json.error);
+    }
+  }
+
 
   return (
     <>
@@ -55,14 +80,25 @@ export default function CodeTemplates() {
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
-              <button className="search-button">
+              <button className="search-button" onClick={handleSubmit}>
                 Search
               </button>
             </div>
             <div id="code-templates-results">
               <Dropdown/>
               <div id="code-templates-grid">
-
+                {codeTemplates.map((item) => (
+                  <button key={item.id} className="code-template-item">
+                    <h3>{item.title}</h3>
+                    <p>{item.explanation}</p>
+                    <div className="tag-container">
+                      {item.tags.map((tag: any) => (
+                        <div className="tag">{tag.name}</div>
+                      ))}
+                    </div>
+                    
+                  </button>
+                ))}
               </div>
             </div>
           </div>
