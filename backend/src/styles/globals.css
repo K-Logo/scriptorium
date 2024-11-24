@@ -197,3 +197,7 @@ form > * {
 .tag {
     @apply bg-[#271840] py-1 px-3 m-1 rounded
 }
+
+#code-template-entry {
+    @apply bg-[#363240] w-[100%] p-10
+}

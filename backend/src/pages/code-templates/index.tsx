@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../../components/Navbar";
+import Link from 'next/link';
 
 export default function CodeTemplates() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -88,7 +89,7 @@ export default function CodeTemplates() {
               <Dropdown/>
               <div id="code-templates-grid">
                 {codeTemplates.map((item) => (
-                  <button key={item.id} className="code-template-item">
+                  <Link key={item.id} className="code-template-item" href={`/code-templates/${item.id}`}>
                     <h3>{item.title}</h3>
                     <p>{item.explanation}</p>
                     <div className="tag-container">
@@ -97,7 +98,7 @@ export default function CodeTemplates() {
                       ))}
                     </div>
                     
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
