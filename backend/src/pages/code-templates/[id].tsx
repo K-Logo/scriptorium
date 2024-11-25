@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../../components/Navbar";
+import { Editor } from "@monaco-editor/react";
 
 export default function CodeTemplateId() {
     const router = useRouter();
@@ -10,7 +11,9 @@ export default function CodeTemplateId() {
     const [explanation, setExplanation] = useState<string>("");
     const [content, setContent] = useState<string>("");
     const [parentId, setParentId] = useState<number>(-1);
+    const [language, setLanguage] = useState<string>("");
     const [authorUsername, setAuthorUsername] = useState<string>("");
+    const [authorAvatar, setAuthorAvatar] = useState<string>("");
     const [tags, setTags] = useState([]);
 
 
@@ -32,6 +35,7 @@ export default function CodeTemplateId() {
                 setContent(json.content);
                 setParentId(json.parentId);
                 setTags(json.tags);
+                setLanguage(json.language);
 
                 const userResponse = await fetch(`http://localhost:3000/api/users/${json.userId}?type=user`, {
                     method: 'GET',
@@ -42,6 +46,9 @@ export default function CodeTemplateId() {
                 const userJson = await userResponse.json();
                 if (response.ok) {
                     setAuthorUsername(userJson.username);
+                    console.log("asdf")
+                    console.log(userJson.avatarPath)
+                    setAuthorAvatar("http://" + userJson.avatarPath);
                 } else {
                     alert(json.error);
                 }
@@ -54,13 +61,44 @@ export default function CodeTemplateId() {
     }, [id]);
 
     function CodeTemplate() {
+        console.log(authorAvatar);
         return authorUsername && (
             <div id="code-template-entry">
-                <h1>{title}</h1>
-                <p>{explanation}</p>
-                <p>{content}</p>
+                <div className="code-template-entry-header">
+                    <h1>{title}</h1>
+                    <div>
+                        <button className="blue-button">Edit</button>
+                        <button className="blue-button">Fork</button>
+                    </div>
+                </div>
+                <div className="code-template-entry-header">
+                    <p>{explanation}</p>
+                    <div id="code-template-entry-user-info">
+                        <img className="icon" src={authorAvatar} alt="User Icon"></img>
+                        <p>{authorUsername}</p>
+                    </div>
+                </div>
+                <div className="tag-container">
+                    {tags.map((tag: any) => (
+                    <div className="tag">{tag.name}</div>
+                    ))}
+                </div>
+                
+                <Editor
+                    theme="vs-dark"
+                    language={language}
+                    value={content}
+                    height="800px"
+                    options={{
+                        readOnly: true,
+                        fontSize: 18,
+                        minimap: { enabled: false },
+                        scrollbar: {
+                            alwaysConsumeMouseWheel: false
+                        }
+                    }}
+                />
                 <p>{parentId}</p>
-                <p>{authorUsername}</p>
                 
                 
             </div>
