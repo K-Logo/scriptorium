@@ -18,6 +18,30 @@ export async function addUser(user) {
   return savedDbUser;
 }
 
+export async function isUsernameTaken(username) {
+  const dbUser = await prisma.user.findFirst({
+    where: { username: username }
+  });
+
+  return dbUser ? true : false;
+}
+
+export async function isEmailTaken(email) {
+  const dbUser = await prisma.user.findFirst({
+    where: { email: email }
+  });
+
+  return dbUser === null ? false : true;
+}
+
+export async function isPhoneNumberTaken(phoneNumber) {
+  const dbUser = await prisma.user.findFirst({
+    where: { phoneNumber: phoneNumber }
+  });
+
+  return dbUser ? true : false;
+}
+
 export async function getUserByUsername(username) {
   const dbUser = await prisma.user.findFirst({
     where: { username: username }

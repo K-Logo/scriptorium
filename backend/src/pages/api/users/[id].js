@@ -4,10 +4,46 @@ import { getCodeTemplateByUserId } from '@/service/codeTemplateDb';
 import { deleteUserById, getUserById, getUserByIdRaw } from '@/service/usersDb';
 import { searchBlogPostByUserId } from '@/service/blogsDb';
 import { paginate } from "@/service/paginate";
+import { isEmailTaken, isUsernameTaken, isPhoneNumberTaken } from '../../../service/usersDb';
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const files = fs.readdirSync('./public/avatars')
-                .map((file) => "localhost:3000/avatars/" + file);;
+                .map((file) => "localhost:3000/avatars/" + file);
+
+// accepts something@something.com, and in particular, prevents multiple @ signs.
+const validateEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    );
+};
+
+/**
+ * Accepts:
+ * xxxxxxxxxx
+ * xxx-xxx-xxxx
+ * (xxx) xxx-xxxx 
+ * ... or any 10-digits of any format
+ */
+const validateAndParsePhoneNumber = (phoneNumber) => {
+  var targ = phoneNumber.replace(/[^\d]/g,''); // remove all non-digits
+  if (targ && targ.length===10) {           // phone numbers are 10 digits long
+    return targ;
+  }
+  return null;
+}
+
+/**
+ * Valid passwords have one uppercase, one lowercase, one digit, one special character, and length >= 8
+ */
+const validatePassword = (password) => {
+  return /[A-Z]/       .test(password) &&
+          /[a-z]/       .test(password) &&
+          /[0-9]/       .test(password) &&
+          /[^A-Za-z0-9]/.test(password) &&
+          password.length > 7;
+}
 
 export default async function handler(req, res) {
   let { id } = req.query;
@@ -30,54 +66,52 @@ export default async function handler(req, res) {
 
     // the following fields will be null there is no change; otherwise, they will be a string w updated value.
     const { newUsername, newPassword, newFirstName, newLastName, newEmail, newPhoneNumber, newAvatarPath } = req.body;
+
+    if (newPassword && !validatePassword(newPassword)) {
+      return res.status(400).json({ error: "Please ensure your password has one uppercase, one lowercase, one digit,"
+      +" one special character, and is at least 8 characters long."});
+    }
+
+    if (newAvatarPath && !files.includes(newAvatarPath)) {
+      return res.status(400).json({ error: `${newAvatarPath} is not a valid avatar.` });
+    }
+    
+    if (newUsername && await isUsernameTaken(newUsername)) {
+      return res.status(400).json({ error: `A user with username ${newUsername} already exists.` });
+    }
+
+    if (newEmail && !validateEmail(newEmail)) {
+      return res.status(400).json({ error: "Please specify a proper email format." });
+    }
+    if (newEmail && await isEmailTaken(newEmail)) {
+      return res.status(400).json({ error: `A user with email ${newEmail} already exists.` });
+    }
+
+    let parsedPhoneNumber = "";
+    if (newPhoneNumber) {
+      parsedPhoneNumber = validateAndParsePhoneNumber(newPhoneNumber);  // returns null if validation failed
+      if (!parsedPhoneNumber) {
+        return res.status(400).json({ error: "Please specify a 10-digit phone number." });
+      }
+    }
+    if (newPhoneNumber && await isPhoneNumberTaken(newPhoneNumber)) {
+      return res.status(400).json({ error: `A user with phone number ${newPhoneNumber} already exists.` });
+    }
+
     if (newPassword) {
       const newPasswordHash = await bcrypt.hash(newPassword, 10);
       await usersDb.updatePasswordHashById(id, newPasswordHash);        
     }
     if (newFirstName)   await usersDb.updateFirstNameById(id, newFirstName);
     if (newLastName)    await usersDb.updateLastNameById(id, newLastName);
+    if (newAvatarPath)  await usersDb.updateAvatarPathById(id, newAvatarPath);
+    if (newUsername)    await usersDb.updateUsernameById(id, newUsername);
+    if (newEmail)       await usersDb.updateEmailById(id, newEmail);
+    if (newPhoneNumber) await usersDb.updatePhoneNumberById(id, newPhoneNumber);
 
-    const errs = [];
-    if (newAvatarPath) {
-      if (files.includes(newAvatarPath)) {
-        await usersDb.updateAvatarPathById(id, newAvatarPath);
-      } else {
-        const err = new Object();
-        err[errs.length] = `${newAvatarPath} is not a valid avatar.`
-        errs.push(err);
-      }
-    }
-    
-    try {
-      if (newUsername)    await usersDb.updateUsernameById(id, newUsername);
-    } catch (e) {
-      const err = new Object();
-      err[errs.length] = `A user with username ${newUsername} already exists.`;
-      errs.push(err);
-    }
-
-    try {
-      if (newEmail)       await usersDb.updateEmailById(id, newEmail);
-    } catch (e) {
-      const err = new Object();
-      err[errs.length] = `A user with email ${newEmail} already exists.`;
-      errs.push(err);
-    }
-
-    try {
-      if (newPhoneNumber) await usersDb.updatePhoneNumberById(id, newPhoneNumber);
-    } catch (e) {
-      const err = new Object();
-      err[errs.length] = `A user with phone number ${newPhoneNumber} already exists.`;
-      errs.push(err);
-    }
-
-    const jwt = getJWT(await usersDb.getUserById(id), 15);
-    if (errs.length === 0) {
-      return res.status(200).json({ token: jwt });  // return JWT with updated user details
-    } else {
-      return res.status(409).json({ errors: errs, token: jwt });
-    }
+    const nu = await usersDb.getUserById(id);
+    const jwt = getJWT(nu, 15);
+    return res.status(200).json({ jwtToken: jwt, firstName: nu.firstName, lastName: nu.lastName, email: nu.email, phoneNumber: nu.phoneNumber, username: nu.username, avatarPath: nu.avatarPath, id: nu.id });  // return JWT with updated user details
   } else if (req.method === "GET") {
     let { id } = req.query;
     const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
