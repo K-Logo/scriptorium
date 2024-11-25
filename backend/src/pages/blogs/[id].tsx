@@ -321,6 +321,9 @@ export default function BlogPost() {
     fetchData();
     }, [id]);
 
+    async function handleReportSubmit() {
+      
+    }
 
     function Blog() {
       return (
