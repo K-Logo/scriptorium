@@ -4,14 +4,14 @@ import { verifyAndDecodeJWT } from "@/service/jwt";
 
 export default async function handler(req, res) {
     if (req.method == "POST") {
-        let { title, explanation, content, tags, parentId, userId } = req.body;
+        let { title, explanation, content, tags, parentId, userId, language } = req.body;
         userId = Number.parseInt(userId);
         const decodedJWT = verifyAndDecodeJWT(req, userId);
         if (!decodedJWT) {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        const codeTemplate = new CodeTemplate(null, title, explanation, content, tags, parentId, userId);
+        const codeTemplate = new CodeTemplate(null, title, explanation, content, tags, parentId, userId, language);
 
         try {
             const savedCodeTemplate = await addCodeTemplate(codeTemplate);
