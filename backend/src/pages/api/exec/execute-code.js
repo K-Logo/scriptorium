@@ -139,7 +139,7 @@ export default async function executeCode(req, res) {
                       }
                       
                       if (statusCode === 0) {
-                        return res.status(200).json({ output, errorOutput }); 
+                        return res.status(200).json({ output }); 
                       } else {
                         return res.status(200).json({
                           error: "Execution failed",
@@ -170,7 +170,7 @@ export default async function executeCode(req, res) {
                     }
                     
                     if (statusCode === 0) {
-                      return res.status(200).json({ output, errorOutput }); 
+                      return res.status(200).json({ output }); 
                     } else {
                       return res.status(200).json({
                         error: "Execution failed",
