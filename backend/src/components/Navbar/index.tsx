@@ -17,9 +17,9 @@ export default function Navbar() {
     function HamburgerDropdown() {
         return hamburgerOpen && (
             <ul id="nav-links-sm">
-                <Link href="/run"><li>Run</li></Link>
-                <Link href="/code-templates"><li>Code Templates</li></Link>
-                <Link href="/blogs"><li>Blogs</li></Link>
+                <Link href="/run" onClick={() => toggleHamburger()}><li>Run</li></Link>
+                <Link href="/code-templates" onClick={() => toggleHamburger()}><li>Code Templates</li></Link>
+                <Link href="/blogs" onClick={() => toggleHamburger()}><li>Blogs</li></Link>
             </ul> 
         );
     }
@@ -33,18 +33,18 @@ export default function Navbar() {
             return userDropdownOpen && (
                 <ul id="user-dropdown">
                     <li>Welcome, {user.username}!</li>
-                    <Link href=""><li className="user-dropdown-item">View & edit profile</li></Link>
-                    <Link href=""><li className="user-dropdown-item">Manage code templates</li></Link>
-                    <Link href=""><li className="user-dropdown-item">Manage blog posts</li></Link>
-                    <Link href=""><li className="user-dropdown-item">Log out</li></Link>
+                    <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
             )
         } else {
             return userDropdownOpen && (
                 <ul id="user-dropdown">
                     <li>Please log in.</li>
-                    <Link href="/login"><li className="user-dropdown-item">Login</li></Link>
-                    <Link href="/signup"><li className="user-dropdown-item">Sign up</li></Link>
+                    <Link href="/login" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Login</li></Link>
+                    <Link href="/signup" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Sign up</li></Link>
                 </ul>
             )
         }
@@ -68,18 +68,18 @@ export default function Navbar() {
             return userMobileDropdownOpen && (
                 <ul id="user-mobile-dropdown">
                     <li>Welcome, {user.username}!</li>
-                    <Link href=""><li className="user-dropdown-item">View & edit profile</li></Link>
-                    <Link href=""><li className="user-dropdown-item">Manage code templates</li></Link>
-                    <Link href=""><li className="user-dropdown-item">Manage blog posts</li></Link>
-                    <Link href=""><li className="user-dropdown-item">Log out</li></Link>
+                    <Link href="/edit-profile" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
+                    <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
+                    <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
+                    <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
             )
         } else {
             return userMobileDropdownOpen && (
                 <ul id="user-mobile-dropdown">
                     <li>Please log in.</li>
-                    <Link href="/login"><li className="user-dropdown-item">Login</li></Link>
-                    <Link href="/signup"><li className="user-dropdown-item">Sign up</li></Link>
+                    <Link href="/login" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Login</li></Link>
+                    <Link href="/signup" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Sign up</li></Link>
                 </ul>
             )
         }
