@@ -30,9 +30,19 @@ export async function addCodeTemplate(codeTemplate) {
                 connect: dbTagIds.map(tagId => ({ id: tagId }))
             },
             parentId: codeTemplate.parentId,
-            userId: codeTemplate.userId,
+            userId: codeTemplate.userId
             language: codeTemplate.language
-        }
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
+        },
     });
 
     return savedDbCodeTemplate;
@@ -64,6 +74,14 @@ export async function getCodeTemplateById(id) {
         where: { id: id },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
 
@@ -77,6 +95,14 @@ export async function getCodeTemplateByUserId(userId) {
         },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
     return codeTemplates;
@@ -99,17 +125,20 @@ export async function getCodeTemplateByTitle(substring) {
         },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
-
-    console.log(dbCodeTemplates);
-
     const codeTemplates = [];
     for (const dbCodeTemplate of dbCodeTemplates) {
         codeTemplates.push(dbCodeTemplate);
     }
-
-    console.log(codeTemplates);
 
     return codeTemplates;
 }
@@ -127,6 +156,14 @@ export async function getCodeTemplateByTag(substring) {
         },
         include: {
             tags: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
 
@@ -143,6 +180,16 @@ export async function getCodeTemplateByContent(substring) {
         where: {
             content: {
                 contains: substring,  // Look for code templates containing substring
+            }
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
             }
         }
     });
@@ -195,6 +242,19 @@ export async function addTagById(id, newTag) {
             }
         }
     });
+}
+
+export async function deleteTagById(id, oldTag) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            tags: {
+                disconnect: {
+                    name: oldTag
+                }
+            }
+        }
+    })
 }
 
 export async function updateParentById(id, newParentId) {

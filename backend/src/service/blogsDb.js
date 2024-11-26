@@ -23,7 +23,17 @@ export async function addBlogPost(title, description, tags, codeTemplateIds, aut
             author: {
                 connect: { id: authorId }
             }
-        }
+        },
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
+        },
     });
 
     return savedDbBlog;
@@ -49,7 +59,14 @@ export async function searchBlogPostByTitle(title, userId) {
                     ]
                 },
                 include: {
-                    author: true, // Include the author of each comment
+                    author: {
+                        select: {
+                            id: true,
+                            username: true,
+                            avatarPath: true,
+                            role: true
+                        }
+                    }
                 },
             },
         },
@@ -103,7 +120,14 @@ export async function searchBlogPostByDescription(content, userId) {
                     ]
                 },
                 include: {
-                    author: true, // Include the author of each comment
+                    author: {
+                        select: {
+                            id: true,
+                            username: true,
+                            avatarPath: true,
+                            role: true
+                        }
+                    }
                 },
             },
         },
@@ -135,7 +159,14 @@ export async function searchBlogPostByTag(tag, userId) {
                     ]
                 },
                 include: {
-                    author: true, // Include the author of each comment
+                    author: {
+                        select: {
+                            id: true,
+                            username: true,
+                            avatarPath: true,
+                            role: true
+                        }
+                    }
                 },
             },
         },
@@ -161,7 +192,14 @@ export async function searchBlogPostByCodeTemplateId(templateId, userId) {
                     ]
                 },
                 include: {
-                    author: true, // Include the author of each comment
+                    author: {
+                        select: {
+                            id: true,
+                            username: true,
+                            avatarPath: true,
+                            role: true
+                        }
+                    }
                 },
             },
         },
@@ -188,7 +226,14 @@ export async function searchBlogPostById(id, userId) {
                     ]
                 },
                 include: {
-                    author: true, // Include the author of each comment
+                    author: {
+                        select: {
+                            id: true,
+                            username: true,
+                            avatarPath: true,
+                            role: true
+                        }
+                    }
                 },
             },
         },
@@ -227,6 +272,20 @@ export async function addTagById(id, newTag) {
             }
         }
     });
+}
+
+export async function deleteTagById(id, oldTag) {
+    console.log(oldTag);
+    await prisma.blog.update({
+        where: { id: id },
+        data: {
+            tags: {
+                disconnect: {
+                    name: oldTag
+                }
+            }
+        }
+    })
 }
 
 export async function updateCodeById(id, codeTemplateId) {
@@ -281,6 +340,16 @@ export async function getSortedBlogs(order) {
         },
         where: {
             hidden: false
+        },
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatarPath: true,
+                    role: true
+                }
+            }
         }
     });
     return allBlogs;

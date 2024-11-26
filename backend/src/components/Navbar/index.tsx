@@ -33,7 +33,7 @@ export default function Navbar() {
             return userDropdownOpen && (
                 <ul id="user-dropdown">
                     <li>Welcome, {user.username}!</li>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
+                    <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
@@ -68,7 +68,7 @@ export default function Navbar() {
             return userMobileDropdownOpen && (
                 <ul id="user-mobile-dropdown">
                     <li>Welcome, {user.username}!</li>
-                    <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
+                    <Link href="/edit-profile" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
