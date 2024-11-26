@@ -1,6 +1,7 @@
 import { searchBlogPostByCodeTemplateId } from "@/service/blogsDb";
 import { addTagById,deleteTagById, deleteCodeTemplateById, getCodeTemplateById, updateContentById, updateExplanationById, updateTitleById } from "@/service/codeTemplateDb";
 import { verifyAndDecodeJWT } from '@/service/jwt';
+import { updateLanguageById } from "../../../service/codeTemplateDb";
 
 export default async function handler(req, res) {
     let { id } = req.query;

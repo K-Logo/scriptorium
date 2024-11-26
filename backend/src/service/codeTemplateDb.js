@@ -3,8 +3,6 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 export async function addCodeTemplate(codeTemplate) {
-    console.log("3333333")
-    console.log(codeTemplate.userId)
     if (codeTemplate.parentId) {
         let parentCodeTemplate = await getCodeTemplateById(codeTemplate.parentId);
         parentCodeTemplate = toCodeTemplate(parentCodeTemplate);
@@ -12,6 +10,7 @@ export async function addCodeTemplate(codeTemplate) {
         codeTemplate.explanation = parentCodeTemplate.explanation;
         codeTemplate.content = parentCodeTemplate.content;
         codeTemplate.tags = parentCodeTemplate.tags;
+        codeTemplate.language = parentCodeTemplate.language;
     }
 
     const dbTagIds = [];
@@ -32,6 +31,7 @@ export async function addCodeTemplate(codeTemplate) {
             },
             parentId: codeTemplate.parentId,
             userId: codeTemplate.userId
+            language: codeTemplate.language
         },
         include: {
             user: {
@@ -270,6 +270,15 @@ export async function updateParentById(id, newParentId) {
     });
 }
 
+export async function updateLanguageById(id, newLanguage) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            language: newLanguage
+        }
+    })
+}
+
 function toCodeTemplate(dbCodeTemplate) {
     if (!dbCodeTemplate) {
         return null;
@@ -280,5 +289,5 @@ function toCodeTemplate(dbCodeTemplate) {
     const stringTags = dbCodeTemplate.tags.map(tag => tag.name);
     console.log(stringTags);
     return new CodeTemplate(dbCodeTemplate.id, dbCodeTemplate.title, dbCodeTemplate.explanation, dbCodeTemplate.content,
-        stringTags, dbCodeTemplate.parentId, dbCodeTemplate.userId);
+        stringTags, dbCodeTemplate.parentId, dbCodeTemplate.userId, dbCodeTemplate.language);
 }

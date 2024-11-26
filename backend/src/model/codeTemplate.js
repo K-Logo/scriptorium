@@ -7,8 +7,9 @@ export default class CodeTemplate {
     #tags;
     #parentId;
     #userId;
+    #language;
 
-    constructor(db_id, title, explanation, content, tags, parentId, userId) {
+    constructor(db_id, title, explanation, content, tags, parentId, userId, language) {
         if (db_id) {
             this.#db_id = db_id;
         }
@@ -19,7 +20,8 @@ export default class CodeTemplate {
         if (parentId) {
             this.#parentId = parentId;
         }
-        this.#userId = userId
+        this.#userId = userId;
+        this.#language = language;
     }
 
     // Getter and Setter for db_id
@@ -85,7 +87,15 @@ export default class CodeTemplate {
         this.#userId = userId;
     }
 
+    get language() {
+        return this.#language;
+    }
+
+    set language(language) {
+        this.#language = language;
+    }
+
     log() {
-        console.log(this.#title, this.#explanation, this.#tags, this.#parentId, this.#userId);
+        console.log(this.#title, this.#explanation, this.#tags, this.#parentId, this.#userId, this.#language);
     }
 }
