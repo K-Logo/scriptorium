@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 export const prisma = new PrismaClient();
 import { createTagAndGetId } from './codeTemplateDb';
 
-export async function addBlogPost(title, description, tags, codeTemplateIds, authorId){
+export async function addBlogPost(title, description, tags, codeTemplateId, authorId){
     const dbTagIds = [];
     if (tags) {
         for (const tag of tags) {
@@ -10,33 +10,58 @@ export async function addBlogPost(title, description, tags, codeTemplateIds, aut
         }
     }
 
-    const savedDbBlog = await prisma.blog.create({
-        data: {
-            title: title,
-            description: description,
-            tags: {
-                connect: dbTagIds.map(tagId => ({ id: tagId }))
-            },
-            codeTemplates: {
-                connect: codeTemplateIds.map(codeTemplateId => ({ id: codeTemplateId }))
-            },
-            author: {
-                connect: { id: authorId }
-            }
-        },
-        include: {
-            author: {
-                select: {
-                    id: true,
-                    username: true,
-                    avatarPath: true,
-                    role: true
+    if (codeTemplateId){
+        const savedDbBlog = await prisma.blog.create({
+            data: {
+                title: title,
+                description: description,
+                tags: {
+                    connect: dbTagIds.map(tagId => ({ id: tagId }))
+                },
+                codeTemplates: {
+                    connect: { id: codeTemplateId }
+                },
+                author: {
+                    connect: { id: authorId }
                 }
-            }
-        },
-    });
-
-    return savedDbBlog;
+            },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        username: true,
+                        avatarPath: true,
+                        role: true
+                    }
+                }
+            },
+        });
+        return savedDbBlog;
+    } else {
+        const savedDbBlog = await prisma.blog.create({
+            data: {
+                title: title,
+                description: description,
+                tags: {
+                    connect: dbTagIds.map(tagId => ({ id: tagId }))
+                },
+                author: {
+                    connect: { id: authorId }
+                }
+            },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        username: true,
+                        avatarPath: true,
+                        role: true
+                    }
+                }
+            },
+        });
+        return savedDbBlog;
+    }
 }
 
 export async function searchBlogPostByTitle(title, userId) {

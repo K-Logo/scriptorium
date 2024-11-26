@@ -17,9 +17,9 @@ export default async function handler(req, res) {
           return res.status(401).json({ error: "Unauthorized" }); // TODO: blog creation is unauthorized
         }
     
-        try {
-        const savedBlog = await addBlogPost(title, description, tags, codeTemplateIds, authorId);
-        return res.status(201).json(savedBlog);
+         try {
+          const savedBlog = await addBlogPost(title, description, tags, codeTemplateIds, authorId);
+          return res.status(201).json(savedBlog);
         } catch (e) {
           return res.status(409).json({ error: "An error occurred saving your blog post. Please check your inputs." });
         }

@@ -54,7 +54,9 @@ export async function addCodeTemplate(codeTemplate) {
 export async function createTagAndGetId(tag) {
     // Assume tag is a string
     let dbTag = await prisma.tag.findFirst({ 
-        where: {name: tag}
+        where: {name: {
+            equals: tag}
+        }
     });
     console.log(dbTag)
 

@@ -11,6 +11,8 @@ export default function BlogPosts() {
   
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [blogs, setBlogs] = useState([]);
+    const [sortType, setSortType] = useState("descending");
+    const [sortDropdownOpen, setSortDropdown] = useState(false);
 
     const { user } = useContext(UserContext);
     const typeToDisplayName = {
@@ -18,6 +20,24 @@ export default function BlogPosts() {
         "content": "Content",
         "tag": "Tag"
     };
+
+    const sortToDisplayName = {
+        "ascending": "Ascending Ratings",
+        "descending": "Descending Ratings",
+    }
+
+    function toggleSortDropdown() {
+        setSortDropdown(!sortDropdownOpen);
+    }
+
+    function SortDropdown() {
+        return sortDropdownOpen && (
+            <ul id="code-search-type-dropdown">
+                <button onClick={() => {setSortType("ascending"); toggleSortDropdown();}}><li>Ascending Ratings</li></button>
+                <button onClick={() => {setSortType("descending"); toggleSortDropdown();}}><li>Descending Ratings</li></button>
+            </ul>
+        )
+    }
 
     function toggleDropdown() {
         setDropdownOpen(!dropdownOpen);
@@ -112,7 +132,10 @@ export default function BlogPosts() {
                         </Link>
                         }
                     </div>
-
+                    <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
+                            {typeToDisplayName[sortType]}
+                    </button>
+                    <SortDropdown />
                     </div>
                 </div>
             </main>

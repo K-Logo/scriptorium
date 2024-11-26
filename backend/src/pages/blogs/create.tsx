@@ -4,7 +4,7 @@ import { UserContext } from "../../contexts/user";
 export default function CreateBlog() {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState<string>("");
   const [codeTemplate, setCodeTemplate] = useState(null); 
   const { user } = useContext(UserContext)
@@ -12,7 +12,7 @@ export default function CreateBlog() {
 
   const handleAddTag = () => {
     if (tagInput.trim()) {
-      setTags([...tags, { id: tags.length + 1, name: tagInput }]);
+      setTags([...tags, tagInput]);
       setTagInput("");
     }
   };
@@ -21,7 +21,7 @@ export default function CreateBlog() {
     const blogData = {
       title,
       description,
-      tags, // Optional
+      tags, 
       codeTemplate, // Optional
       authorId
     };
@@ -45,8 +45,8 @@ export default function CreateBlog() {
     }
   };
 
-  function handleRemoveTag(id) {
-    setTags(tags.filter((tag) => tag.id !== id));
+  function handleRemoveTag(deleteTag) {
+    setTags(tags.filter((tag) => tag !== deleteTag));
   }
 
   return (
@@ -91,12 +91,12 @@ export default function CreateBlog() {
         <div>
             {tags.map((tag) => (
                 <div
-                    key={tag.id}
+                    key={tag}
                     className="inline-flex items-center px-2 py-1 bg-gray-700 text-gray-300 rounded-full text-sm mr-2"
                 >
-                    {tag.name}
+                    {tag}
                     <button
-                    onClick={() => handleRemoveTag(tag.id)}
+                    onClick={() => handleRemoveTag(tag)}
                     className="ml-2 text-gray-400 hover:text-red-500 focus:outline-none"
                     >
                     ✖

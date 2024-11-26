@@ -27,7 +27,7 @@ export default function EditBlog(blogId) {
     const [blog, setBlog] = useState(null);
     const [title, setTitle] = useState<string>(blog.title);
     const [description, setDescription] = useState<string>(blog.description);
-    const [tags, setTags] = useState(blog.tags);
+    const [tags, setTags] = useState(blog.tags.name);
     const [tagInput, setTagInput] = useState<string>("");
     const [codeTemplateId, setCodeTemplateId] = useState<number>(blog.codeTemplateId); 
     const { user } = useContext(UserContext)
@@ -35,8 +35,8 @@ export default function EditBlog(blogId) {
 
     const handleAddTag = () => {
         if (tagInput.trim()) {
-          setTags([...tags, { id: tags.length + 1, name: tagInput }]);
-          setTagInput("");
+            setTags([...tags, { name: tagInput }]); // TODO: change this to create a tag
+            setTagInput("");
         }
     };
 
