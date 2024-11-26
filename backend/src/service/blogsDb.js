@@ -260,29 +260,40 @@ export async function updateDescriptionById(id, desc) {
     });
 }
 
-export async function addTagById(id, newTag) {
+// export async function addTagById(id, newTag) {
 
-    const newTagId = await createTagAndGetId(newTag);
+//     const newTagId = await createTagAndGetId(newTag);
 
+//     await prisma.blog.update({
+//         where: { id: id },
+//         data: {
+//             tags: {
+//                 connect: { id: newTagId }
+//             }
+//         }
+//     });
+// }
+
+// export async function deleteTagById(id, oldTag) {
+//     console.log(oldTag);
+//     await prisma.blog.update({
+//         where: { id: id },
+//         data: {
+//             tags: {
+//                 disconnect: {
+//                     name: oldTag
+//                 }
+//             }
+//         }
+//     })
+// }
+
+export async function updateTags(blogId, tags) {
     await prisma.blog.update({
-        where: { id: id },
+        where: {id: blogId},
         data: {
             tags: {
-                connect: { id: newTagId }
-            }
-        }
-    });
-}
-
-export async function deleteTagById(id, oldTag) {
-    console.log(oldTag);
-    await prisma.blog.update({
-        where: { id: id },
-        data: {
-            tags: {
-                disconnect: {
-                    name: oldTag
-                }
+                set: newTags.map(tag => ({ name: tag }))
             }
         }
     })

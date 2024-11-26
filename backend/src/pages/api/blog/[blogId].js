@@ -25,14 +25,10 @@ export default async function handler(req, res) {
     }
 
     // the following fields will be null there is no change; otherwise, they will be a string w updated value.
-    const { newTitle, newDescription, newTag, newCodeTemplateId, oldTag, deleteTag } = req.body;
+    const { newTitle, newDescription, newTags, newCodeTemplateId } = req.body;
     if (newTitle)             await blogsDb.updateTitleById(blogId, newTitle);
     if (newDescription)       await blogsDb.updateDescriptionById(blogId, newDescription);
-    if (oldTag && newTag) {  // UPDATE tag
-      await blogsDb.deleteTagById(blogId, oldTag);
-      await blogsDb.addTagById(blogId, newTag);
-    }
-    if (newTag)               await blogsDb.addTagById(blogId, newTag);
+    if (newTags)              await blogsDb.updateTags(blogId, newTags);
     if (deleteTag)            await blogsDb.deleteTagById(blogId, deleteTag);
     if (newCodeTemplateId)    await blogsDb.updateCodeById(blogId, newCodeTemplateId);
 
