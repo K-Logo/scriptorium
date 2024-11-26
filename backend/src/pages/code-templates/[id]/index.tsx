@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
-import Navbar from "../../components/Navbar";
+import Navbar from "../../../components/Navbar";
 import { Editor } from "@monaco-editor/react";
+import Link from 'next/link';
 
 export default function CodeTemplateId() {
     const router = useRouter();
@@ -15,6 +16,12 @@ export default function CodeTemplateId() {
     const [authorUsername, setAuthorUsername] = useState<string>("");
     const [authorAvatar, setAuthorAvatar] = useState<string>("");
     const [tags, setTags] = useState([]);
+    const languageToDisplayName = {
+        "javascript": "JavaScript",
+        "python": "Python",
+        "cpp": "C++",
+        "java": "Java"
+    };
 
 
     // Below runs when page is mounted
@@ -65,9 +72,12 @@ export default function CodeTemplateId() {
         return authorUsername && (
             <div id="code-template-entry">
                 <div className="code-template-entry-header">
-                    <h1>{title}</h1>
+                    <div id="title-container">
+                        <h1>{title}</h1>
+                        <p>{languageToDisplayName[language]}</p>
+                    </div>
                     <div>
-                        <button className="blue-button">Edit</button>
+                        <Link href={`/code-templates/${id}/edit`}><button className="blue-button">Edit</button></Link>
                         <button className="blue-button">Fork</button>
                     </div>
                 </div>
@@ -83,7 +93,6 @@ export default function CodeTemplateId() {
                     <div className="tag">{tag.name}</div>
                     ))}
                 </div>
-                
                 <Editor
                     theme="vs-dark"
                     language={language}

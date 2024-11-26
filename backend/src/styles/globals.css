@@ -221,3 +221,19 @@ form > * {
 #dropdown-container {
     @apply relative
 }
+
+#title-container {
+    @apply flex flex-row justify-center items-center
+}
+
+#title-container > p {
+    @apply m-5
+}
+
+#input-fields {
+    @apply flex items-center justify-center
+}
+
+#code-template-entry > section {
+    @apply p-0 !h-[75%]
+}
