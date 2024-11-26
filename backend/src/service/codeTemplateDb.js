@@ -30,7 +30,7 @@ export async function addCodeTemplate(codeTemplate) {
                 connect: dbTagIds.map(tagId => ({ id: tagId }))
             },
             parentId: codeTemplate.parentId,
-            userId: codeTemplate.userId
+            userId: codeTemplate.userId,
             language: codeTemplate.language
         },
         include: {
