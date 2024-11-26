@@ -56,7 +56,10 @@ export default async function handler(req, res) {
                 return;
             }
         } else {
-            res.status(401).json({ error: "Invalid fields." });
+            // If no fields are specified, fetch every code template
+            codeTemplate = paginate(epp, pno, await getCodeTemplateByTitle(""));  // if entries per page or page number are null, their defaults are 20 and 1, respectively
+            if (!codeTemplate)    return res.status(400).json({ error: "Page size must be between 1 and 30, and page numbers must be at least 1." });
+            return res.status(200).json({ codeTemplate: codeTemplate[0], pageNum: codeTemplate[1], numEntries: codeTemplate[2] });
             return;
         }
 

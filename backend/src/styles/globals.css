@@ -27,7 +27,7 @@ p {
 }
 
 .blue-button {
-    @apply bg-[#5050de] w-32 py-2 px-4 mx-2 rounded hover:bg-[#3030c7] transition duration-300
+    @apply bg-[#5050de] w-32 py-2 px-4 mx-2 rounded hover:bg-[#3030c7] transition duration-300 disabled:cursor-not-allowed disabled:bg-[#252559] disabled:hover:bg-[#252559] disabled:text-[#9d9dc9]
 }
 
 #run-button {
@@ -163,23 +163,19 @@ form > * {
 }
 
 #code-search-type-dropdown {
-    @apply relative left-0 w-32 bg-[#2d263d] z-20
+    @apply absolute top-[60px] left-0 w-32 bg-[#2d263d] z-10
 }
 
 #code-search-type-dropdown > *{
-    @apply w-full h-[60px] flex items-center px-6 py-2 text-[20px]
-}
-
-#code-search-type-dropdown > *{
-    @apply bg-[#3e315c] hover:bg-[#533b8a]
+    @apply w-full h-[60px] flex items-center px-6 py-2 text-[20px] bg-[#3e315c] hover:bg-[#533b8a]
 }
 
 #code-templates-results {
-    @apply w-[100%] relative
+    @apply w-[100%] min-h-[auto]
 }
 
 #code-templates-grid {
-    @apply z-10 absolute top-0 p-10 flex flex-wrap items-center justify-start
+    @apply p-10 flex flex-wrap items-center justify-start
 }
 
 .code-template-item {
@@ -216,4 +212,12 @@ form > * {
 
 .code-template-entry-header {
     @apply flex flex-row items-center justify-between
+}
+
+.pagination-controls {
+    @apply w-[40%] flex items-center justify-between p-5 text-[20px]
+}
+
+#dropdown-container {
+    @apply relative
 }
