@@ -14,12 +14,13 @@ export default function BlogPost() {
   const [codeTemplate, setCodeTemplate] = useState<CodeTemplate>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [rating, setRating] = useState<number>(0);
 
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
       console.log(id);
-      const response = await fetch(`http://localhost:3000/api/blogs/${id}`, {
+      const response = await fetch(`/api/blogs/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -35,7 +36,7 @@ export default function BlogPost() {
         setCodeTemplate(json.codeTemplates);
         setComments(json.comments);
 
-        const userResponse = await fetch(`http://localhost:3000/api/users/${json.userId}?type=user`, {
+        const userResponse = await fetch(`/api/users/${json.userId}?type=user`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -52,7 +53,7 @@ export default function BlogPost() {
       }
     }
     fetchData();
-    }, [id]);
+  }, [id]);
 
     async function handleReport() {
       const response = await fetch('/api/report/createReport', {

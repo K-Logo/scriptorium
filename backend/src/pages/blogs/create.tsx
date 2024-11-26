@@ -40,7 +40,10 @@ export default function CreateBlog() {
     if (response.ok) {
       alert("Blog created successfully!");
       // Redirect or reset form
-      window.location.href = '/blogs'
+      setTitle("");
+      setDescription("");
+      setTags([]);
+      setCodeTemplate("");
     } else {
       alert("Failed to create the blog.");
     }

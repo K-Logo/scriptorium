@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../../components/Navbar";
@@ -10,11 +10,33 @@ export default function BlogPosts() {
     const [searchType, setSearchType] = useState("title");
   
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [blogs, setBlogs] = useState([]);
-    const [sortType, setSortType] = useState("descending");
+    const [sortType, setSortType] = useState("desc");
     const [sortDropdownOpen, setSortDropdown] = useState(false);
-
     const { user } = useContext(UserContext);
+
+    async function getAllBlogs() {
+        const blogs = await fetch(`/api/blogs/sortBlogs?sortType=${sortType}`, {
+            method:"GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        return blogs
+    }
+
+    useEffect(() => {
+        async function fetchBlogs() {
+            const blogs = await getAllBlogs();
+            const blogsJson = await blogs.json();
+            setBlogs(blogsJson);
+        }
+        fetchBlogs();
+    })
+
+    const [blogs, setBlogs] = useState([]);
+
+    
     const typeToDisplayName = {
         "title": "Title",
         "content": "Content",
@@ -22,8 +44,8 @@ export default function BlogPosts() {
     };
 
     const sortToDisplayName = {
-        "ascending": "Ascending Ratings",
-        "descending": "Descending Ratings",
+        "asc": "Ascending Ratings",
+        "desc": "Descending Ratings",
     }
 
     function toggleSortDropdown() {
@@ -33,8 +55,8 @@ export default function BlogPosts() {
     function SortDropdown() {
         return sortDropdownOpen && (
             <ul id="code-search-type-dropdown">
-                <button onClick={() => {setSortType("ascending"); toggleSortDropdown();}}><li>Ascending Ratings</li></button>
-                <button onClick={() => {setSortType("descending"); toggleSortDropdown();}}><li>Descending Ratings</li></button>
+                <button onClick={() => {setSortType("asc"); toggleSortDropdown();}}><li>Ascending Ratings</li></button>
+                <button onClick={() => {setSortType("desc"); toggleSortDropdown();}}><li>Descending Ratings</li></button>
             </ul>
         )
     }
@@ -93,49 +115,51 @@ export default function BlogPosts() {
                         <h1>Blogs</h1>
                         <br />
                         <div className="search-bar">
-                        <button id="code-search-type-dropdown-button" onClick={() => toggleDropdown()}>
-                            {typeToDisplayName[searchType]}
-                        </button>
-                        <input
-                            type="text"
-                            id="search-text"
-                            placeholder="Search..."
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                        <button className="search-button" onClick={handleSubmit}>
-                            Search
-                        </button>
+                            <button id="code-search-type-dropdown-button" onClick={() => toggleDropdown()}>
+                                {typeToDisplayName[searchType]}
+                            </button>
+                            <input
+                                type="text"
+                                id="search-text"
+                                placeholder="Search..."
+                                value={searchTerm}
+                                onChange={handleSearchChange}
+                            />
+                            <button className="search-button" onClick={handleSubmit}>
+                                Search
+                            </button>
                         </div>
                         <div id="code-templates-results">
-                        <Dropdown />
-                        <div id="code-templates-grid">
-                            {blogs.map((blog) => (
-                            <Link key={blog.id} className="code-templates-item" href={`/blogs/${blog.id}`}>
-                                <h3>{blog.title}</h3>
-                                <p>{blog.description}</p>
-                                <div className="tag-container">
-                                    {blog.tags.map((tag) => (
-                                        <div key={tag.id} className="tag">{tag.name}</div>
-                                    ))}
-                                </div>
-                            </Link>
-                            ))}
+                            <Dropdown />
+                            <div className="pt-[3vw]">
+                                <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
+                                    {sortToDisplayName[sortType]}
+                                </button>
+                                <SortDropdown />
+                            </div>
+                            <div id="code-templates-grid">
+                                {blogs.map((blog) => (
+                                    <Link key={blog.id} className="code-templates-item" href={`/blogs/${blog.id}`}>
+                                        <h3>{blog.title}</h3>
+                                        <p>{blog.description}</p>
+                                        <div className="tag-container">
+                                            {blog.tags.map((tag) => (
+                                                <div key={tag.id} className="tag">{tag.name}</div>
+                                            ))}
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
+                        <div className="mt-6 text-center absolute right-[7vw] bottom-[5vw]">
+                            {user.id && 
+                                <Link href='/blogs/create'>
+                                    <button className="blue-button">
+                                        Write Blog
+                                    </button>
+                                </Link>
+                            }
                         </div>
-                    <div className="mt-6 text-center">
-                        {user.id && 
-                        <Link href='/blogs/create'>
-                            <button className="blue-button">
-                                Write Blog
-                            </button>
-                        </Link>
-                        }
-                    </div>
-                    <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
-                            {typeToDisplayName[sortType]}
-                    </button>
-                    <SortDropdown />
                     </div>
                 </div>
             </main>
