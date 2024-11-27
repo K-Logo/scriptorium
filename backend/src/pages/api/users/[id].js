@@ -51,8 +51,9 @@ export default async function handler(req, res) {
   if (!id) {
       return res.status(400).json({ error: "Invalid ID" });
   }
+  let user;
   try {
-    let user = await getUserByIdRaw(id);
+    user = await getUserByIdRaw(id);
   } catch (e) {
     res.status(400).json({ error: "Please check that your query parameter corresponds to the authenticated user's ID" });
   }
