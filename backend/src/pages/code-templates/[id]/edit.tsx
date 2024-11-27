@@ -32,6 +32,19 @@ export default function CodeTemplateId() {
         "perl": "Perl",
         "racket": "Racket",
     };
+    const monacoMap = {
+        "py3": "python",
+        "java": "java",
+        "cpp": "cpp",
+        "c": "c",
+        "javascript": "javascript",
+        "r": "r",
+        "ruby": "ruby",
+        "go": "go",
+        "php": "php",
+        "perl": "perl",
+        "racket": "racket",
+    };    
 
     const handleAddTag = () => {
         if (tagInput.trim()) {
@@ -264,7 +277,7 @@ export default function CodeTemplateId() {
 
                     <Editor
                         theme="vs-dark"
-                        language={language}
+                        language={monacoMap[language]}
                         value={content}
                         height="800px"
                         options={{
