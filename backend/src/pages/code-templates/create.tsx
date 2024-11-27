@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Navbar from "../../components/Navbar";
 import { Editor } from "@monaco-editor/react";
 import { UserContext, UserProvider } from "../../contexts/user";
+import { LanguageContext, LanguageProvider } from "@/contexts/language";
 import LangDropdown from "@/components/LangDropdown";
 
 export default function CodeTemplateId() {
@@ -23,31 +24,12 @@ export default function CodeTemplateId() {
     } else {
         contentDefaultValue = "";
     }
-
-    let languageDefaultValue;
-    if (languagePassed) {
-        languageDefaultValue = languagePassed;
-    } else {
-        languageDefaultValue = "";
-    }
+    
     const [content, setContent] = useState<string>(contentDefaultValue);
-    const [language, setLanguage] = useState<string>(languageDefaultValue);
+    const {language, setLanguage} = useContext(LanguageContext);
     const [tags, setTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState<string>("");
     const { user, setUser } = useContext(UserContext);
-    const languageToDisplayName = {
-        "py3": "Python3",
-        "java": "Java 21",
-        "cpp": "C++ 14",
-        "c": "C",
-        "javascript": "JavaScript",
-        "r": "R",
-        "ruby": "Ruby",
-        "go": "Go",
-        "php": "PHP",
-        "perl": "Perl",
-        "racket": "Racket",
-    };
 
     const handleAddTag = () => {
         if (tagInput.trim()) {
@@ -67,6 +49,9 @@ export default function CodeTemplateId() {
 
     // Below runs when page is mounted
     useEffect(() => {
+        if (languagePassed) {
+            setLanguage(languagePassed);
+        }
         if (!parentIdInt) return;
         const fetchData = async () => {
             const response = await fetch(`http://localhost:3000/api/codetemplates/${parentIdInt}`, {

@@ -70,6 +70,7 @@ export default function CodeTemplates() {
         }
     });
     const json = await response.json();
+    console.log(json);
     if (response.ok) {
         setCodeTemplates(json.codeTemplate);
     } else {
@@ -91,7 +92,7 @@ export default function CodeTemplates() {
             </h1>
             <br/>
             <div className="search-bar">
-              <div id="dropdown-container">
+              <div className="dropdown-container">
                 <button id="code-search-type-dropdown-button" onClick={() => toggleDropdown()}>{typeToDisplayName[searchType]}</button>
                 <Dropdown/>
               </div>

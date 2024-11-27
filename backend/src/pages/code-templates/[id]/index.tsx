@@ -101,8 +101,8 @@ export default function CodeTemplateId() {
                         <p>{languageToDisplayName[language]}</p>
                     </div>
                     <div>
-                        {user.id && <Link href={`/code-templates/${id}/edit`}><button className="blue-button">Edit</button></Link>}
-                        {user.id && <Link href={`/code-templates/create?parentId=${id}`}><button className="blue-button">Fork</button></Link>}
+                        {user.id && user.username == authorUsername && <Link href={`/code-templates/${id}/edit`}><button className="blue-button">Edit</button></Link>}
+                        {user.id && user.username == authorUsername && <Link href={`/code-templates/create?parentId=${id}`}><button className="blue-button">Fork</button></Link>}
                         <Link href={`/run?prepopulatedCode=${encodeURIComponent(content)}&predefinedLanguage=${language}`}><button className="blue-button">Run</button></Link>
                     </div>
                 </div>

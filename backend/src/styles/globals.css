@@ -222,7 +222,7 @@ form > * {
     @apply w-[40%] flex items-center justify-between p-5 text-[20px]
 }
 
-#dropdown-container, #lang-dropdown-container {
+.dropdown-container, #lang-dropdown-container {
     @apply relative
 }
 
