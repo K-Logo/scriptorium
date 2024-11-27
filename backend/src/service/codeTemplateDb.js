@@ -3,15 +3,14 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 export async function addCodeTemplate(codeTemplate) {
-    console.log("3333333")
-    console.log(codeTemplate.userId)
     if (codeTemplate.parentId) {
         let parentCodeTemplate = await getCodeTemplateById(codeTemplate.parentId);
         parentCodeTemplate = toCodeTemplate(parentCodeTemplate);
-        codeTemplate.title = parentCodeTemplate.title;
-        codeTemplate.explanation = parentCodeTemplate.explanation;
-        codeTemplate.content = parentCodeTemplate.content;
-        codeTemplate.tags = parentCodeTemplate.tags;
+        if (!codeTemplate.title) codeTemplate.title = parentCodeTemplate.title;
+        if (!codeTemplate.explanation) codeTemplate.explanation = parentCodeTemplate.explanation;
+        if (!codeTemplate.content) codeTemplate.content = parentCodeTemplate.content;
+        if (!codeTemplate.tags) codeTemplate.tags = parentCodeTemplate.tags;
+        if (!codeTemplate.language) codeTemplate.language = parentCodeTemplate.language;
     }
 
     const dbTagIds = [];
@@ -31,7 +30,8 @@ export async function addCodeTemplate(codeTemplate) {
                 connect: dbTagIds.map(tagId => ({ id: tagId }))
             },
             parentId: codeTemplate.parentId,
-            userId: codeTemplate.userId
+            userId: codeTemplate.userId,
+            language: codeTemplate.language
         },
         include: {
             user: {
@@ -185,6 +185,7 @@ export async function getCodeTemplateByContent(substring) {
             }
         },
         include: {
+            tags: true,
             user: {
                 select: {
                     id: true,
@@ -272,6 +273,15 @@ export async function updateParentById(id, newParentId) {
     });
 }
 
+export async function updateLanguageById(id, newLanguage) {
+    await prisma.codeTemplate.update({
+        where: { id: id },
+        data: {
+            language: newLanguage
+        }
+    })
+}
+
 function toCodeTemplate(dbCodeTemplate) {
     if (!dbCodeTemplate) {
         return null;
@@ -282,5 +292,5 @@ function toCodeTemplate(dbCodeTemplate) {
     const stringTags = dbCodeTemplate.tags.map(tag => tag.name);
     console.log(stringTags);
     return new CodeTemplate(dbCodeTemplate.id, dbCodeTemplate.title, dbCodeTemplate.explanation, dbCodeTemplate.content,
-        stringTags, dbCodeTemplate.parentId, dbCodeTemplate.userId);
+        stringTags, dbCodeTemplate.parentId, dbCodeTemplate.userId, dbCodeTemplate.language);
 }

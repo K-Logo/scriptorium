@@ -47,7 +47,7 @@ export async function getUserByUsername(username) {
     where: { username: username }
   });
 
-  return toUser(dbUser);
+  return dbUser;
 }
 
 export async function getUserById(id) {

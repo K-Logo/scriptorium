@@ -1,38 +1,39 @@
 // Generated with ChatGPT
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Navbar from "../components/Navbar";
-import { UserContext } from "../contexts/user";
 
 export default function EditProfile() {
-  const { user, setUser } = useContext(UserContext);
+  const [user, setUser] = useState(null) 
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    newFirstName: user?.firstName || "",
-    newLastName: user?.lastName || "",
-    newEmail: user?.email || "",
-    newPhoneNumber: user?.phoneNumber || "",
-    newUsername: user?.username || "",
-    newPassword: "",
-    newPasswordConfirm: "",
-    newAvatarPath: user?.avatarPath || "",
-  });
+  const [formData, setFormData] = useState(null);
   const [passwordError, setPasswordError] = useState("");
   const [avatarOptions, setAvatarOptions] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
 
   useEffect(() => {
-    if (!user?.id) {
-      router.push("http://localhost:3000/login");
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (!user || !user.jwtToken) {
+      router.push("/login");
+    } else {
+      setUser(user);
+      setFormData({
+        newFirstName: user?.firstName || "",
+        newLastName: user?.lastName || "",
+        newEmail: user?.email || "",
+        newPhoneNumber: user?.phoneNumber || "",
+        newUsername: user?.username || "",
+        newPassword: "",
+        newPasswordConfirm: "",
+        newAvatarPath: user?.avatarPath || "",
+      });
     }
-  }, [user, router]);
 
-  useEffect(() => {
     const fetchAvatars = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/users/avatars", {
+        const response = await fetch("/api/users/avatars", {
           headers: {
             "Authorization": `Bearer ${user.jwtToken}`,
           },
@@ -49,7 +50,7 @@ export default function EditProfile() {
     };
 
     fetchAvatars();
-  }, []);
+  }, [router]);
 
   if (!user || !user.id) return null;
 
@@ -67,14 +68,16 @@ export default function EditProfile() {
     e.preventDefault();
 
     if (formData.newPassword !== formData.newPasswordConfirm) {
-      setPasswordError("Passwords do not match.");
+      setPasswordError("Passwords do not match. No updates were made.");
       return;
     }
 
     if (formData.newPassword !== "" && !validatePassword(formData.newPassword)) {
-      setPasswordError("Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.");
+      setPasswordError("Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long. No updates were made.");
       return;
     }
+
+    setPasswordError("");
 
     const patchData: { [key: string]: string } = {};
 
@@ -92,7 +95,7 @@ export default function EditProfile() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/users/${user.id}`, {
+      const response = await fetch(`/api/users/${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -103,11 +106,27 @@ export default function EditProfile() {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        setUser(updatedUser);
+        const u = {
+          id: user.id,
+          username: updatedUser.username,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          phoneNumber: updatedUser.phoneNumber,
+          avatarPath: updatedUser.avatarPath,
+          jwtToken: updatedUser.jwtToken,
+          role: user.role
+        }
+        window.localStorage.setItem(
+            'user', JSON.stringify(u)
+        )
+        setUser(u);
+        setErrorMessage("");
         alert("Profile updated successfully!");
+        window.location.reload();
       } else {
         const error = await response.json();
-        setErrorMessage(`Error: ${error.message}`);
+        setErrorMessage(`${error?.error} No updates were made.` || "An unexpected error occurred.");
       }
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -115,7 +134,7 @@ export default function EditProfile() {
     }
   };
 
-  const avatarUrl = `http://${formData.newAvatarPath}` || "http://localhost:3000/avatars/loggedout.png";
+  const avatarUrl = `http://${formData.newAvatarPath}` || "/avatars/loggedout.png";
 
   return (
     <>
@@ -210,8 +229,6 @@ export default function EditProfile() {
               </div>
             </div>
 
-            {passwordError && <div className="error-message">{passwordError}</div>}
-
             <button type="submit" className="submit-button">
               Save Changes
             </button>
@@ -234,149 +251,125 @@ export default function EditProfile() {
               </div>
             ))}
           </div>
+          {passwordError && <div className="error-message">{passwordError}</div>}
+          {errorMessage && <div className="error-text">{errorMessage}</div>} {/* Error message under avatar selection */}
+
         </div>
       </div>
+      
 
-      {errorMessage && (
-        <div className="error-popup">
-          <div className="error-popup-content">
-            <span className="close-popup" onClick={() => setErrorMessage(null)}>×</span>
-            <p>{errorMessage}</p>
-          </div>
-        </div>
-      )}
+<style jsx>{`
+  .form-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .avatar-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .user-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+  .user-info h2 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  .user-info p {
+    margin: 5px 0;
+  }
+  .form-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .form-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  .form-field input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  .password-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  .avatar-selector {
+    margin-top: 20px;
+  }
+  .avatar-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .avatar-option {
+    padding: 5px;
+    cursor: pointer;
+    border: 2px solid gray;
+    border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
+  }
+  .avatar-option.selected {
+    border-color: transparent;
+    box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.8);
+  }
+  .avatar-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .submit-button {
+    padding: 6px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+  }
+  .submit-button:hover {
+    background-color: #45a049;
+  }
 
-      <style jsx>{`
-        .form-container {
-          padding: 20px;
-          max-width: 800px;
-          margin: 0 auto;
-        }
-        .avatar-section {
-          display: flex;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-        .user-avatar {
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
-          margin-right: 20px;
-        }
-        .user-info h2 {
-          margin: 0;
-          font-size: 1.5rem;
-        }
-        .user-info p {
-          margin: 5px 0;
-        }
-        .form-fields {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 20px;
-        }
-        .form-field label {
-          font-weight: bold;
-          display: block;
-          margin-bottom: 5px;
-        }
-        .form-field input {
-          width: 100%;
-          padding: 10px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-        }
-        .password-section {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 10px;
-        }
-        .error-message {
-          color: red;
-          margin-top: 10px;
-        }
-        .avatar-selector {
-          margin-top: 20px;
-        }
-        .avatar-options {
-          display: flex;
-          gap: 10px;
-          flex-wrap: wrap;
-        }
-        .avatar-option {
-          padding: 5px;
-          cursor: pointer;
-          border: 2px solid gray;
-          border-radius: 50%;
-          transition: transform 0.2s ease-in-out;
-        }
-        .avatar-option.selected {
-          border-color: transparent;
-          box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.8);
-        }
-        .avatar-image {
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-        .submit-button {
-          padding: 6px 12px;
-          background-color: #4CAF50;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 14px;
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          z-index: 100;
-        }
-        .submit-button:hover {
-          background-color: #45a049;
-        }
-        .error-popup {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 200;
-        }
-        .error-popup-content {
-          background: white;
-          padding: 20px;
-          border-radius: 10px;
-          text-align: center;
-          max-width: 400px;
-          width: 100%;
-        }
-        .close-popup {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          font-size: 20px;
-          cursor: pointer;
-        }
-        @media (min-width: 768px) {
-          .form-fields {
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-          }
-          .form-field {
-            display: flex;
-            flex-direction: column;
-          }
-          .password-section {
-            grid-template-columns: 1fr 1fr;
-          }
-        }
-      `}</style>
+  .error-text {
+    color: red;
+    margin-top: 15px;
+    font-size: 14px;
+  }
+
+  @media (min-width: 768px) {
+    .form-fields {
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+    }
+    .password-section {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+`}</style>
     </>
   );
 }

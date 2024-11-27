@@ -34,6 +34,7 @@ model CodeTemplate {
   title           String
   explanation     String
   content         String
+  language        String
   tags            Tag[]     @relation("CodeTemplateTag")
   createdAt       DateTime  @default(now())                   // maybe make this optional
   parent          CodeTemplate? @relation("CodeTemplateFork", fields: [parentId], references: [id])
