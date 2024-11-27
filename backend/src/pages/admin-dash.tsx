@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { UserContext } from "../contexts/user";
 
 interface Post {
@@ -37,6 +38,7 @@ interface Comment {
 }
 
 const AdminDashboard: React.FC = () => {
+  const router = useRouter();
   const { user, setUser } = useContext(UserContext);
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -58,6 +60,19 @@ const AdminDashboard: React.FC = () => {
     if (chars.length <= charLimit) return text;
     return chars.slice(0, charLimit).join('') + '...';
   };
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    } else if (user.role !== "ADMIN") {
+      router.push("/run");
+    }
+  }, [user, router]);
+
+  // prevent rendering if user not authenticated
+  if (!user || user.role !== "ADMIN") {
+    return null;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,19 +135,17 @@ const AdminDashboard: React.FC = () => {
         );
       }
   
-      // Prepare the request body
       const body = {
         contentType: type,
         contentId: id,
         hidden: type === 'post' ? !posts.find(post => post.id === id)?.hidden : !comments.find(comment => comment.id === id)?.hidden
       };
   
-      // Make the PUT request to update the visibility on the server
       const response = await fetch('http://localhost:3000/api/admin', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.jwtToken}`, // Include the token if needed
+          'Authorization': `Bearer ${user.jwtToken}`,
         },
         body: JSON.stringify(body),
       });
@@ -141,7 +154,6 @@ const AdminDashboard: React.FC = () => {
         throw new Error('Failed to update visibility');
       }
   
-      // Optionally, you can handle the success response here
       console.log('Visibility updated successfully');
     } catch (error) {
       console.error('Error updating visibility:', error);
@@ -172,14 +184,12 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  // Open modal with post details
   const openModal = (postId: number) => {
     const post = posts.find(p => p.id === postId);
     setModalPost(post || null);
     setIsModalOpen(true);
   };
 
-  // Close modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -187,6 +197,23 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#1e1b24] p-6 text-white">
       <h1 className="text-3xl font-bold text-center mb-8">Admin Dashboard</h1>
+
+      {/* Dropdown for Posts per Page */}
+      <div className="mb-6">
+        <label htmlFor="postsPerPage" className="block text-lg font-semibold mb-2">Blogs per Page:</label>
+        <select
+          id="postsPerPage"
+          value={postsPerPage}
+          onChange={(e) => setPostsPerPage(Number(e.target.value))}
+          className="w-24 px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#2d2b34] text-white"
+        >
+          <option value={1}>1</option>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+        </select>
+      </div>
 
       {/* Blogs Table */}
       <div className="mb-8">
@@ -260,7 +287,31 @@ const AdminDashboard: React.FC = () => {
               ))}
             </tbody>
           </table>
+          <div className="flex justify-between items-center p-4">
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setPostPageNum(prev => Math.max(prev - 1, 1))}>Previous</button>
+            <span className="text-white">Page {postPageNum}</span>
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setPostPageNum(prev => prev + 1)}>Next</button>
+          </div>
         </div>
+      </div>
+      <br />
+      <br />
+      
+      {/* Dropdown for Comments per Page */}
+      <div className="mb-6">
+        <label htmlFor="commentsPerPage" className="block text-lg font-semibold mb-2">Comments per Page:</label>
+        <select
+          id="commentsPerPage"
+          value={commentsPerPage}
+          onChange={(e) => setCommentsPerPage(Number(e.target.value))}
+          className="w-24 px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#2d2b34] text-white"
+        >
+          <option value={1}>1</option>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+        </select>
       </div>
 
       {/* Comments Table */}
@@ -337,6 +388,11 @@ const AdminDashboard: React.FC = () => {
               ))}
             </tbody>
           </table>
+          <div className="flex justify-between items-center p-4">
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setCommentPageNum(prev => Math.max(prev - 1, 1))}>Previous</button>
+            <span className="text-white">Page {commentPageNum}</span>
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setCommentPageNum(prev => prev + 1)}>Next</button>
+          </div>
         </div>
       </div>
 
