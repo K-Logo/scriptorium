@@ -1,8 +1,5 @@
-import React, { useContext } from "react";
-import Head from "next/head";
+import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
-import Navbar from "../components/Navbar";
-import { UserContext } from "../contexts/user";
 import Link from "next/link";
 
 export default function Home() {
@@ -18,8 +15,21 @@ export default function Home() {
 }
 
 function Welcome() {
-    const { user, setUser } = useContext(UserContext);
-    if (user.id === undefined) {
+    const router = useRouter();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (user) {
+            router.push("/run");
+            setUser(user);
+        }
+    }, []);
+
+    if (user) {
+        return null;
+    } else {
         return (
             <div className="container">
                 <img className="big-icon" src="https://www.cs.toronto.edu/~kianoosh/courses/csc309/resources/handouts/pp1/logo.jpg" alt="Icon"></img>
@@ -44,17 +54,5 @@ function Welcome() {
                 <br/><br/><br/><br/><br/>
             </div>
         );
-    } else {
-        return (
-            <div className="container">
-                <h1>
-                Welcome to Scriptorium, {user.firstName}!
-                </h1>
-                <p>
-                Let's get started...
-                </p>
-            </div>
-        );
     }
 }
-

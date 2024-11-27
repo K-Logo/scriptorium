@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import { UserContext } from "../../contexts/user";
 
@@ -6,13 +6,33 @@ export default function Navbar() {
     const [userDropdownOpen, setUserDropdownOpen] = useState(false);
     const [hamburgerOpen, setHamburgerOpen] = useState(false);
     const [userMobileDropdownOpen, setUserMobileDropdownOpen] = useState(false);
-    const { user } = useContext(UserContext);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (user && user.jwtToken) {
+          setUser(user);
+        }
+      }, []);
+    
+
+    function handleLogout() {
+        toggleUserDropdown();
+        window.localStorage.removeItem('user');
+        window.location.reload();
+    }
+
+    function handleMobileLogout() {
+        toggleMobileUserDropdown();
+        window.localStorage.removeItem('user');
+        window.location.reload();
+    }
 
     function toggleHamburger() {
         setHamburgerOpen(!hamburgerOpen);
         setUserMobileDropdownOpen(false);
     }
-
 
     function HamburgerDropdown() {
         return hamburgerOpen && (
@@ -29,17 +49,17 @@ export default function Navbar() {
     }
 
     function UserDropdown() {
-        if (user.id !== undefined && user.role === "USER") {
+        if (user && user.id !== undefined && user.role === "USER") {
             return userDropdownOpen && (
                 <ul id="user-dropdown">
                     <li>Welcome, {user.username}!</li>
                     <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
+                    <Link href="" onClick={() => handleLogout()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
             )
-        } else if (user.id !== undefined && user.role === "ADMIN") {
+        } else if (user && user.id !== undefined && user.role === "ADMIN") {
             return userDropdownOpen && (
                 <ul id="user-dropdown">
                     <li>Welcome, {user.username}!</li>
@@ -47,7 +67,7 @@ export default function Navbar() {
                     <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
+                    <Link href="" onClick={() => handleLogout()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
             )
         } else {
@@ -64,7 +84,7 @@ export default function Navbar() {
 
     function UserIcon() {
         let profilePicturePath;
-        if (user.id) {
+        if (user && user.id) {
             profilePicturePath = "http://" + user.avatarPath;
         } else {
             profilePicturePath = "http://localhost:3000/avatars/loggedout.png";
@@ -75,25 +95,25 @@ export default function Navbar() {
     }
 
     function MobileUserDropdown() {
-        if (user.id !== undefined && user.role === "USER") {
+        if (user && user.id !== undefined && user.role === "USER") {
             return userMobileDropdownOpen && (
                 <ul id="user-mobile-dropdown">
                     <li>Welcome, {user.username}!</li>
                     <Link href="/edit-profile" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
-                    <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
+                    <Link href="" onClick={() => handleMobileLogout()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
             )
-        } else if (user.id !== undefined && user.role === "ADMIN") {
+        } else if (user && user.id !== undefined && user.role === "ADMIN") {
             return userMobileDropdownOpen && (
                 <ul id="user-mobile-dropdown">
                     <li>Welcome, {user.username}!</li>
-                    <Link href="/admin-dash" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Admin Dashboard</li></Link>
-                    <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
+                    <Link href="/admin-dash" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Admin Dashboard</li></Link>
+                    <Link href="/edit-profile" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
+                    <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
+                    <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
+                    <Link href="" onClick={() => handleMobileLogout()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
             )
         } else {
@@ -115,7 +135,7 @@ export default function Navbar() {
 
     function MobileUserIcon() {
         let profilePicturePath;
-        if (user.id) {
+        if (user && user.id) {
             profilePicturePath = "http://" + user.avatarPath;
         } else {
             profilePicturePath = "http://localhost:3000/avatars/loggedout.png";
