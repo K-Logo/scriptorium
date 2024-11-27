@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
-import { UserContext } from "../../contexts/user";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router"
 
 export default function CreateBlog() {
   const [title, setTitle] = useState<string>("");
@@ -8,8 +8,20 @@ export default function CreateBlog() {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState<string>("");
   const [codeTemplate, setCodeTemplate] = useState(null); 
-  const { user } = useContext(UserContext)
-  const authorId = user.id
+  const [user, setUser] = useState(null);
+  const [authorId, setAuthorId] = useState(-1);
+  const router = useRouter();
+
+  useEffect(() => {
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (!user || !user.jwtToken) {
+      router.push("/login");
+    } else {
+      setUser(user);
+      setAuthorId(user.id);
+    }
+  }, [])
 
   const handleAddTag = () => {
     if (tagInput.trim()) {

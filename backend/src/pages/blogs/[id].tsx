@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Blog, Comment, Report, User, CodeTemplate, Tag } from "@prisma/client";
 import { useRouter } from 'next/router';
-import Navbar from "../../components/Navbar";
 import Link from 'next/link'
 import Head from 'next/head';
-import { UserContext } from '../../contexts/user'
 
 export default function BlogPost() {
   const router = useRouter();
@@ -30,6 +28,12 @@ export default function BlogPost() {
           setRating(blogData.rating)
       }
       fetchBlog();
+
+      const userJson = window.localStorage.getItem('user');
+      const user = JSON.parse(userJson);
+      if (user) {
+        setUser(user);
+      }
   }, [id]);
 
   const [title, setTitle] = useState<string>("");
@@ -41,15 +45,13 @@ export default function BlogPost() {
   const [rating, setRating] = useState<number>(0);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
-  const { user } = useContext(UserContext);
+  const [user, setUser] = useState(null);
   const [showReportBox, setShowReportBox] = useState(false); // Manage visibility of report box
   const [reportReason, setReportReason] = useState(""); // Store the report reason
   const [showCommentReportBox, setShowCommentReportBox] = useState(false);
   const [commentReportReason, setCommentReportReason] = useState("");
   const [sortType, setSortType] = useState("desc");
   const [sortDropdownOpen, setSortDropdown] = useState(false);
-
-  {key: bool, }
 
   useEffect(() => {
     if (!id) return;
@@ -320,7 +322,7 @@ export default function BlogPost() {
           <p className="mt-4 text-lg s">{description}</p>
 
           { codeTemplate && <div className="mt-4">
-            <Link href={`/code-templates/${codeTemplate}`}>
+            <Link href={`/code-templates/${codeTemplate.id}`}>
               <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
                 Link to Code Template
               </p>
@@ -380,6 +382,16 @@ export default function BlogPost() {
               </div>
             )}
           </div>
+
+          {/* Edit Button (only for the author) */}
+          {blog && blog.authorId === user.id && (
+              <button
+                className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700"
+                onClick={() => console.log(`Edit blog with ID: ${blog.id}`)}
+              >
+                Edit
+              </button>
+            )}
 
           {/* New Comment Input */}
           <div className="mt-6">

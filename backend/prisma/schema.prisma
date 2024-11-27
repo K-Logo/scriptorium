@@ -51,7 +51,7 @@ model Blog {
   title           String 
   description     String
   tags            Tag[]     @relation("TagsInBlog")
-  codeTemplate    CodeTemplate? @relation("CodeInBlogs")
+  codeTemplates   CodeTemplate[] @relation("CodeInBlogs")
   author          User      @relation("UserBlogPosts", fields: [authorId], references: [id])
   authorId        Int       // Foreign key field for the author
   rating          Int       @default(0)

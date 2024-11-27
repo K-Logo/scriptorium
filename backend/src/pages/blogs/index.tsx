@@ -1,9 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import Head from "next/head";
-import { useRouter } from 'next/router';
 import Navbar from "../../components/Navbar";
 import Link from 'next/link';
-import { UserContext } from '../../contexts/user'
 
 export default function BlogPosts() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -12,8 +10,8 @@ export default function BlogPosts() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sortType, setSortType] = useState("desc");
     const [sortDropdownOpen, setSortDropdown] = useState(false);
-    const { user } = useContext(UserContext);
     const [blogs, setBlogs] = useState([]);
+    const [user, setUser] = useState(null);
 
     async function getAllBlogs() {
         const blogs = await fetch(`/api/blog/sortBlogs?sortType=${sortType}`, {
@@ -32,7 +30,13 @@ export default function BlogPosts() {
             setBlogs(blogsJson.allPosts);
         }
         fetchBlogs();
-    }, []);
+
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (user) {
+            setUser(user);
+        }
+    }, [sortType]);
     
     const typeToDisplayName = {
         "title": "Title",
@@ -128,6 +132,15 @@ export default function BlogPosts() {
                             <button className="search-button" onClick={handleSubmit}>
                                 Search
                             </button>
+                            <div>
+                                {user && 
+                                    <Link href='/blogs/create'>
+                                        <button className="search-button">
+                                            Write Blog
+                                        </button>
+                                    </Link>
+                                }
+                            </div>
                         </div>
                         <div className="code-templates-results">
                             <div className="relative p-0">
@@ -156,15 +169,6 @@ export default function BlogPosts() {
                                     </Link>
                                 ))}
                             </div>
-                        </div>
-                        <div className="mt-6 text-center absolute right-[7vw] top-[20vw]">
-                            {user.id && 
-                                <Link href='/blogs/create'>
-                                    <button className="blue-button">
-                                        Write Blog
-                                    </button>
-                                </Link>
-                            }
                         </div>
                     </div>
                 </div>
