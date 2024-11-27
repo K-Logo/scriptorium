@@ -54,7 +54,7 @@ export default function Navbar() {
                 <ul id="user-dropdown">
                     <li>Welcome, {user.username}!</li>
                     <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
+                    <Link href="/manage-code-templates" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
                     <Link href="" onClick={() => handleLogout()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
@@ -65,7 +65,7 @@ export default function Navbar() {
                     <li>Welcome, {user.username}!</li>
                     <Link href="/admin-dash" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Admin Dashboard</li></Link>
                     <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
-                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
+                    <Link href="/manage-code-templates" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
                     <Link href="" onClick={() => handleLogout()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>

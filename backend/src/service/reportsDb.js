@@ -12,6 +12,15 @@ export async function addReport(content, blogId, commentId) {
                 }
             }
         });
+
+        await prisma.blog.update({
+            where: {id: blogId},
+            data: {
+                reports: {
+                    connect: { id: savedReport.id }
+                }
+            }
+        });
     } else if (commentId) {
         savedReport = await prisma.report.create({
             data: {
@@ -21,6 +30,15 @@ export async function addReport(content, blogId, commentId) {
                 }
             }
         });
+
+        await prisma.comment.update({
+            where: { id: commentId },
+            data: {
+                reports: { 
+                    connect: { id: savedReport.id }
+                }
+            }
+        })
     }
 
     return savedReport;
