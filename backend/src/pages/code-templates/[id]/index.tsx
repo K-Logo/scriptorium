@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../../../components/Navbar";
 import { Editor } from "@monaco-editor/react";
 import Link from 'next/link';
-import { UserContext } from "@/contexts/user";
 
 export default function CodeTemplateId() {
     const router = useRouter();
@@ -21,7 +20,7 @@ export default function CodeTemplateId() {
     const [authorAvatar, setAuthorAvatar] = useState<string>("");
     const [tags, setTags] = useState([]);
     const [copied, setCopied] = useState(false);
-    const { user } = useContext(UserContext);
+    const [user, setUser] = useState(null);
     const languageToDisplayName = {
         "py3": "Python3",
         "java": "Java 21",
@@ -50,6 +49,12 @@ export default function CodeTemplateId() {
 
     // Below runs when page is mounted
     useEffect(() => {
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (user) {
+            setUser(user);
+        }
+
         if (!id) return;
         const fetchData = async () => {
             console.log(id)
@@ -101,8 +106,8 @@ export default function CodeTemplateId() {
                         <p>{languageToDisplayName[language]}</p>
                     </div>
                     <div>
-                        {user.id && user.username == authorUsername && <Link href={`/code-templates/${id}/edit`}><button className="blue-button">Edit</button></Link>}
-                        {user.id && user.username == authorUsername && <Link href={`/code-templates/create?parentId=${id}`}><button className="blue-button">Fork</button></Link>}
+                        {user && user.username === authorUsername && <Link href={`/code-templates/${id}/edit`}><button className="blue-button">Edit</button></Link>}
+                        {user && <Link href={`/code-templates/create?parentId=${id}`}><button className="blue-button">Fork</button></Link>}
                         <Link href={`/run?prepopulatedCode=${encodeURIComponent(content)}&predefinedLanguage=${language}`}><button className="blue-button">Run</button></Link>
                     </div>
                 </div>

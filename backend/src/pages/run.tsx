@@ -5,7 +5,6 @@ import { LanguageProvider } from "@/contexts/language";
 import CodeEditor from "@/components/CodeEditor";
 import LangDropdown from "@/components/LangDropdown";
 import { LanguageContext } from "@/contexts/language";
-import { UserContext } from "@/contexts/user";
 import { useRouter } from 'next/router';
 
 import Link from 'next/link';
@@ -15,7 +14,7 @@ import { Editor } from "@monaco-editor/react";
 export default function Run() {
   const router = useRouter();
   const { language, setLanguage } = useContext(LanguageContext);
-  const { user } = useContext(UserContext);
+  const [user, setUser] = useState(null);
   type QueryParams = {
     prepopulatedCode?: string;
     predefinedLanguage?: string;
@@ -33,6 +32,12 @@ export default function Run() {
   useEffect(() => {
     if (predefinedLanguage) {
       setLanguage(predefinedLanguage);
+    }
+
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (user) {
+      setUser(user);
     }
 }, []);
   
@@ -649,7 +654,7 @@ const defaultRacketCode = `; Here is some code to get you started!
                   <button id="run-button" className="blue-button" onClick={handleRun}>
                     Run
                   </button>
-                  {user.id &&
+                  {user &&
                   <Link href={`/code-templates/create?codeTyped=${encodeURIComponent(code)}&languagePassed=${language}`}>
                     <button className="blue-button">
                       Save

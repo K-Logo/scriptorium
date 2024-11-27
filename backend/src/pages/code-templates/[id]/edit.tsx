@@ -18,7 +18,20 @@ export default function CodeTemplateId() {
     const [addedTags, setAddedTags] = useState<string[]>([]);
     const [removedTags, setRemovedTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState<string>("");
-    const { user, setUser } = useContext(UserContext);
+    const [user, setUser] = useState(null);
+    const languageToDisplayName = {
+        "py3": "Python3",
+        "java": "Java 21",
+        "cpp": "C++ 14",
+        "c": "C",
+        "javascript": "JavaScript",
+        "r": "R",
+        "ruby": "Ruby",
+        "go": "Go",
+        "php": "PHP",
+        "perl": "Perl",
+        "racket": "Racket",
+    };
 
     const handleAddTag = () => {
         if (tagInput.trim()) {
@@ -44,6 +57,14 @@ export default function CodeTemplateId() {
 
     // Below runs when page is mounted
     useEffect(() => {
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (!user || !user.jwtToken) {
+            router.push('/run');
+        } else {
+            setUser(user);
+        }
+
         if (!id) return;
         const fetchData = async () => {
             console.log(id)
