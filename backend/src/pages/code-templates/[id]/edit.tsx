@@ -19,19 +19,6 @@ export default function CodeTemplateId() {
     const [removedTags, setRemovedTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState<string>("");
     const { user, setUser } = useContext(UserContext);
-    const languageToDisplayName = {
-        "py3": "Python3",
-        "java": "Java 21",
-        "cpp": "C++ 14",
-        "c": "C",
-        "javascript": "JavaScript",
-        "r": "R",
-        "ruby": "Ruby",
-        "go": "Go",
-        "php": "PHP",
-        "perl": "Perl",
-        "racket": "Racket",
-    };
 
     const handleAddTag = () => {
         if (tagInput.trim()) {

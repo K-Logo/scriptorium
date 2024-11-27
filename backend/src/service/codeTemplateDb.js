@@ -183,6 +183,7 @@ export async function getCodeTemplateByContent(substring) {
             }
         },
         include: {
+            tags: true,
             user: {
                 select: {
                     id: true,
