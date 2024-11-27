@@ -29,10 +29,21 @@ export default function Navbar() {
     }
 
     function UserDropdown() {
-        if (user.id !== undefined) {
+        if (user.id !== undefined && user.role === "USER") {
             return userDropdownOpen && (
                 <ul id="user-dropdown">
                     <li>Welcome, {user.username}!</li>
+                    <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
+                </ul>
+            )
+        } else if (user.id !== undefined && user.role === "ADMIN") {
+            return userDropdownOpen && (
+                <ul id="user-dropdown">
+                    <li>Welcome, {user.username}!</li>
+                    <Link href="/admin-dash" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Admin Dashboard</li></Link>
                     <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
@@ -64,7 +75,7 @@ export default function Navbar() {
     }
 
     function MobileUserDropdown() {
-        if (user.id !== undefined) {
+        if (user.id !== undefined && user.role === "USER") {
             return userMobileDropdownOpen && (
                 <ul id="user-mobile-dropdown">
                     <li>Welcome, {user.username}!</li>
@@ -72,6 +83,17 @@ export default function Navbar() {
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
                     <Link href="" onClick={() => toggleMobileUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
+                </ul>
+            )
+        } else if (user.id !== undefined && user.role === "ADMIN") {
+            return userMobileDropdownOpen && (
+                <ul id="user-mobile-dropdown">
+                    <li>Welcome, {user.username}!</li>
+                    <Link href="/admin-dash" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Admin Dashboard</li></Link>
+                    <Link href="/edit-profile" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">View & edit profile</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage code templates</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Manage blog posts</li></Link>
+                    <Link href="" onClick={() => toggleUserDropdown()}><li className="user-dropdown-item">Log out</li></Link>
                 </ul>
             )
         } else {
