@@ -135,7 +135,7 @@ form > * {
 }
 
 #output {
-    @apply bg-[#000000] p-5 font-mono w-full h-[90%]
+    @apply bg-[#000000] p-5 font-mono w-full h-[90%] whitespace-pre-line
 }
 
 #input {
