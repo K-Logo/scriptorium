@@ -188,6 +188,23 @@ const AdminDashboard: React.FC = () => {
     <div className="min-h-screen bg-[#1e1b24] p-6 text-white">
       <h1 className="text-3xl font-bold text-center mb-8">Admin Dashboard</h1>
 
+      {/* Dropdown for Posts per Page */}
+      <div className="mb-6">
+        <label htmlFor="postsPerPage" className="block text-lg font-semibold mb-2">Blogs per Page:</label>
+        <select
+          id="postsPerPage"
+          value={postsPerPage}
+          onChange={(e) => setPostsPerPage(Number(e.target.value))}
+          className="w-24 px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#2d2b34] text-white"
+        >
+          <option value={1}>1</option>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+        </select>
+      </div>
+
       {/* Blogs Table */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Blogs</h2>
@@ -260,7 +277,31 @@ const AdminDashboard: React.FC = () => {
               ))}
             </tbody>
           </table>
+          <div className="flex justify-between items-center p-4">
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setPostPageNum(prev => Math.max(prev - 1, 1))}>Previous</button>
+            <span className="text-white">Page {postPageNum}</span>
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setPostPageNum(prev => prev + 1)}>Next</button>
+          </div>
         </div>
+      </div>
+      <br />
+      <br />
+      
+      {/* Dropdown for Comments per Page */}
+      <div className="mb-6">
+        <label htmlFor="commentsPerPage" className="block text-lg font-semibold mb-2">Comments per Page:</label>
+        <select
+          id="commentsPerPage"
+          value={commentsPerPage}
+          onChange={(e) => setCommentsPerPage(Number(e.target.value))}
+          className="w-24 px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#2d2b34] text-white"
+        >
+          <option value={1}>1</option>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+        </select>
       </div>
 
       {/* Comments Table */}
@@ -337,6 +378,11 @@ const AdminDashboard: React.FC = () => {
               ))}
             </tbody>
           </table>
+          <div className="flex justify-between items-center p-4">
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setCommentPageNum(prev => Math.max(prev - 1, 1))}>Previous</button>
+            <span className="text-white">Page {commentPageNum}</span>
+            <button className="px-4 py-2 bg-[#ffffff] text-black rounded-md hover:bg-[#eeeeee]" onClick={() => setCommentPageNum(prev => prev + 1)}>Next</button>
+          </div>
         </div>
       </div>
 
