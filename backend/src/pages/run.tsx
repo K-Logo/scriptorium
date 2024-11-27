@@ -12,44 +12,6 @@ import { Editor } from "@monaco-editor/react";
 
 
 export default function Run() {
-  const router = useRouter();
-  const { language, setLanguage } = useContext(LanguageContext);
-  const [user, setUser] = useState(null);
-  type QueryParams = {
-    prepopulatedCode?: string;
-    predefinedLanguage?: string;
-  };
-  const { prepopulatedCode, predefinedLanguage } = router.query as QueryParams;
-  let codeDefaultValue;
-  if (prepopulatedCode) {
-    codeDefaultValue = prepopulatedCode;
-  } else {
-    codeDefaultValue = ""
-  }
-  const [code, setCode] = useState(codeDefaultValue);
-
-  // Below runs when page is mounted
-  useEffect(() => {
-    if (predefinedLanguage) {
-      setLanguage(predefinedLanguage);
-    }
-
-    const userJson = window.localStorage.getItem('user');
-    const user = JSON.parse(userJson);
-    if (user) {
-      setUser(user);
-    }
-}, []);
-  
-
-  const handleCodeChange = (value) => {
-    setCode(value);
-    console.log(value);
-}
-
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-
   const defaultPythonCode = `# Here is some code to get you started!
 #
 # Note: Input is passed through stdin, which you must
@@ -571,31 +533,71 @@ const defaultRacketCode = `; Here is some code to get you started!
 (main)
 `;
 
+  const router = useRouter();
+  const { language, setLanguage } = useContext(LanguageContext);
+  const [user, setUser] = useState(null);
+  type QueryParams = {
+    prepopulatedCode?: string;
+    predefinedLanguage?: string;
+  };
+  const { prepopulatedCode, predefinedLanguage } = router.query as QueryParams;
+  let codeDefaultValue;
+  if (prepopulatedCode) {
+    codeDefaultValue = prepopulatedCode;
+  } else {
+    codeDefaultValue = ""
+  }
+  const [code, setCode] = useState(codeDefaultValue);
+  let firstTime = false;
 
+  // Below runs when page is mounted
+  useEffect(() => {
+    if (predefinedLanguage) {
+      setLanguage(predefinedLanguage);
+      setCode(prepopulatedCode);
+      firstTime = true;
+    }
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (user) {
+      setUser(user);
+    }
+  }, []);
+
+
+  const handleCodeChange = (value) => {
+    setCode(value);
+    console.log(value);
+  }
+
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
 
   useEffect(() => {
-    if (language === "py3") {
-      setCode(defaultPythonCode); // Set default code when language is py3
-    } else if (language === "java") {
-      setCode(defaultJavaCode);
-    } else if (language === "cpp") {
-      setCode(defaultCppCode);
-    } else if (language === "c") {
-      setCode(defaultCCode);
-    } else if (language === "javascript") {
-      setCode(defaultJSCode);
-    } else if (language === "r") {
-      setCode(defaultRCode);
-    } else if (language === "ruby") {
-      setCode(defaultRubyCode);
-    } else if (language === "go") {
-      setCode(defaultGoCode);
-    } else if (language === "php") {
-      setCode(defaultPHPCode);
-    } else if (language === "perl") {
-      setCode(defaultPerlCode);
-    } else if (language === "racket") {
-      setCode(defaultRacketCode);
+    if (!predefinedLanguage || !firstTime) {
+      if (language === "py3") {
+        setCode(defaultPythonCode); // Set default code when language is py3
+      } else if (language === "java") {
+        setCode(defaultJavaCode);
+      } else if (language === "cpp") {
+        setCode(defaultCppCode);
+      } else if (language === "c") {
+        setCode(defaultCCode);
+      } else if (language === "javascript") {
+        setCode(defaultJSCode);
+      } else if (language === "r") {
+        setCode(defaultRCode);
+      } else if (language === "ruby") {
+        setCode(defaultRubyCode);
+      } else if (language === "go") {
+        setCode(defaultGoCode);
+      } else if (language === "php") {
+        setCode(defaultPHPCode);
+      } else if (language === "perl") {
+        setCode(defaultPerlCode);
+      } else if (language === "racket") {
+        setCode(defaultRacketCode);
+      }  
     }
   }, [language]);
 

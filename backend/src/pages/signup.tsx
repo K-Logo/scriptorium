@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../components/Navbar";
-import { UserContext, UserProvider } from "../contexts/user";
 
 export default function SignUp() {
   return (
