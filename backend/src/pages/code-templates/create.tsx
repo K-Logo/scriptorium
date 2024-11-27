@@ -29,7 +29,20 @@ export default function CodeTemplateId() {
     const {language, setLanguage} = useContext(LanguageContext);
     const [tags, setTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState<string>("");
-    const { user, setUser } = useContext(UserContext);
+    const [user, setUser] = useState(null);
+    const languageToDisplayName = {
+        "py3": "Python3",
+        "java": "Java 21",
+        "cpp": "C++ 14",
+        "c": "C",
+        "javascript": "JavaScript",
+        "r": "R",
+        "ruby": "Ruby",
+        "go": "Go",
+        "php": "PHP",
+        "perl": "Perl",
+        "racket": "Racket",
+    };
 
     const handleAddTag = () => {
         if (tagInput.trim()) {
@@ -52,6 +65,14 @@ export default function CodeTemplateId() {
         if (languagePassed) {
             setLanguage(languagePassed);
         }
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (!user || !user.jwtToken) {
+            router.push('/run');
+        } else {
+            setUser(user);
+        }
+    
         if (!parentIdInt) return;
         const fetchData = async () => {
             const response = await fetch(`http://localhost:3000/api/codetemplates/${parentIdInt}`, {
@@ -137,6 +158,8 @@ export default function CodeTemplateId() {
     const handleTagInputChange = (event) => {
         setTagInput(event.target.value);
     }
+
+    if (!user) return null;
 
     return (
     <>

@@ -1,36 +1,36 @@
 // Generated with ChatGPT
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Navbar from "../components/Navbar";
-import { UserContext } from "../contexts/user";
 
 export default function EditProfile() {
-  const { user, setUser } = useContext(UserContext);
+  const [user, setUser] = useState(null) 
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    newFirstName: user?.firstName || "",
-    newLastName: user?.lastName || "",
-    newEmail: user?.email || "",
-    newPhoneNumber: user?.phoneNumber || "",
-    newUsername: user?.username || "",
-    newPassword: "",
-    newPasswordConfirm: "",
-    newAvatarPath: user?.avatarPath || "",
-  });
+  const [formData, setFormData] = useState(null);
   const [passwordError, setPasswordError] = useState("");
   const [avatarOptions, setAvatarOptions] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
 
   useEffect(() => {
-    console.log(user)
-    if (!user?.id) {
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (!user || !user.jwtToken) {
       router.push("/login");
+    } else {
+      setUser(user);
+      setFormData({
+        newFirstName: user?.firstName || "",
+        newLastName: user?.lastName || "",
+        newEmail: user?.email || "",
+        newPhoneNumber: user?.phoneNumber || "",
+        newUsername: user?.username || "",
+        newPassword: "",
+        newPasswordConfirm: "",
+        newAvatarPath: user?.avatarPath || "",
+      });
     }
-  }, [user, router]);
 
-  useEffect(() => {
     const fetchAvatars = async () => {
       try {
         const response = await fetch("/api/users/avatars", {
@@ -50,7 +50,7 @@ export default function EditProfile() {
     };
 
     fetchAvatars();
-  }, []);
+  }, [router]);
 
   if (!user || !user.id) return null;
 
@@ -106,9 +106,24 @@ export default function EditProfile() {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        setUser(updatedUser);
+        const u = {
+          id: user.id,
+          username: updatedUser.username,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          phoneNumber: updatedUser.phoneNumber,
+          avatarPath: updatedUser.avatarPath,
+          jwtToken: updatedUser.jwtToken,
+          role: user.role
+        }
+        window.localStorage.setItem(
+            'user', JSON.stringify(u)
+        )
+        setUser(u);
         setErrorMessage("");
         alert("Profile updated successfully!");
+        window.location.reload();
       } else {
         const error = await response.json();
         setErrorMessage(`${error?.error} No updates were made.` || "An unexpected error occurred.");

@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../components/Navbar";
-import { UserContext, UserProvider } from "../contexts/user";
 
 export default function SignUp() {
   return (
@@ -19,6 +18,15 @@ export default function SignUp() {
 
 function SignUpForm() {
     const router = useRouter();
+
+    useEffect(() => {
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (user && user.jwtToken) {
+          router.push("/run");
+        }
+      }, [router]);
+
     async function handleSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
