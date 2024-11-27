@@ -1,4 +1,0 @@
-test.java:34: error: class, interface, enum, or record expected
-}asdfadsfadsf
- ^
-1 error
