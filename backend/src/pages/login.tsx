@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import Navbar from "../components/Navbar";
@@ -19,11 +19,16 @@ export default function LogIn() {
 
 function LogInForm() {
     const router = useRouter();
-    const { user, setUser } = useContext(UserContext);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        console.log(user);
-    }, [user]);
+        const userJson = window.localStorage.getItem('user');
+        const user = JSON.parse(userJson);
+        if (user && user.jwtToken) {
+          router.push("/run");
+        }
+      }, [router]);
+
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -54,7 +59,7 @@ function LogInForm() {
             });
             const userJson = await userResponse.json();
             if (response.ok) {
-                setUser({
+                const user = {
                     id: userJson.id,
                     username: userJson.username,
                     firstName: userJson.firstName,
@@ -64,8 +69,12 @@ function LogInForm() {
                     avatarPath: userJson.avatarPath,
                     role: userJson.role,
                     jwtToken: json.token
-                });
-                router.push("/run")
+                }
+                window.localStorage.setItem(
+                    'user', JSON.stringify(user)
+                )
+                setUser(user);
+                window.location.reload();
             } else {
                 alert(userJson.error);
             }

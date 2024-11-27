@@ -4,10 +4,9 @@ import React, { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Navbar from "../components/Navbar";
-import { UserContext } from "../contexts/user";
 
 export default function EditProfile() {
-  const { user, setUser } = useContext(UserContext);
+  const [user, setUser] = useState(null) 
   const router = useRouter();
   const [formData, setFormData] = useState({
     newFirstName: user?.firstName || "",
@@ -24,11 +23,14 @@ export default function EditProfile() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
 
   useEffect(() => {
-    console.log(user)
-    if (!user?.id) {
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (!user || !user.jwtToken) {
       router.push("/login");
+    } else {
+      setUser(user);
     }
-  }, [user, router]);
+  }, [router]);
 
   useEffect(() => {
     const fetchAvatars = async () => {

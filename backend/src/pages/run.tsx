@@ -646,7 +646,7 @@ const defaultRacketCode = `; Here is some code to get you started!
           <div id="editor-container">
               <div className="run-headers">
                 <LangDropdown/>
-                  <button id="run-button" className="blue-button">
+                  <button id="run-button" className="blue-button" onClick={handleRun}>
                     Run
                   </button>
                   {user.id &&
