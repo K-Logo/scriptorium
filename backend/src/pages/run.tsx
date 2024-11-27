@@ -1,13 +1,47 @@
 import React, { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
+import { LanguageProvider } from "@/contexts/language";
 import CodeEditor from "@/components/CodeEditor";
 import LangDropdown from "@/components/LangDropdown";
 import { LanguageContext } from "@/contexts/language";
+import { UserContext } from "@/contexts/user";
+import { useRouter } from 'next/router';
+
+import Link from 'next/link';
+import { Editor } from "@monaco-editor/react";
+
 
 export default function Run() {
+  const router = useRouter();
   const { language, setLanguage } = useContext(LanguageContext);
-  const [code, setCode] = useState("");
+  const { user } = useContext(UserContext);
+  type QueryParams = {
+    prepopulatedCode?: string;
+    predefinedLanguage?: string;
+  };
+  const { prepopulatedCode, predefinedLanguage } = router.query as QueryParams;
+  let codeDefaultValue;
+  if (prepopulatedCode) {
+    codeDefaultValue = prepopulatedCode;
+  } else {
+    codeDefaultValue = ""
+  }
+  const [code, setCode] = useState(codeDefaultValue);
+
+  // Below runs when page is mounted
+  useEffect(() => {
+    if (predefinedLanguage) {
+      setLanguage(predefinedLanguage);
+    }
+}, []);
+  
+
+  const handleCodeChange = (value) => {
+    setCode(value);
+    console.log(value);
+}
+
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -610,13 +644,20 @@ const defaultRacketCode = `; Here is some code to get you started!
       <main>
         <div id="run-container">
           <div id="editor-container">
-            <div className="run-headers">
-              <LangDropdown />
-              <button id="run-button" className="blue-button" onClick={handleRun}>
-                Run
-              </button>
-              <button className="blue-button">Save</button>
-            </div>
+              <div className="run-headers">
+                <LangDropdown/>
+                  <button id="run-button" className="blue-button">
+                    Run
+                  </button>
+                  {user.id &&
+                  <Link href={`/code-templates/create?codeTyped=${encodeURIComponent(code)}&languagePassed=${language}`}>
+                    <button className="blue-button">
+                      Save
+                    </button>
+                  </Link>
+                  }
+                  
+              </div>
             <CodeEditor value={code} onChange={(value: string) => setCode(value)} />
             <textarea
               id="input"

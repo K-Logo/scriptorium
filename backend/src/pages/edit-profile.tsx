@@ -24,6 +24,7 @@ export default function EditProfile() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
 
   useEffect(() => {
+    console.log(user)
     if (!user?.id) {
       router.push("/login");
     }

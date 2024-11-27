@@ -20,7 +20,7 @@ export default async function login(req, res) {
     }
 
     const token = getJWT(user, 180);  // token expires in 15 mins
-    return res.status(200).json({ token: token, id: user.db_id });
+    return res.status(200).json({ token: token, id: user.id });
   } else {
     return res.status(405).json({ error: "Method not allowed." });
   }

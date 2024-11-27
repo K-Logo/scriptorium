@@ -51,9 +51,8 @@ export default async function handler(req, res) {
   if (!id) {
       return res.status(400).json({ error: "Invalid ID" });
   }
-  let user = null;
   try {
-    user = await getUserById(id);
+    let user = await getUserByIdRaw(id);
   } catch (e) {
     res.status(400).json({ error: "Please check that your query parameter corresponds to the authenticated user's ID" });
   }
@@ -103,24 +102,20 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: `A user with phone number ${newPhoneNumber} already exists.` });
     }
 
-    try {
-      if (newPassword) {
-        const newPasswordHash = await bcrypt.hash(newPassword, 10);
-        await usersDb.updatePasswordHashById(id, newPasswordHash);        
-      }
-      if (newFirstName)   await usersDb.updateFirstNameById(id, newFirstName);
-      if (newLastName)    await usersDb.updateLastNameById(id, newLastName);
-      if (newAvatarPath)  await usersDb.updateAvatarPathById(id, newAvatarPath);
-      if (newUsername)    await usersDb.updateUsernameById(id, newUsername);
-      if (newEmail)       await usersDb.updateEmailById(id, newEmail);
-      if (newPhoneNumber) await usersDb.updatePhoneNumberById(id, newPhoneNumber);
-  
-      const nu = await usersDb.getUserById(id);
-      const jwt = getJWT(nu, 15);
-      return res.status(200).json({ jwtToken: jwt, firstName: nu.firstName, lastName: nu.lastName, email: nu.email, phoneNumber: nu.phoneNumber, username: nu.username, avatarPath: nu.avatarPath, id: nu.id });  // return JWT with updated user details  
-    } catch (e) {
-      return res.status(400).json({ error: "Please check that your query parameter corresponds to the authenticated user's ID" });
+    if (newPassword) {
+      const newPasswordHash = await bcrypt.hash(newPassword, 10);
+      await usersDb.updatePasswordHashById(id, newPasswordHash);        
     }
+    if (newFirstName)   await usersDb.updateFirstNameById(id, newFirstName);
+    if (newLastName)    await usersDb.updateLastNameById(id, newLastName);
+    if (newAvatarPath)  await usersDb.updateAvatarPathById(id, newAvatarPath);
+    if (newUsername)    await usersDb.updateUsernameById(id, newUsername);
+    if (newEmail)       await usersDb.updateEmailById(id, newEmail);
+    if (newPhoneNumber) await usersDb.updatePhoneNumberById(id, newPhoneNumber);
+
+    const nu = await usersDb.getUserById(id);
+    const jwt = getJWT(nu, 15);
+    return res.status(200).json({ jwtToken: jwt, firstName: nu.firstName, lastName: nu.lastName, email: nu.email, phoneNumber: nu.phoneNumber, username: nu.username, avatarPath: nu.avatarPath, id: nu.id });  // return JWT with updated user details
   } else if (req.method === "GET") {
     let { id } = req.query;
     const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");

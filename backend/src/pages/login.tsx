@@ -18,6 +18,7 @@ export default function LogIn() {
 }
 
 function LogInForm() {
+    const router = useRouter();
     const { user, setUser } = useContext(UserContext);
 
     useEffect(() => {
@@ -64,6 +65,7 @@ function LogInForm() {
                     role: userJson.role,
                     jwtToken: json.token
                 });
+                router.push("/run")
             } else {
                 alert(userJson.error);
             }
