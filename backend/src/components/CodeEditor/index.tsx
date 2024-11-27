@@ -4,7 +4,7 @@ import { LanguageContext } from "@/contexts/language";
 
 interface CodeEditorProps {
   onChange: (value: string) => void;
-  value: string; // The current code value passed from the parent
+  value: string;
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, value }) => {
