@@ -583,9 +583,9 @@ const defaultRacketCode = `; Here is some code to get you started!
       const responseBody = await response.json();
       if (responseBody.error) {
         if (responseBody.details === "Unknown error") {
-          setOutput(`Error: ${responseBody.error}\nDetails: Please check your input and try again`);
+          setOutput(`Error: ${responseBody.error}\n\nDetails: Please check your input and try again`);
         } else {
-          setOutput(`Error: ${responseBody.error}\nDetails: ${responseBody.details}`);
+          setOutput(`Error: ${responseBody.error}\n\nDetails: ${responseBody.details}`);
         }
       } else {
         let cleanedOutput = responseBody.output;
