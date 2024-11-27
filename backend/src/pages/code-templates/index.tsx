@@ -63,7 +63,7 @@ export default function CodeTemplates() {
     }
     params = params + `&epp=20&pno=${currentPage}`;
 
-    const response = await fetch(`http://localhost:3000/api/codetemplates${params}`, {
+    const response = await fetch(`/api/codetemplates${params}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

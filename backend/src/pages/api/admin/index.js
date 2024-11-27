@@ -47,6 +47,7 @@ export default async function handler(req, res) {
             }
         });
 
+        // localhost here to match URL validation regex. DO NOT RM
         const epp1 = new URL("https://localhost:3000" + req.url).searchParams.get("epp1");
         const pno1 = new URL("https://localhost:3000" + req.url).searchParams.get("pno1");
         const epp2 = new URL("https://localhost:3000" + req.url).searchParams.get("epp2");
