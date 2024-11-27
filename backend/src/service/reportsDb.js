@@ -34,7 +34,9 @@ export async function addReport(content, blogId, commentId) {
         await prisma.comment.update({
             where: { id: commentId },
             data: {
-                reports: { id: savedReport.id }
+                reports: { 
+                    connect: { id: savedReport.id }
+                }
             }
         })
     }

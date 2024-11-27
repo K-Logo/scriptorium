@@ -9,13 +9,13 @@ export default async function handler(req, res) {
   let { blogId } = req.query; // get blog's id
   blogId = Number.parseInt(blogId);
 
-  const decodedJWT = verifyAndDecodeBlogJWT(req);
-  if (!decodedJWT) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  
-  const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
   if (req.method === "PUT") {
+    const decodedJWT = verifyAndDecodeBlogJWT(req);
+    if (!decodedJWT) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
+
     if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot edit this post." });
     }
@@ -34,6 +34,11 @@ export default async function handler(req, res) {
 
     res.status(200).json({ message: "Blog post edited successfully." });
   } else if (req.method == 'DELETE') {
+    const decodedJWT = verifyAndDecodeBlogJWT(req);
+    if (!decodedJWT) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
     let { blogId } = req.query; // get blog's id
     blogId = Number.parseInt(blogId);
     if (decodedJWT.id != blog.authorId) {
@@ -53,6 +58,11 @@ export default async function handler(req, res) {
       res.status(500).json({ error: "Failed to delete the blog post" });
     }
   } else if (req.method === 'POST') {
+    const decodedJWT = verifyAndDecodeBlogJWT(req);
+    if (!decodedJWT) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
     const { action } = req.body;
 
     if (!blog) {
@@ -61,15 +71,18 @@ export default async function handler(req, res) {
 
     if (action == "upvote") {
       await blogsDb.updateRatingById(blogId, action);
-      res.status(200).json({ message: "Successfully upvoted the blog" });
+      const blog = await blogsDb.searchBlogPostById(blogId, null)
+      return res.status(200).json({ rating: blog.rating });
     } else if (action == "downvote") {
       await blogsDb.updateRatingById(blogId, action);
-      res.status(200).json({ message: "Successfully downvoted the blog" });
+      const blog = await blogsDb.searchBlogPostById(blogId, null)
+      return res.status(200).json({ rating: blog.rating });
     } else {
-      res.status(404).json({ error: "Incorrect action" });
+      return res.status(404).json({ error: "Incorrect action" });
     }
   } else if (req.method === "GET") {
-    const { codeId } = req.body;
+    const blog = await blogsDb.searchBlogPostById(blogId, null);
+    const { codeId } = req.query;
 
     if (codeId) { // return the code template
       let codeTemplate = getCodeTemplateById(codeId);

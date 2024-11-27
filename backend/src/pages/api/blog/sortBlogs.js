@@ -6,6 +6,7 @@ export default async function handler(req, res) {
         const { sortType } = req.query;
         const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
         const pno = new URL("https://localhost:3000" + req.url).searchParams.get("pno");
+        console.log(sortType);
 
         let allPosts = await getSortedBlogs(sortType);
 

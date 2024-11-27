@@ -13,29 +13,26 @@ export default function BlogPosts() {
     const [sortType, setSortType] = useState("desc");
     const [sortDropdownOpen, setSortDropdown] = useState(false);
     const { user } = useContext(UserContext);
+    const [blogs, setBlogs] = useState([]);
 
     async function getAllBlogs() {
-        const blogs = await fetch(`/api/blogs/sortBlogs?sortType=${sortType}`, {
+        const blogs = await fetch(`/api/blog/sortBlogs?sortType=${sortType}`, {
             method:"GET",
             headers: {
                 "Content-Type": "application/json",
             },
         });
-
-        return blogs
+        return blogs;
     }
 
     useEffect(() => {
         async function fetchBlogs() {
             const blogs = await getAllBlogs();
             const blogsJson = await blogs.json();
-            setBlogs(blogsJson);
+            setBlogs(blogsJson.allPosts);
         }
         fetchBlogs();
-    })
-
-    const [blogs, setBlogs] = useState([]);
-
+    }, [blogs]);
     
     const typeToDisplayName = {
         "title": "Title",
@@ -137,21 +134,27 @@ export default function BlogPosts() {
                                 </button>
                                 <SortDropdown />
                             </div>
-                            <div id="code-templates-grid">
+                    
+                            <div
+                                className="space-y-4 px-2 max-w-prose mx-auto"
+                                >
                                 {blogs.map((blog) => (
-                                    <Link key={blog.id} className="code-templates-item" href={`/blogs/${blog.id}`}>
-                                        <h3>{blog.title}</h3>
-                                        <p>{blog.description}</p>
-                                        <div className="tag-container">
-                                            {blog.tags.map((tag) => (
-                                                <div key={tag.id} className="tag">{tag.name}</div>
-                                            ))}
-                                        </div>
+                                    <Link
+                                    key={blog.id}
+                                    className="block p-4 border rounded-lg shadow hover:bg-gray-100 transition duration-200"
+                                    href={`/blogs/${blog.id}`}
+                                    >
+                                    <h3 className="text-xl font-semibold">{blog.title}</h3>
+                                    <p className="text-blue-700 mt-2">{blog.description}</p>
+                                    <p>{blog.author.username}</p>
+                                    {blog.tags.map((tag) =>
+                                        <div className="tag">{tag.name}</div>
+                                    )}
                                     </Link>
                                 ))}
                             </div>
                         </div>
-                        <div className="mt-6 text-center absolute right-[7vw] bottom-[5vw]">
+                        <div className="mt-6 text-center absolute right-[7vw] top-[20vw]">
                             {user.id && 
                                 <Link href='/blogs/create'>
                                     <button className="blue-button">

@@ -3,9 +3,9 @@ import { getJWT, verifyAndDecodeBlogJWT } from '@/service/jwt';
 
 export default async function(req, res) {
     if (req.method == "POST") {
-        let { commentId } = req.query; // get blog's id
-        commentId = Number.parseInt(commentId);
-        const { action } = req.body;
+        // let { commentId } = req.query; // get blog's id
+        // commentId = Number.parseInt(commentId);
+        const { action, commentId } = req.body;
 
         const decodedJWT = verifyAndDecodeBlogJWT(req);
         if (!decodedJWT) {
@@ -21,10 +21,12 @@ export default async function(req, res) {
         try {
             if (action == "upvote") {
                 await commentsDb.updateRatingById(commentId, action);
-                res.status(200).json({ message: "Successfully upvoted the comment" });
+                const newComment = commentsDb.searchCommentById(commentId)
+                console.log(newComment);
+                res.status(200).json({ newComment });
             } else if (action == "downvote") {
                 await commentsDb.updateRatingById(commentId, action);
-                res.status(200).json({ message: "Successfully downvoted the comment" });
+                res.status(200).json({ newComment: comment });
             } else {
                 res.status(404).json({ error: "Incorrect action" });
             }

@@ -234,37 +234,73 @@ export async function searchBlogPostByCodeTemplateId(templateId, userId) {
 }
 
 export async function searchBlogPostById(id, userId) {
-    const blog = await prisma.blog.findFirst({
-        where: {
-            id: id,
-            OR: [
-                { hidden: false }, // Show public posts
-                { authorId: userId } // Show hidden posts for the author
-            ]
-        },
-        include: {
-            comments: {
-                where: {
-                    OR: [
-                        { hidden: false },  // Show public comments
-                        { authorId: userId } // Show comments made by the author
-                    ]
-                },
-                include: {
-                    author: {
-                        select: {
-                            id: true,
-                            username: true,
-                            avatarPath: true,
-                            role: true
-                        }
-                    }
-                },
+    if (userId == null) {
+        const blog = await prisma.blog.findFirst({
+            where: {
+                id: id
             },
-        },
-    });
-
-    return blog;
+            include: {
+                comments: {
+                    where: {
+                        hidden: false
+                    },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatarPath: true,
+                                role: true
+                            }
+                        }
+                    },
+                },
+                tags: true
+            }
+        });
+        return blog;
+    } else {
+        const blog = await prisma.blog.findFirst({
+            where: {
+                id: id,
+                OR: [
+                    { hidden: false }, // Show public posts
+                    { authorId: userId } // Show hidden posts for the author
+                ]
+            },
+            include: {
+                comments: {
+                    where: {
+                        OR: [
+                            { hidden: false },  // Show public comments
+                            { authorId: userId } // Show comments made by the author
+                        ]
+                    },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatarPath: true,
+                                role: true
+                            }
+                        }
+                    },
+                },
+                tags: true,
+                author: {
+                    select: {
+                        id: true,
+                        username: true,
+                        avatarPath: true,
+                        role: true
+                    }
+                }
+            },
+        
+        });
+        return blog;
+    }  
 }
 
 export async function updateTitleById(id, title) {
@@ -385,7 +421,8 @@ export async function getSortedBlogs(order) {
                     avatarPath: true,
                     role: true
                 }
-            }
+            },
+            tags: true
         }
     });
     return allBlogs;
