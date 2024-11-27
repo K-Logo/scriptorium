@@ -9,22 +9,7 @@ import { UserContext } from '../../contexts/user'
 export default function BlogPost() {
   const router = useRouter();
   const { id } = router.query;
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [authorUsername, setAuthorUsername] = useState<string>("");
-  const [codeTemplate, setCodeTemplate] = useState<CodeTemplate>(null);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [rating, setRating] = useState<number>(0);
-  const [showCommentBox, setShowCommentBox] = useState(false);
-  const [newComment, setNewComment] = useState<string>("");
-  const { user } = useContext(UserContext);
-  const [showReportBox, setShowReportBox] = useState(false); // Manage visibility of report box
-  const [reportReason, setReportReason] = useState(""); // Store the report reason
-  const [showCommentReportBox, setShowCommentReportBox] = useState(false);
-  const [commentReportReason, setCommentReportReason] = useState("");
-  const [sortType, setSortType] = useState("desc");
-  const [sortDropdownOpen, setSortDropdown] = useState(false);
+  const [blog, setBlog] = useState(null);
 
   async function getBlog() {
     const blog = await fetch(`/api/blog/${id}`, {
@@ -42,11 +27,29 @@ export default function BlogPost() {
       async function fetchBlog() {
           const blogData = await getBlog();
           setBlog(blogData);
+          setRating(blogData.rating)
       }
       fetchBlog();
   }, [id]);
 
-  const [blog, setBlog] = useState(null);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [authorUsername, setAuthorUsername] = useState<string>("");
+  const [codeTemplate, setCodeTemplate] = useState<CodeTemplate>(null);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [rating, setRating] = useState<number>(0);
+  const [showCommentBox, setShowCommentBox] = useState(false);
+  const [newComment, setNewComment] = useState<string>("");
+  const { user } = useContext(UserContext);
+  const [showReportBox, setShowReportBox] = useState(false); // Manage visibility of report box
+  const [reportReason, setReportReason] = useState(""); // Store the report reason
+  const [showCommentReportBox, setShowCommentReportBox] = useState(false);
+  const [commentReportReason, setCommentReportReason] = useState("");
+  const [sortType, setSortType] = useState("desc");
+  const [sortDropdownOpen, setSortDropdown] = useState(false);
+
+  {key: bool, }
 
   useEffect(() => {
     if (!id) return;
@@ -81,7 +84,6 @@ export default function BlogPost() {
   } else if (typeof id === 'string') {
     intId = parseInt(id, 10);
   }
-
 
   // async function getAllComments() {
   //   const comments = await fetch(`/api/comments/sortComments?sortType=${sortType}`, {
@@ -300,7 +302,7 @@ export default function BlogPost() {
         <Head>
           <title>Scriptorium Blog</title>
         </Head>
-        <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="max-w-2xl  mx-auto px-4 py-8">
           {/* Blog Title */}
           <h1 className="text-3xl font-bold text-center pb-2">{title}</h1>
 
@@ -317,13 +319,13 @@ export default function BlogPost() {
           {/* Description */}
           <p className="mt-4 text-lg s">{description}</p>
 
-          <div className="mt-4">
+          { codeTemplate && <div className="mt-4">
             <Link href={`/code-templates/${codeTemplate}`}>
               <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
                 Link to Code Template
               </p>
             </Link>
-          </div>
+          </div>}
 
           {/* Like/Dislike buttons */}
           <div className="mt-6 flex items-center space-x-4">

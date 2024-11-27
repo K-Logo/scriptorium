@@ -22,7 +22,7 @@ export default function CodeTemplates() {
 
   function Dropdown() {
       return dropdownOpen && (
-          <ul id="code-search-type-dropdown">
+          <ul className="code-search-type-dropdown">
               <button onClick={() => {setSearchType("title"); toggleDropdown();}}><li>Title</li></button>
               <button onClick={() => {setSearchType("content"); toggleDropdown();}}><li>Content</li></button>
               <button onClick={() => {setSearchType("tag"); toggleDropdown();}}><li>Tag</li></button>
@@ -73,7 +73,7 @@ export default function CodeTemplates() {
             </h1>
             <br/>
             <div className="search-bar">
-              <button id="code-search-type-dropdown-button" onClick={() => toggleDropdown()}>{typeToDisplayName[searchType]}</button>
+              <button className="code-search-type-dropdown-button" onClick={() => toggleDropdown()}>{typeToDisplayName[searchType]}</button>
               <input
                 type="text"
                 id="search-text"
@@ -85,7 +85,7 @@ export default function CodeTemplates() {
                 Search
               </button>
             </div>
-            <div id="code-templates-results">
+            <div className="code-templates-results">
               <Dropdown/>
               <div id="code-templates-grid">
                 {codeTemplates.map((item) => (

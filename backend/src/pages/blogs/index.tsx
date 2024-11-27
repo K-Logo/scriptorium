@@ -32,7 +32,7 @@ export default function BlogPosts() {
             setBlogs(blogsJson.allPosts);
         }
         fetchBlogs();
-    }, [blogs]);
+    }, []);
     
     const typeToDisplayName = {
         "title": "Title",
@@ -51,7 +51,7 @@ export default function BlogPosts() {
 
     function SortDropdown() {
         return sortDropdownOpen && (
-            <ul id="code-search-type-dropdown">
+            <ul className="code-search-type-dropdown ">
                 <button onClick={() => {setSortType("asc"); toggleSortDropdown();}}><li>Ascending Ratings</li></button>
                 <button onClick={() => {setSortType("desc"); toggleSortDropdown();}}><li>Descending Ratings</li></button>
             </ul>
@@ -64,7 +64,7 @@ export default function BlogPosts() {
 
     function Dropdown() {
         return dropdownOpen && (
-            <ul id="code-search-type-dropdown">
+            <ul className="code-search-type-dropdown">
                 <button onClick={() => {setSearchType("title"); toggleDropdown();}}><li>Title</li></button>
                 <button onClick={() => {setSearchType("content"); toggleDropdown();}}><li>Content</li></button>
                 <button onClick={() => {setSearchType("tag"); toggleDropdown();}}><li>Tag</li></button>
@@ -87,7 +87,7 @@ export default function BlogPosts() {
           params = `?tag=${searchTerm}`
         }
     
-        const response = await fetch(`http://localhost:3000/api/blogs${params}`, {
+        const response = await fetch(`/api/blogs${params}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,9 +112,12 @@ export default function BlogPosts() {
                         <h1>Blogs</h1>
                         <br />
                         <div className="search-bar">
-                            <button id="code-search-type-dropdown-button" onClick={() => toggleDropdown()}>
-                                {typeToDisplayName[searchType]}
-                            </button>
+                            <div className="pb-[2vw] relative p-0">
+                                <button className="code-search-type-dropdown-button" onClick={() => toggleDropdown()}>
+                                    {typeToDisplayName[searchType]}
+                                </button>
+                                <Dropdown />
+                            </div>
                             <input
                                 type="text"
                                 id="search-text"
@@ -126,10 +129,9 @@ export default function BlogPosts() {
                                 Search
                             </button>
                         </div>
-                        <div id="code-templates-results">
-                            <Dropdown />
-                            <div className="pt-[3vw]">
-                                <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
+                        <div className="code-templates-results">
+                            <div className="relative p-0">
+                                <button className="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
                                     {sortToDisplayName[sortType]}
                                 </button>
                                 <SortDropdown />
@@ -150,6 +152,7 @@ export default function BlogPosts() {
                                     {blog.tags.map((tag) =>
                                         <div className="tag">{tag.name}</div>
                                     )}
+                                    <p>{blog.rating}</p>
                                     </Link>
                                 ))}
                             </div>
