@@ -6,10 +6,24 @@ import CodeEditor from "@/components/CodeEditor";
 import { LanguageProvider } from "@/contexts/language";
 import LangDropdown from "@/components/LangDropdown";
 import { LanguageContext } from "@/contexts/language";
+import Link from 'next/link';
+import { Editor } from "@monaco-editor/react";
+
 
 
 export default function Run() {
   const { language, setLanguage } = useContext(LanguageContext);
+  const [code, setCode] = useState("");
+
+  const handleCodeChange = (value) => {
+    setCode(value);
+    console.log(value);
+}
+
+  useEffect(() => {
+      console.log(language);
+
+    }, [language]) ;
 
 
 
@@ -26,11 +40,19 @@ export default function Run() {
                 <button id="run-button" className="blue-button">
                   Run
                 </button>
-                <button className="blue-button">
-                  Save
-                </button>
+                <Link href={`/code-templates/create?codeTyped=${encodeURIComponent(code)}&languagePassed=${language}`}>
+                  <button className="blue-button">
+                    Save
+                  </button>
+                </Link>
+                
               </div>
-              <CodeEditor />
+              <Editor
+                  theme="vs-dark"
+                  language={language}
+                  value={code}
+                  onChange={handleCodeChange}
+              />
               <textarea id="input" placeholder="Insert input here (each input on its own line)...">
                 
               </textarea>
