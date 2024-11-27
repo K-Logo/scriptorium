@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const { content, blogId, commentId } = req.body;
 
         if (!content) {
-            res.status(409).json({ error: "Content is a mandatory field." });
+            return res.status(409).json({ error: "Content is a mandatory field." });
         }
 
         const decodedJWT = verifyAndDecodeBlogJWT(req);
