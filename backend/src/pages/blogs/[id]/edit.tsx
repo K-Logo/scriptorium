@@ -1,28 +1,31 @@
 import { useState, useContext, useEffect } from "react";
-import { UserContext } from "../../contexts/user";
+import { UserContext } from "../../../contexts/user";
 import Link from 'next/link';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
-export default function EditBlog(blogId) {
-    async function getBlog() {
-        const blog = await fetch(`/api/blog/${blogId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+export default function EditBlog() {
+    const router = useRouter();
+    const { id } = router.query;
+    // async function getBlog() {
+    //     const blog = await fetch(`/api/blog/${blogId}`, {
+    //         method: "GET",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         }
+    //     });
 
-        const jsonBlog = await blog.json();
-        return jsonBlog;
-    }
+    //     const jsonBlog = await blog.json();
+    //     return jsonBlog;
+    // }
     
-    useEffect(() => {
-        async function fetchBlog() {
-            const blogData = await getBlog();
-            setBlog(blogData);
-        }
-        fetchBlog();
-    }, [blogId]);
+    // useEffect(() => {
+    //     async function fetchBlog() {
+    //         const blogData = await getBlog();
+    //         setBlog(blogData);
+    //     }
+    //     fetchBlog();
+    // }, [blogId]);
 
     const [blog, setBlog] = useState(null);
     const [title, setTitle] = useState<string>(blog.title);

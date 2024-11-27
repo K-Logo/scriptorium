@@ -156,16 +156,26 @@ export default function BlogPosts() {
                                 {blogs.map((blog) => (
                                     <Link
                                     key={blog.id}
-                                    className="block p-4 border rounded-lg shadow hover:bg-gray-100 transition duration-200"
+                                    className="block p-4 bg-[#3e315c] hover:bg-[#533b8a] transition duration-300 duration-200"
                                     href={`/blogs/${blog.id}`}
                                     >
-                                    <h3 className="text-xl font-semibold">{blog.title}</h3>
-                                    <p className="text-blue-700 mt-2">{blog.description}</p>
-                                    <p>{blog.author.username}</p>
-                                    {blog.tags.map((tag) =>
-                                        <div className="tag">{tag.name}</div>
-                                    )}
-                                    <p>{blog.rating}</p>
+                                        <div className="flex flex-row items-center justify-between">
+                                            <h3 className="text-[20px] font-bold">{blog.title}</h3>
+                                            <p className="m-0">Poster: {blog.author.username}</p>
+                                        </div>
+                                        <div className="flex flex-row items-center justify-between">
+                                            <p className="m-0">{blog.description}</p>
+                                            <p>Rating: {blog.rating}</p>
+                                        </div>
+                                        
+                                        
+                                        
+                                        <div className="tag-container">
+                                            {blog.tags.map((tag) =>
+                                                <div className="tag">{tag.name}</div>
+                                            )}
+                                        </div>
+                                        
                                     </Link>
                                 ))}
                             </div>

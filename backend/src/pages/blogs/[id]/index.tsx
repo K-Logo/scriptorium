@@ -304,181 +304,188 @@ export default function BlogPost() {
         <Head>
           <title>Scriptorium Blog</title>
         </Head>
-        <div className="max-w-2xl  mx-auto px-4 py-8">
-          {/* Blog Title */}
-          <h1 className="text-3xl font-bold text-center pb-2">{title}</h1>
-
-          {/* Tags */}
-          {tags.map((tag) => (
-            <div
-              key={tag.id}
-              className="border border-gray-300 px-3 py-1 mb-2 rounded-lg inline-block bg-gray-100 text-gray-800"
-            >
-              {tag.name}
-            </div>
-          ))}
-
-          {/* Description */}
-          <p className="mt-4 text-lg s">{description}</p>
-
-          { codeTemplate && <div className="mt-4">
-            <Link href={`/code-templates/${codeTemplate.id}`}>
-              <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
-                Link to Code Template
-              </p>
-            </Link>
-          </div>}
-
-          {/* Like/Dislike buttons */}
-          <div className="mt-6 flex items-center space-x-4">
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-              onClick={handleUpvote}
-            >
-              👍
-            </button>
-            
-            <div className="text-center">
-              <span>{rating}</span>
-            </div>
-
-            <button
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
-              onClick={handleDownvote}
-            >
-              👎
-            </button>
-
-            {/* Report button */}
-            <button 
-            className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
-            onClick={handleReportClick}>
-              Report
-            </button>
-
-            {/* Report Text Box */}
-            {showReportBox && (
-              <div className="mt-4">
-                <textarea
-                  value={reportReason}
-                  onChange={(e) => setReportReason(e.target.value)}
-                  placeholder="Explain why you are reporting this..."
-                  className="w-full p-2 border border-blue-300 rounded-lg bg-gray-800"
-                ></textarea>
-                <div className="flex mt-2">
-                  <button
-                    onClick={() => handleReport(intId, null)}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none"
-                  >
-                    Submit Report
-                  </button>
-                  <button
-                    onClick={handleCloseReportBox}
-                    className="ml-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Edit Button (only for the author) */}
-          {blog && blog.authorId === user.id && (
-              <button
-                className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700"
-                onClick={() => console.log(`Edit blog with ID: ${blog.id}`)}
-              >
-                Edit
-              </button>
-            )}
-
-          {/* New Comment Input */}
-          <div className="mt-6">
-              <textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="w-full p-4 border rounded-lg shadow-sm bg-gray-800 text-blue-100"
-                rows={4}
-                placeholder="Add a comment..."
-              />
-              <button
-                onClick={handleAddComment}
-                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-              >
-                Add Comment
-              </button>
-            </div>
-            <div className="pt-[3vw]">
-              <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
-                  {sortToDisplayName[sortType]}
-              </button>
-              <SortDropdown />
-          </div>
-
-          {/* Comment Section */}
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-2">Comments</h2>
-            <div className="space-y-4">
-              {comments.map((comment) => (
-                <div key={comment.id} className="p-4 border rounded-lg shadow-sm bg-gray-800">
-                  <p>{comment.content}</p>
-                  <div className="mt-6 flex items-center space-x-4">
-
-                    <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                    onClick={() => handleCommentLike(comment.id)}
-                    >
-                    👍
-                    </button>
-                    <div className="text-center">
-                    <span>{comment.rating}</span>
-                    </div>
-                    <button
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
-                    onClick={() => handleCommentDislike(comment.id)}
-                    >
-                    👎
-                    </button>
-
-                    {/* Report button */}
-                    <button 
-                      className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
-                      onClick={handleCommentReportClick} // Pass the comment ID to handle this specific comment's report
-                    >
-                      Report
-                    </button>
-
-                    {/* Report Text Box for this specific comment */}
-                    {showCommentReportBox && (
-                      <div className="mt-2 ml-4 w-80">
-                        <textarea
-                          value={commentReportReason}
-                          onChange={(e) => setCommentReportReason(e.target.value)}
-                          placeholder="Explain why you are reporting this..."
-                          className="w-full p-2 border border-blue-300 rounded-lg bg-gray-800 text-white"
-                        ></textarea>
-                        <div className="flex mt-2">
-                          <button
-                            onClick={() => handleReport(null, comment.id)}
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none"
-                          >
-                            Submit Report
-                          </button>
-                          <button
-                            onClick={handleCloseCommentReportBox}
-                            className="ml-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+        <div className="p-12 px-48">
+          <div id="code-template-entry">
+            {/* Blog Title */}
+            <h1 className="text-3xl font-bold text-center pb-2">{title}</h1>
+            {/* Tags */}
+            <div className="tag-container">
+              {tags.map((tag) => (
+                <div
+                  key={tag.id}
+                  className="bg-[#271840] py-1 px-3 m-1 rounded"
+                >
+                  {tag.name}
                 </div>
               ))}
             </div>
+
+
+            {/* Description */}
+            <p className="mt-4 text-lg s break-words">{description}</p>
+
+            { codeTemplate && <div className="mt-4">
+              <Link href={`/code-templates/${codeTemplate.id}`}>
+                <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
+                  Link to Code Template
+                </p>
+              </Link>
+            </div>}
+
+            {/* Like/Dislike buttons */}
+            <div className="mt-6 flex items-center space-x-4 justify-end">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                onClick={handleUpvote}
+              >
+                👍
+              </button>
+              
+              <div className="text-center">
+                <span>{rating}</span>
+              </div>
+
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                onClick={handleDownvote}
+              >
+                👎
+              </button>
+
+              {/* Report button */}
+              <button 
+              className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+              onClick={handleReportClick}>
+                Report
+              </button>
+              {/* Edit Button (only for the author) */}
+              {blog && blog.authorId === user.id && (
+                  <button
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700"
+                    onClick={() => console.log(`Edit blog with ID: ${blog.id}`)}
+                  >
+                    Edit
+                  </button>
+                )}
+
+              {/* Report Text Box */}
+              {showReportBox && (
+                <div className="mt-4">
+                  <textarea
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    placeholder="Explain why you are reporting this..."
+                    className="w-full p-2 border border-blue-300 rounded-lg bg-gray-800"
+                  ></textarea>
+                  <div className="flex mt-2">
+                    <button
+                      onClick={() => handleReport(intId, null)}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none"
+                    >
+                      Submit Report
+                    </button>
+                    <button
+                      onClick={handleCloseReportBox}
+                      className="ml-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            
+
           </div>
+          <br/>
+          <h2 className="text-xl font-semibold mb-2">Comments</h2>
+          {/* New Comment Input */}
+          <div className="mt-6">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  className="bg-[#302a3d] h-8 p-5 rounded w-full h-32"
+                  rows={4}
+                  placeholder="Add a comment..."
+                />
+                <button
+                  onClick={handleAddComment}
+                  className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Add Comment
+                </button>
+              </div>
+              <div className="pt-[3vw]">
+                <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
+                    {sortToDisplayName[sortType]}
+                </button>
+                <SortDropdown />
+            </div>
+
+            {/* Comment Section */}
+            <div className="mt-8">
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="bg-[#302a3d] p-5 rounded w-full">
+                    <p className="break-words">{comment.content}</p>
+                    <div className="mt-6 flex items-center space-x-4 justify-end">
+
+                      <button
+                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                      onClick={() => handleCommentLike(comment.id)}
+                      >
+                      👍
+                      </button>
+                      <div className="text-center">
+                      <span>{comment.rating}</span>
+                      </div>
+                      <button
+                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                      onClick={() => handleCommentDislike(comment.id)}
+                      >
+                      👎
+                      </button>
+
+                      {/* Report button */}
+                      <button 
+                        className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+                        onClick={handleCommentReportClick} // Pass the comment ID to handle this specific comment's report
+                      >
+                        Report
+                      </button>
+
+                      {/* Report Text Box for this specific comment */}
+                      {showCommentReportBox && (
+                        <div className="mt-2 ml-4 w-80">
+                          <textarea
+                            value={commentReportReason}
+                            onChange={(e) => setCommentReportReason(e.target.value)}
+                            placeholder="Explain why you are reporting this..."
+                            className="w-full p-2 border border-blue-300 rounded-lg bg-gray-800 text-white"
+                          ></textarea>
+                          <div className="flex mt-2">
+                            <button
+                              onClick={() => handleReport(null, comment.id)}
+                              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none"
+                            >
+                              Submit Report
+                            </button>
+                            <button
+                              onClick={handleCloseCommentReportBox}
+                              className="ml-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          
         </div>
       </>
     )
