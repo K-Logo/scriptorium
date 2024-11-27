@@ -129,7 +129,7 @@ export default function EditBlog(blogId) {
                 <input
                 type="text"
                 value={codeTemplateId}
-                onChange={(e) => setCodeTemplateId(e.target.value)}
+                //onChange={(e) => setCodeTemplateId(e.target.value)}
                 className="w-full p-2 rounded bg-gray-800 text-gray-300"
                 placeholder="Code Template ID"
                 />
