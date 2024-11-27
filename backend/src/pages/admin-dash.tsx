@@ -77,7 +77,7 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
-        `http://localhost:3000/api/admin?epp1=${postsPerPage}&pno1=${postPageNum}&epp2=${commentsPerPage}&pno2=${commentPageNum}`, {
+        `/api/admin?epp1=${postsPerPage}&pno1=${postPageNum}&epp2=${commentsPerPage}&pno2=${commentPageNum}`, {
           headers: {
             "Authorization": `Bearer ${user.jwtToken}`,
           },
@@ -141,7 +141,7 @@ const AdminDashboard: React.FC = () => {
         hidden: type === 'post' ? !posts.find(post => post.id === id)?.hidden : !comments.find(comment => comment.id === id)?.hidden
       };
   
-      const response = await fetch('http://localhost:3000/api/admin', {
+      const response = await fetch('/api/admin', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
