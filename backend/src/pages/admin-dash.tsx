@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { UserContext } from "../contexts/user";
 
 interface Post {
   id: number;
@@ -39,7 +38,7 @@ interface Comment {
 
 const AdminDashboard: React.FC = () => {
   const router = useRouter();
-  const { user, setUser } = useContext(UserContext);
+  const [user, setUser] = useState(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [postPageNum, setPostPageNum] = useState<number>(1);
@@ -62,33 +61,43 @@ const AdminDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!user) {
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (!user || !user.jwtToken) {
       router.push("/login");
     } else if (user.role !== "ADMIN") {
       router.push("/run");
+    } else {
+      setUser(user);
     }
-  }, [user, router]);
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `/api/admin?epp1=${postsPerPage}&pno1=${postPageNum}&epp2=${commentsPerPage}&pno2=${commentPageNum}`, {
+            headers: {
+              "Authorization": `Bearer ${user.jwtToken}`,
+            },
+          });
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.allPosts);
+          setComments(data.allComments);    
+        } else {
+          console.log("Unexpected error");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchData();
+  }, [postsPerPage, postPageNum, commentsPerPage, commentPageNum]);
 
   // prevent rendering if user not authenticated
   if (!user || user.role !== "ADMIN") {
     return null;
   }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        `/api/admin?epp1=${postsPerPage}&pno1=${postPageNum}&epp2=${commentsPerPage}&pno2=${commentPageNum}`, {
-          headers: {
-            "Authorization": `Bearer ${user.jwtToken}`,
-          },
-        });
-      const data = await response.json();
-      setPosts(data.allPosts);
-      setComments(data.allComments);
-    };
-
-    fetchData();
-  }, [postPageNum, commentPageNum, postsPerPage, commentsPerPage]);
 
   const togglePostDescription = (id: number) => {
     setExpandedPost(prev => {
