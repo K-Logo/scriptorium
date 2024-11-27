@@ -4,14 +4,20 @@ import { useRouter } from 'next/router';
 import Navbar from "../../components/Navbar";
 import { Editor } from "@monaco-editor/react";
 import { UserContext, UserProvider } from "../../contexts/user";
+import LangDropdown from "@/components/LangDropdown";
 
 export default function CodeTemplateId() {
     const router = useRouter();
-    const { id } = router.query;
-    const { parentId, codeTyped, languagePassed } = router.query;
+    type QueryParams = {
+        parentId?: string;
+        codeTyped?: string;
+        languagePassed?: string; 
+      };
+    const { parentId, codeTyped, languagePassed } = router.query as QueryParams;
+    const parentIdInt: number = parseInt(parentId);
     const [title, setTitle] = useState<string>("");
     const [explanation, setExplanation] = useState<string>("");
-    let contentDefaultValue;
+    let contentDefaultValue: string;
     if (codeTyped) {
         contentDefaultValue = codeTyped;
     } else {
@@ -52,12 +58,38 @@ export default function CodeTemplateId() {
         setContent(value);
     };
 
+    // Below runs when page is mounted
+    useEffect(() => {
+        if (!parentIdInt) return;
+        const fetchData = async () => {
+            const response = await fetch(`http://localhost:3000/api/codetemplates/${parentIdInt}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const json = await response.json();
+            if (response.ok) {
+                setTitle(json.title);
+                setExplanation(json.explanation);
+                setContent(json.content);
+                setTags(json.tags.map(tag => tag.name));
+                setLanguage(json.language);
+
+            } else {
+                alert(json.error);
+            }
+        }
+        fetchData();
+    }, [parentIdInt]);
+
 
     async function handleSubmit(event) {
         event.preventDefault();
         let body;
+        console.log(tags);
         
-        if (parentId) {
+        if (parentIdInt) {
             body = {
                 title: title,
                 explanation: explanation,
@@ -65,7 +97,7 @@ export default function CodeTemplateId() {
                 tags: tags,
                 userId: user.id,
                 language: language,
-                parentId: parentId
+                parentId: parentIdInt
             };
         } else {
             body = {
@@ -91,6 +123,7 @@ export default function CodeTemplateId() {
         const json = await response.json();
         if (response.ok) {
             alert("Code template successfully created!")
+            router.push(`/code-templates/${json.id}`)
             
         } else {
             alert(json.error);
@@ -136,10 +169,7 @@ export default function CodeTemplateId() {
                         <input type="text" value={explanation} onChange={handleExplanationChange}/>
                     </label>
 
-                    <label>
-                        Language:
-                        <input type="text" value={language} onChange={handleLanguageChange}/>
-                    </label>
+                    <LangDropdown/>
 
                     <div className="flex flex-wrap">
                         {tags.map((tag) => (

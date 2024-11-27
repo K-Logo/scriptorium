@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import Navbar from "../../../components/Navbar";
 import { Editor } from "@monaco-editor/react";
 import { UserContext, UserProvider } from "../../../contexts/user";
+import { LanguageContext, LanguageProvider } from "@/contexts/language";
+import LangDropdown from "@/components/LangDropdown";
 
 export default function CodeTemplateId() {
     const router = useRouter();
@@ -11,7 +13,7 @@ export default function CodeTemplateId() {
     const [title, setTitle] = useState<string>("");
     const [explanation, setExplanation] = useState<string>("");
     const [content, setContent] = useState<string>("");
-    const [language, setLanguage] = useState<string>("");
+    const { language, setLanguage } = useContext(LanguageContext);
     const [tags, setTags] = useState([]);
     const [addedTags, setAddedTags] = useState<string[]>([]);
     const [removedTags, setRemovedTags] = useState<string[]>([]);
@@ -86,7 +88,8 @@ export default function CodeTemplateId() {
             body: JSON.stringify({
                 newTitle: title,
                 newExplanation: explanation,
-                newContent: content
+                newContent: content,
+                newLanguage: language
             })
         });
         const json = await response.json();
@@ -123,6 +126,8 @@ export default function CodeTemplateId() {
                 }
                 
             }
+            alert("Successfully edited code template!")
+            router.push(`/code-templates/${json.id}`)
             
 
         } else {
@@ -146,6 +151,25 @@ export default function CodeTemplateId() {
         setTagInput(event.target.value);
     }
 
+    async function handleDelete(event) {
+        event.preventDefault();
+        
+
+        const response = await fetch(`http://localhost:3000/api/codetemplates/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.jwtToken}`
+            }
+        });
+        const json = await response.json();
+        if (response.ok) {
+            alert("Successfully deleted code template.");
+        } else {
+            alert(json.error);
+        }
+    }
+
     return (
     <>
         <Head>
@@ -155,9 +179,15 @@ export default function CodeTemplateId() {
         <div id="code-templates-container">
             <div id="middle-column">
             <div id="code-template-entry">
-                <h1>
-                    Edit code template
-                </h1>
+            <div className="code-template-entry-header">
+                    <div id="title-container">
+                        <h1>Edit code template</h1>
+                    </div>
+                    <div>
+                        <button className="blue-button" id="delete-button" onClick={handleDelete}>Delete</button>
+                    </div>
+                </div>
+                
                 <div id="input-fields">
                     <label>
                         Title:
@@ -169,10 +199,7 @@ export default function CodeTemplateId() {
                         <input type="text" value={explanation} onChange={handleExplanationChange}/>
                     </label>
 
-                    <label>
-                        Language:
-                        <input type="text" value={language} onChange={handleLanguageChange}/>
-                    </label>
+                    <LangDropdown/>
 
                     <div className="flex flex-wrap">
                         {tags.map((tag) => (

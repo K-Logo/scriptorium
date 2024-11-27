@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 export function getJWT(user, expiryInMinutes) {
   const userForJWT = {
-    id: user.db_id,
+    id: user.id,
     username: user.username,
     firstName: user.firstName,
     lastName: user.lastName,
@@ -19,6 +19,7 @@ export function getJWT(user, expiryInMinutes) {
 export function verifyAndDecodeJWT(req, userId) {
   try {
     const token = getTokenFromReq(req);
+    console.log("token: " + token)
     const decodedJWT = jwt.verify(token, process.env.SECRET_KEY);
     if (!decodedJWT || decodedJWT.id != userId) {
       return null;

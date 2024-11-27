@@ -24,6 +24,7 @@ export default function EditProfile() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
 
   useEffect(() => {
+    console.log(user)
     if (!user?.id) {
       router.push("http://localhost:3000/login");
     }
@@ -104,6 +105,7 @@ export default function EditProfile() {
       if (response.ok) {
         const updatedUser = await response.json();
         setUser(updatedUser);
+        console.log(updatedUser);
         alert("Profile updated successfully!");
       } else {
         const error = await response.json();

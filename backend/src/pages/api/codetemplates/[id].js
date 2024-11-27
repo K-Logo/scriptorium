@@ -23,10 +23,11 @@ export default async function handler(req, res) {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        const { newTitle, newExplanation, newContent, oldTag, newTag, deleteTag } = req.body;
+        const { newTitle, newExplanation, newContent, oldTag, newTag, deleteTag, newLanguage } = req.body;
         if (newTitle)           await updateTitleById(id, newTitle);
         if (newExplanation)     await updateExplanationById(id, newExplanation);
         if (newContent)         await updateContentById(id, newContent);
+        if (newLanguage)        await updateLanguageById(id, newLanguage);
         if (oldTag && newTag) {  // UPDATE a tag
             await deleteTagById(id, oldTag);  // oldTag must match exactly
             await addTagById(id, newTag);

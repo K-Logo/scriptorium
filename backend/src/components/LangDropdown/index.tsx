@@ -30,10 +30,10 @@ export default function LangDropdown() {
 
     function DropdownButton() {
         return (
-            <>
+            <div id="lang-dropdown-container">
                 <button id="dropdown-button" onClick={() => toggleDropdown()}>{languageToDisplayName[language]}</button>
                 <Dropdown/>
-            </>
+            </div>
         )
     }
 

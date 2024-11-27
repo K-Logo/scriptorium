@@ -6,11 +6,11 @@ export async function addCodeTemplate(codeTemplate) {
     if (codeTemplate.parentId) {
         let parentCodeTemplate = await getCodeTemplateById(codeTemplate.parentId);
         parentCodeTemplate = toCodeTemplate(parentCodeTemplate);
-        codeTemplate.title = parentCodeTemplate.title;
-        codeTemplate.explanation = parentCodeTemplate.explanation;
-        codeTemplate.content = parentCodeTemplate.content;
-        codeTemplate.tags = parentCodeTemplate.tags;
-        codeTemplate.language = parentCodeTemplate.language;
+        if (!codeTemplate.title) codeTemplate.title = parentCodeTemplate.title;
+        if (!codeTemplate.explanation) codeTemplate.explanation = parentCodeTemplate.explanation;
+        if (!codeTemplate.content) codeTemplate.content = parentCodeTemplate.content;
+        if (!codeTemplate.tags) codeTemplate.tags = parentCodeTemplate.tags;
+        if (!codeTemplate.language) codeTemplate.language = parentCodeTemplate.language;
     }
 
     const dbTagIds = [];

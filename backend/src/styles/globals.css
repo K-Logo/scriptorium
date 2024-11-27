@@ -98,9 +98,9 @@ form > * {
     @apply hidden sm:block absolute right-0 top-[7vh] m-2 w-64 bg-[#2d263d]
 }
 
-#language-dropdown {
+/* #language-dropdown {
     @apply absolute left-0 top-[16.3vh] mx-2 w-36 bg-[#2d263d] z-10
-}
+} */
 
 #user-dropdown > *, #language-dropdown > * {
     @apply p-4 h-12 flex items-center;
@@ -112,6 +112,10 @@ form > * {
 
 #dropdown-button {
     @apply bg-[#3e315c] hover:bg-[#533b8a] transition duration-300 h-12 w-36
+}
+
+#code-search-type-dropdown, #language-dropdown {
+    @apply absolute top-12 left-0 w-36 bg-[#2d263d] z-10
 }
 
 #run-container {
@@ -195,7 +199,7 @@ form > * {
 }
 
 #code-template-entry {
-    @apply bg-[#363240] w-[100%] p-10
+    @apply bg-[#363240] w-[100%] p-10 overflow-auto
 }
 
 #code-template-entry > section {
@@ -218,7 +222,7 @@ form > * {
     @apply w-[40%] flex items-center justify-between p-5 text-[20px]
 }
 
-#dropdown-container {
+#dropdown-container, #lang-dropdown-container {
     @apply relative
 }
 
@@ -236,4 +240,8 @@ form > * {
 
 #code-template-entry > section {
     @apply p-0 !h-[75%]
+}
+
+#delete-button {
+    @apply bg-[#db2e54] hover:bg-[#f0518c]
 }

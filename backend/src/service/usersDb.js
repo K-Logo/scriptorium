@@ -47,23 +47,23 @@ export async function getUserByUsername(username) {
     where: { username: username }
   });
 
-  return toUser(dbUser);
+  return dbUser;
 }
 
-export async function getUserById(id) {
-  const dbUser = await prisma.user.findFirst({
-    where: { id: id },
-    include: {
-      codeTemplates: {
-        include: {
-          tags: true,
-        },
-      },
-    },
-  });
+// export async function getUserById(id) {
+//   const dbUser = await prisma.user.findFirst({
+//     where: { id: id },
+//     include: {
+//       codeTemplates: {
+//         include: {
+//           tags: true,
+//         },
+//       },
+//     },
+//   });
 
-  return toUser(dbUser);
-}
+//   return toUser(dbUser);
+// }
 
 export async function getUserByIdRaw(id) {
   const dbUser = await prisma.user.findFirst({

@@ -51,7 +51,7 @@ export default async function handler(req, res) {
   if (!id) {
       return res.status(400).json({ error: "Invalid ID" });
   }
-  let user = await getUserById(id);
+  let user = await getUserByIdRaw(id);
   if (!user) {
       return res.status(404).json({ error: "User not found" });
   }
@@ -109,9 +109,12 @@ export default async function handler(req, res) {
     if (newEmail)       await usersDb.updateEmailById(id, newEmail);
     if (newPhoneNumber) await usersDb.updatePhoneNumberById(id, newPhoneNumber);
 
-    const nu = await usersDb.getUserById(id);
-    const jwt = getJWT(nu, 15);
-    return res.status(200).json({ jwtToken: jwt, firstName: nu.firstName, lastName: nu.lastName, email: nu.email, phoneNumber: nu.phoneNumber, username: nu.username, avatarPath: nu.avatarPath, id: nu.id });  // return JWT with updated user details
+    const nu = await usersDb.getUserByIdRaw(id);
+    console.log("new user: ")
+    console.log(nu);
+    const jwt = getJWT(nu, 180);
+    console.log(jwt);
+    return res.status(200).json({ jwtToken: jwt, firstName: nu.firstName, lastName: nu.lastName, email: nu.email, phoneNumber: nu.phoneNumber, username: nu.username, avatarPath: nu.avatarPath, id: nu.id, role: nu.role });  // return JWT with updated user details
   } else if (req.method === "GET") {
     let { id } = req.query;
     const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");

@@ -18,6 +18,7 @@ export default async function handler(req, res) {
             const savedCodeTemplate = await addCodeTemplate(codeTemplate);
             return res.status(201).json(savedCodeTemplate);
         } catch (e) {
+            console.log(e)
             return res.status(409).json({ error: "Please double check your fields." });
         }
 
