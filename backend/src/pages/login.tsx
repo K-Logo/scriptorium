@@ -36,7 +36,7 @@ function LogInForm() {
         const username = formData.get("username");
         const password = formData.get("password");
 
-        const response = await fetch("http://localhost:3000/api/users/login", {
+        const response = await fetch("/api/users/login", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ function LogInForm() {
             alert("Log in successful!");
 
             // Fetch user info
-            const userResponse = await fetch(`http://localhost:3000/api/users/${json.id}?type=user`, {
+            const userResponse = await fetch(`/api/users/${json.id}?type=user`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

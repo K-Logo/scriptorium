@@ -85,9 +85,9 @@ export default function Navbar() {
     function UserIcon() {
         let profilePicturePath;
         if (user && user.id) {
-            profilePicturePath = "http://" + user.avatarPath;
+            profilePicturePath = user.avatarPath;
         } else {
-            profilePicturePath = "http://localhost:3000/avatars/loggedout.png";
+            profilePicturePath = "/avatars/loggedout.png";
         }
         return (
             <button className="icon" id="user-icon" onClick={() => toggleUserDropdown()}><img src={profilePicturePath} alt="User Icon"></img></button>
@@ -136,13 +136,13 @@ export default function Navbar() {
     function MobileUserIcon() {
         let profilePicturePath;
         if (user && user.id) {
-            profilePicturePath = "http://" + user.avatarPath;
+            profilePicturePath = user.avatarPath;
         } else {
-            profilePicturePath = "http://localhost:3000/avatars/loggedout.png";
+            profilePicturePath = "/avatars/loggedout.png";
         }
 
         if (userMobileDropdownOpen) {
-            profilePicturePath = "http://localhost:3000/graphics/x.png";
+            profilePicturePath = "/graphics/x.png";
         }
         return (
             <button className="icon" id="mobile-user-icon" onClick={() => toggleMobileUserDropdown()}><img src={profilePicturePath} alt="User Icon"></img></button>
@@ -150,9 +150,9 @@ export default function Navbar() {
     }
 
     function HamburgerIcon() {
-        let picturePath = "http://localhost:3000/graphics/hamburger.png";
+        let picturePath = "/graphics/hamburger.png";
         if (hamburgerOpen) {
-            picturePath = "http://localhost:3000/graphics/x.png";
+            picturePath = "/graphics/x.png";
         }
         return (
             <button className = "icon" id="hamburger-menu" onClick={() => toggleHamburger()}><img src={picturePath} alt="Hamburger"></img></button>
