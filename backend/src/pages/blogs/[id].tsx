@@ -74,6 +74,7 @@ export default function BlogPost() {
         setDescription(json.description);
         setTags(json.tags);
         setCodeTemplate(json.codeTemplates);
+        console.log(codeTemplate);
         setComments(json.comments);
         // setAuthorUsername(json.author);
       }  else {
@@ -388,11 +389,14 @@ export default function BlogPost() {
             </button>
 
             {/* Report button */}
-            <button 
+            {/* <button 
             className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
             onClick={handleReportClick}>
               Report
-            </button>
+            </button> */}
+            <Link href={`/report?blogId=${intId}`}>
+            <button className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">Report</button>
+            </Link>
 
             {/* Report Text Box */}
             {showReportBox && (
@@ -479,16 +483,19 @@ export default function BlogPost() {
                     👎
                     </button>
 
+                    <Link href={`/report/?commentId=${comment.id}`}>
+                      <button className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">Report</button>
+                    </Link>
                     {/* Report button */}
-                    <button 
+                    {/* <button 
                       className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
                       onClick={handleCommentReportClick} // Pass the comment ID to handle this specific comment's report
                     >
                       Report
-                    </button>
+                    </button> */}
 
                     {/* Report Text Box for this specific comment */}
-                    {showCommentReportBox && (
+                    {/* {showCommentReportBox && (
                       <div className="mt-2 ml-4 w-80">
                         <textarea
                           value={commentReportReason}
@@ -511,7 +518,7 @@ export default function BlogPost() {
                           </button>
                         </div>
                       </div>
-                    )}
+                    )} */}
 
                     {/* Reply Button */}
                     <button

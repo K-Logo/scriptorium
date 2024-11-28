@@ -256,7 +256,8 @@ export async function searchBlogPostById(id, userId) {
                         replies: true
                     },
                 },
-                tags: true
+                tags: true,
+                codeTemplates: true
             }
         });
         return blog;
@@ -307,7 +308,8 @@ export async function searchBlogPostById(id, userId) {
                   avatarPath: true,
                   role: true
                 }
-              }
+              },
+              codeTemplates: true
             }
           });
           return blog;
