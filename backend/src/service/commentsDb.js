@@ -34,6 +34,73 @@ export async function addComment(commentContent, authorId, blogId, parentId = nu
                       username: true,
                       avatarPath: true
                     }
+                  },
+                  replies: { // Correctly include the replies relation
+                    include: {
+                      author: {
+                        select: {
+                          id: true,
+                          username: true,
+                          avatarPath: true
+                        }
+                      },
+                      replies: { // Correctly include the replies relation
+                        include: {
+                          author: {
+                            select: {
+                              id: true,
+                              username: true,
+                              avatarPath: true
+                            }
+                          },
+                          replies: { // Correctly include the replies relation
+                            include: {
+                              author: {
+                                select: {
+                                  id: true,
+                                  username: true,
+                                  avatarPath: true
+                                }
+                              },
+                              replies: { // Correctly include the replies relation
+                                include: {
+                                  author: {
+                                    select: {
+                                      id: true,
+                                      username: true,
+                                      avatarPath: true
+                                    }
+                                  },
+                                  replies: { // Correctly include the replies relation
+                                    include: {
+                                      author: {
+                                        select: {
+                                          id: true,
+                                          username: true,
+                                          avatarPath: true
+                                        }
+                                      },
+                                      replies: { // Correctly include the replies relation
+                                        include: {
+                                          author: {
+                                            select: {
+                                              id: true,
+                                              username: true,
+                                              avatarPath: true
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -63,6 +130,72 @@ export async function searchCommentById(id) {
                       id: true,
                       username: true,
                       avatarPath: true
+                    }
+                  },
+                  replies: { // Correctly include the replies relation
+                    include: {
+                      author: {
+                        select: {
+                          id: true,
+                          username: true,
+                          avatarPath: true
+                        }
+                      },
+                      replies: { // Correctly include the replies relation
+                        include: {
+                          author: {
+                            select: {
+                              id: true,
+                              username: true,
+                              avatarPath: true
+                            }
+                          },
+                          replies: { // Correctly include the replies relation
+                            include: {
+                              author: {
+                                select: {
+                                  id: true,
+                                  username: true,
+                                  avatarPath: true
+                                }
+                              },
+                              replies: { // Correctly include the replies relation
+                                include: {
+                                  author: {
+                                    select: {
+                                      id: true,
+                                      username: true,
+                                      avatarPath: true
+                                    }
+                                  },
+                                  replies: { // Correctly include the replies relation
+                                    include: {
+                                      author: {
+                                        select: {
+                                          id: true,
+                                          username: true,
+                                          avatarPath: true
+                                        }
+                                      },
+                                      replies: { // Correctly include the replies relation
+                                        include: {
+                                          author: {
+                                            select: {
+                                              id: true,
+                                              username: true,
+                                              avatarPath: true
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -119,6 +252,72 @@ export async function getSortedComments(order) {
                       id: true,
                       username: true,
                       avatarPath: true
+                    }
+                  },
+                  replies: { // Correctly include the replies relation
+                    include: {
+                      author: {
+                        select: {
+                          id: true,
+                          username: true,
+                          avatarPath: true
+                        }
+                      },
+                      replies: { // Correctly include the replies relation
+                        include: {
+                          author: {
+                            select: {
+                              id: true,
+                              username: true,
+                              avatarPath: true
+                            }
+                          },
+                          replies: { // Correctly include the replies relation
+                            include: {
+                              author: {
+                                select: {
+                                  id: true,
+                                  username: true,
+                                  avatarPath: true
+                                }
+                              },
+                              replies: { // Correctly include the replies relation
+                                include: {
+                                  author: {
+                                    select: {
+                                      id: true,
+                                      username: true,
+                                      avatarPath: true
+                                    }
+                                  },
+                                  replies: { // Correctly include the replies relation
+                                    include: {
+                                      author: {
+                                        select: {
+                                          id: true,
+                                          username: true,
+                                          avatarPath: true
+                                        }
+                                      },
+                                      replies: { // Correctly include the replies relation
+                                        include: {
+                                          author: {
+                                            select: {
+                                              id: true,
+                                              username: true,
+                                              avatarPath: true
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }

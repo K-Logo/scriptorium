@@ -5,7 +5,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 export default function EditProfile() {
-  const [user, setUser] = useState(null) 
+  const [user, setUser] = useState(null);
   const router = useRouter();
   const [formData, setFormData] = useState(null);
   const [passwordError, setPasswordError] = useState("");

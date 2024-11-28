@@ -253,7 +253,95 @@ export async function searchBlogPostById(id, userId) {
                                 role: true
                             }
                         },
-                        replies: true
+                        replies: {
+                            where: {
+                                hidden: false
+                            },
+                            include: {
+                                author: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatarPath: true,
+                                        role: true
+                                    }
+                                },
+                                replies: {where: {
+                                    hidden: false
+                                },
+                                include: {
+                                    author: {
+                                        select: {
+                                            id: true,
+                                            username: true,
+                                            avatarPath: true,
+                                            role: true
+                                        }
+                                    },
+                                    replies: {
+                                        where: {
+                                            hidden: false
+                                        },
+                                        include: {
+                                            author: {
+                                                select: {
+                                                    id: true,
+                                                    username: true,
+                                                    avatarPath: true,
+                                                    role: true
+                                                }
+                                            },
+                                            replies: {
+                                                where: {
+                                                    hidden: false
+                                                },
+                                                include: {
+                                                    author: {
+                                                        select: {
+                                                            id: true,
+                                                            username: true,
+                                                            avatarPath: true,
+                                                            role: true
+                                                        }
+                                                    },
+                                                    replies: {
+                                                        where: {
+                                                            hidden: false
+                                                        },
+                                                        include: {
+                                                            author: {
+                                                                select: {
+                                                                    id: true,
+                                                                    username: true,
+                                                                    avatarPath: true,
+                                                                    role: true
+                                                                }
+                                                            },
+                                                            replies: {
+                                                                where: {
+                                                                    hidden: false
+                                                                },
+                                                                include: {
+                                                                    author: {
+                                                                        select: {
+                                                                            id: true,
+                                                                            username: true,
+                                                                            avatarPath: true,
+                                                                            role: true
+                                                                        }
+                                                                    },
+                                                                    replies: true
+                                                                },
+                                                            }
+                                                        },
+                                                    }
+                                                },
+                                            }
+                                        },
+                                    }
+                                },}
+                            },
+                        }
                     },
                 },
                 tags: true
