@@ -75,7 +75,6 @@ export default function BlogPost() {
       });
 
       const json = await response.json();
-
       if (response.ok) {
         setTitle(json.title);
         setDescription(json.description);
@@ -84,6 +83,8 @@ export default function BlogPost() {
         console.log("djsfkljdaslfkdjsalkfjasklfj")
         console.log(json.comments)
         setComments(json.comments.filter(comment => comment.parentId === null));
+        console.log(json)
+        // setBlog(blog);
         // setAuthorUsername(json.author);
       }  else {
           alert(json.error);
@@ -348,8 +349,6 @@ export default function BlogPost() {
       setSortDropdown((prev) => !prev);
     }
     
-    if (!blog) return null;
-
     const handlePageChange = (page: number) => {
       if (page >= 1) {
         setCurrentPage(page);
