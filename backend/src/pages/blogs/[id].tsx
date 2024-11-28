@@ -53,6 +53,8 @@ export default function BlogPost() {
   const [sortType, setSortType] = useState("desc");
   const [sortDropdownOpen, setSortDropdown] = useState(false);
   const [commentLikeUpdated, setCommentLikeUpdated] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);  // Track the current page
+  const [commentsPerPage, setCommentsPerPage] = useState(5);  // Number of comments per page
 
   useEffect(() => {
     if (!id) return;
@@ -78,7 +80,7 @@ export default function BlogPost() {
       }
     }
     fetchData();
-  }, [id, commentLikeUpdated]);
+  }, [id]);
 
   let intId = 0;
   if (Array.isArray(id)) {
@@ -86,28 +88,7 @@ export default function BlogPost() {
   } else if (typeof id === 'string') {
     intId = parseInt(id, 10);
   }
-
-  // async function getAllComments() {
-  //   const comments = await fetch(`/api/comments/sortComments?sortType=${sortType}`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     }
-  //   });
-
-  //   return comments;
-  // }
-
-  // useEffect(() => {
-  //   async function fetchComments() {
-  //     const comments = await getAllComments();
-  //     const commentsJson = await comments.json();
-      
-  //     setComments(commentsJson.sortedComments);
-  //   }
-  //   fetchComments();
-  // }, [comments]);
-
+  
   async function handleAddComment() {
       const bodyData = {
         content: newComment, 
@@ -276,20 +257,37 @@ export default function BlogPost() {
         "desc": "Descending Ratings",
     }
 
+    useEffect(() => {
+      async function fetchComments() {
+        const response = await fetch(`/api/comments/sortComments?blogId=${intId}&sortType=${sortType}&epp=${commentsPerPage}&pno=${currentPage}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+    
+        if (response.ok) {
+          const commentsJson = await response.json();
+          setComments(commentsJson.sortedComments); // Assuming the API returns sorted comments in `sortedComments`.
+        } else {
+          console.error("Failed to fetch comments");
+        }
+      }
+    
+      fetchComments();
+    }, [intId, sortType, commentLikeUpdated, currentPage]); // Dependency array includes `sortType` and `commentLikeUpdated`.
+    
     function toggleSortDropdown() {
-        setSortDropdown(!sortDropdownOpen);
+      setSortDropdown((prev) => !prev);
     }
-
-    function SortDropdown() {
-        return sortDropdownOpen && (
-            <ul id="code-search-type-dropdown">
-                <button onClick={() => {setSortType("asc"); toggleSortDropdown();}}><li>Ascending Ratings</li></button>
-                <button onClick={() => {setSortType("desc"); toggleSortDropdown();}}><li>Descending Ratings</li></button>
-            </ul>
-        )
-    }
-
+    
     if (!blog) return null;
+
+    const handlePageChange = (page: number) => {
+      if (page >= 1) {
+        setCurrentPage(page);
+      }
+    };  
 
     return (
       <>
@@ -352,7 +350,7 @@ export default function BlogPost() {
                 Report
               </button>
               {/* Edit Button (only for the author) */}
-              {blog && blog.authorId === user.id && (
+              {blog && user && blog.authorId === user.id && (
                   <Link href={`/blogs/edit/${id}`}><button className="blue-button">Edit</button></Link>
                 )}
 
@@ -383,8 +381,6 @@ export default function BlogPost() {
               )}
             </div>
 
-            
-
           </div>
           <br/>
           <h2 className="text-xl font-semibold mb-2 ">Comments</h2>
@@ -404,11 +400,14 @@ export default function BlogPost() {
                   Add Comment
                 </button>
               </div>
-              <div className="pt-[3vw]">
-                <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
-                    {sortToDisplayName[sortType]}
-                </button>
-                <SortDropdown />
+              <div className="pt-6">
+              <button
+                id="code-search-type-toggle-button"
+                onClick={() => setSortType((prev) => (prev === "asc" ? "desc" : "asc"))}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+              >
+                {sortToDisplayName[sortType]}
+              </button>
             </div>
 
             {/* Comment Section */}
@@ -473,7 +472,23 @@ export default function BlogPost() {
                 ))}
               </div>
             </div>
-          
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage <= 1}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-700"
+              >
+                Previous
+              </button>
+              <span className="px-4 py-2">{`Page ${currentPage}`}</span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg ml-2 hover:bg-gray-700"
+              >
+                Next
+              </button>
+            </div>
         </div>
       </>
     )

@@ -14,7 +14,12 @@ export default async function handler(req, res) {
     if (!decodedJWT) {
       return res.status(401).json({ error: "Unauthorized" });
     }
+    console.log(blogId);
     const blog = await blogsDb.searchBlogPostById(blogId, decodedJWT.id);
+
+    if (!blog) {
+      return res.status(400).json({ error: "This blog does not exist." });
+    }
 
     if (decodedJWT.id != blog.authorId) {
       return res.status(401).json({ error: "You are not the author of the account. You cannot edit this post." });
