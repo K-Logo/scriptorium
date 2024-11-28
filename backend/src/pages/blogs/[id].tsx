@@ -61,7 +61,6 @@ export default function BlogPost() {
   const [commentsPerPage, setCommentsPerPage] = useState(5);  // Number of comments per page
 
   useEffect(() => {
-    if (!id) return;
     const userJson = window.localStorage.getItem('user');
     const user = JSON.parse(userJson);
     if (user) {
