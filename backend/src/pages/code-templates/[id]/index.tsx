@@ -67,8 +67,6 @@ export default function CodeTemplateId() {
         const user = JSON.parse(userJson);
         if (user) {
             setUser(user);
-        } else {
-            router.push(`/run`);
         }
 
         if (!id) return;
