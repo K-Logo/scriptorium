@@ -183,7 +183,7 @@ export default function CodeTemplateId() {
         <div id="code-templates-container">
             <div id="middle-column">
             <div id="code-template-entry">
-                <h1>
+                <h1 className="text-center">
                     Create code template
                 </h1>
                 <div id="input-fields">
