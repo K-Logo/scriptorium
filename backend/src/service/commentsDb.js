@@ -25,7 +25,18 @@ export async function addComment(commentContent, authorId, blogId, parentId = nu
                     avatarPath: true,
                     role: true
                 }
-            }
+            },
+            replies: { // Correctly include the replies relation
+                include: {
+                  author: {
+                    select: {
+                      id: true,
+                      username: true,
+                      avatarPath: true
+                    }
+                  }
+                }
+              }
         },
     });
     return savedComment;
@@ -44,7 +55,18 @@ export async function searchCommentById(id) {
                     avatarPath: true,
                     role: true
                 }
-            }
+            },
+            replies: { // Correctly include the replies relation
+                include: {
+                  author: {
+                    select: {
+                      id: true,
+                      username: true,
+                      avatarPath: true
+                    }
+                  }
+                }
+              }
         }
     });
 
@@ -89,7 +111,18 @@ export async function getSortedComments(order) {
                     avatarPath: true,
                     role: true
                 }
-            }
+            },
+            replies: { // Correctly include the replies relation
+                include: {
+                  author: {
+                    select: {
+                      id: true,
+                      username: true,
+                      avatarPath: true
+                    }
+                  }
+                }
+              }
         },
         });
     return allComments;

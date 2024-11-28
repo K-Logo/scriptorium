@@ -41,7 +41,7 @@ export default function BlogPost() {
   const [authorUsername, setAuthorUsername] = useState<string>("");
   const [codeTemplate, setCodeTemplate] = useState<CodeTemplate>(null);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState([]);
   const [rating, setRating] = useState<number>(0);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
@@ -52,6 +52,9 @@ export default function BlogPost() {
   const [commentReportReason, setCommentReportReason] = useState("");
   const [sortType, setSortType] = useState("desc");
   const [sortDropdownOpen, setSortDropdown] = useState(false);
+  const [replyBoxVisible, setReplyBoxVisible] = useState<number | null>(null); // Tracks which comment's reply box is visible
+  const [replyText, setReplyText] = useState("");
+  const [repliesVisible, setRepliesVisible] = useState({}); // Tracks which comments have their replies dropdown open
 
   useEffect(() => {
     if (!id) return;
@@ -78,7 +81,7 @@ export default function BlogPost() {
       }
     }
     fetchData();
-  }, [id]);
+  }, [repliesVisible]);
 
   let intId = 0;
   if (Array.isArray(id)) {
@@ -299,6 +302,41 @@ export default function BlogPost() {
         )
     }
 
+    async function handleReplySubmit(parentId: number) {
+      try {
+        const response = await fetch("/api/comments/createComment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.jwtToken}`
+          },
+          body: JSON.stringify({
+            content: replyText,
+            blogId: intId,
+            parentCommentId: parentId,
+          }),
+        });
+  
+        if (response.ok) {
+          const newComment = await response.json();
+          // setComments((prev) => [...prev, newComment]); // Add new comment to the list
+          setReplyText(""); // Clear the text box
+          setReplyBoxVisible(null); // Hide the reply box
+        } else {
+          console.error("Failed to create reply:", await response.text());
+        }
+      } catch (error) {
+        console.error("Error submitting reply:", error);
+      }
+    }
+
+    const toggleRepliesDropdown = (commentId) => {
+      setRepliesVisible((prev) => ({
+        ...prev,
+        [commentId]: !prev[commentId],
+      }));
+    };
+
     return (
       <>
         <Head>
@@ -474,6 +512,45 @@ export default function BlogPost() {
                         </div>
                       </div>
                     )}
+
+                    {/* Reply Button */}
+                    <button
+                      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                      onClick={() =>
+                        setReplyBoxVisible((prev) => (prev === comment.id ? null : comment.id))
+                      }
+                    >
+                      Reply
+                    </button>
+
+                    {/* Reply Text Box */}
+                    {replyBoxVisible === comment.id && (
+                      <div className="mt-4">
+                        <textarea
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder="Write your reply here..."
+                          className="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white"
+                        ></textarea>
+                        <button
+                          className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700"
+                          onClick={() => handleReplySubmit(comment.id)}
+                        >
+                          Submit Reply
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="mt-2 flex space-x-4">
+                    <details>
+                          <summary onClick={toggleRepliesDropdown}>View Replies</summary>
+                          <div>
+                            {comment.replies.map((reply) => (
+                              <p key={reply.id}>{reply.content}</p>
+                            ))}
+                          </div>
+                        </details>
+                      </div>
                   </div>
                 </div>
               ))}

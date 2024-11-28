@@ -16,8 +16,7 @@ export default async function handler(req, res) {
     
     const newComment = await addComment(content, decodedJWT.id, blogId, parentCommentId);
 
-    res.status(201).json(newComment);
-
+    return res.status(201).json(newComment);
   } else {
     return res.status(405).json({ error: "Method not allowed." });
   }
