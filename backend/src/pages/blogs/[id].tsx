@@ -52,6 +52,7 @@ export default function BlogPost() {
   const [commentReportReason, setCommentReportReason] = useState("");
   const [sortType, setSortType] = useState("desc");
   const [sortDropdownOpen, setSortDropdown] = useState(false);
+  const [commentLikeUpdated, setCommentLikeUpdated] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -78,7 +79,7 @@ export default function BlogPost() {
       }
     }
     fetchData();
-  }, [id]);
+  }, [id, commentLikeUpdated]);
 
   let intId = 0;
   if (Array.isArray(id)) {
@@ -252,7 +253,7 @@ export default function BlogPost() {
         //     comment.id === id ? jsonResponse : comment
         //   )
         // );
-        
+        setCommentLikeUpdated(prevState => !prevState);
       } else {
         alert(jsonResponse.error);
       }
