@@ -43,7 +43,7 @@ function SignUpForm() {
         console.log('Password:', password); // Be cautious about logging sensitive data like passwords!
         console.log('First Name:', firstName);
         console.log('Last Name:', lastName);
-        const response = await fetch("http://localhost:3000/api/users/signup", {
+        const response = await fetch("/api/users/signup", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

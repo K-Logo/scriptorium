@@ -88,7 +88,7 @@ export default function CodeTemplateId() {
     
         if (!parentIdInt) return;
         const fetchData = async () => {
-            const response = await fetch(`http://localhost:3000/api/codetemplates/${parentIdInt}`, {
+            const response = await fetch(`/api/codetemplates/${parentIdInt}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -138,7 +138,7 @@ export default function CodeTemplateId() {
         
         
 
-        const response = await fetch(`http://localhost:3000/api/codetemplates`, {
+        const response = await fetch(`/api/codetemplates`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

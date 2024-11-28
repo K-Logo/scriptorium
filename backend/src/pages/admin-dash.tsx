@@ -257,7 +257,7 @@ const AdminDashboard: React.FC = () => {
                   </td>
                   <td className="px-4 py-2 flex items-center space-x-2">
                     <img
-                      src={`http://${post.author.avatarPath}`}
+                      src={`${post.author.avatarPath}`}
                       alt={post.author.username}
                       className="w-8 h-8 rounded-full"
                     />
@@ -354,7 +354,7 @@ const AdminDashboard: React.FC = () => {
                   </td>
                   <td className="px-4 py-2 flex items-center space-x-2">
                     <img
-                      src={`http://${comment.author.avatarPath}`}
+                      src={`${comment.author.avatarPath}`}
                       alt={comment.author.username}
                       className="w-8 h-8 rounded-full"
                     />
@@ -418,7 +418,7 @@ const AdminDashboard: React.FC = () => {
             <h2 className="text-2xl font-semibold mb-4">{modalPost.title}</h2>
             <div className="flex items-center space-x-2 mb-4">
               <img
-                src={`http://${modalPost.author.avatarPath}`}
+                src={`${modalPost.author.avatarPath}`}
                 alt={modalPost.author.username}
                 className="w-8 h-8 rounded-full"
               />

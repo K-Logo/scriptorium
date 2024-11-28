@@ -29,7 +29,7 @@ async function addUser() {
       lastName: 'admin',
       email: 'admin',
       phoneNumber: 'admin',
-      avatarPath: 'localhost:3000/avatars/amongus.jpg',
+      avatarPath: '/avatars/amongus.jpg',
       role: 'ADMIN'
     }
   });
