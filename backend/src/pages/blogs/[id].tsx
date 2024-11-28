@@ -58,7 +58,6 @@ export default function BlogPost() {
   const [replyingTo, setReplyingTo] = useState(-1);
 
   useEffect(() => {
-    if (!id) return;
     const userJson = window.localStorage.getItem('user');
     const user = JSON.parse(userJson);
     if (user) {
