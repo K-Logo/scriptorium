@@ -300,10 +300,12 @@ export default function BlogPost() {
             </button>
 
             {/* Report button */}
-            <button 
-              className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"                      >
-              Report
-            </button>
+            <Link href={`/report?commentId=${comment.id}`}>
+              <button 
+                className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">
+                Report
+              </button>
+            </Link>
 
             <button 
               className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
@@ -444,42 +446,20 @@ export default function BlogPost() {
                 👎
               </button>
 
-              {/* Report button */}
-              <button 
-              className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">
-                Report
-              </button>
+            {/* Report button */}
+            {/* <button 
+            className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+            onClick={handleReportClick}>
+              Report
+            </button> */}
+            <Link href={`/report?blogId=${intId}`}>
+            <button className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">Report</button>
+            </Link>
               {/* Edit Button (only for the author) */}
               {blog && user && blog.authorId === user.id && (
                   <Link href={`/blogs/edit/${id}`}><button className="blue-button">Edit</button></Link>
                 )}
-
-              {/* Report Text Box */}
-              {showReportBox && (
-                <div className="mt-4">
-                  <textarea
-                    value={reportReason}
-                    onChange={(e) => setReportReason(e.target.value)}
-                    placeholder="Explain why you are reporting this..."
-                    className="w-full p-2 border border-blue-300 rounded-lg bg-gray-800"
-                  ></textarea>
-                  <div className="flex mt-2">
-                    <button
-                      onClick={() => handleReport(intId, null)}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none"
-                    >
-                      Submit Report
-                    </button>
-                    <button
-                      className="ml-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
-
           </div>
           <br/>
           <h2 className="text-xl font-semibold mb-2 ">Comments</h2>
@@ -513,6 +493,7 @@ export default function BlogPost() {
             <div className="mt-8">
               <div className="space-y-4">
                 {comments.map((comment) => (Comment(comment)))}
+                
               </div>
             </div>
             {/* Pagination Controls */}

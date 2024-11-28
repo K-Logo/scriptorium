@@ -344,7 +344,8 @@ export async function searchBlogPostById(id, userId) {
                         }
                     },
                 },
-                tags: true
+                tags: true,
+                codeTemplates: true
             }
         });
         return blog;
@@ -395,7 +396,8 @@ export async function searchBlogPostById(id, userId) {
                   avatarPath: true,
                   role: true
                 }
-              }
+              },
+              codeTemplates: true
             }
           });
           return blog;
