@@ -8,6 +8,7 @@ export default function BlogPost() {
   const router = useRouter();
   const { id } = router.query;
   const [blog, setBlog] = useState(null);
+  const [user, setUser] = useState(null);
 
   async function getBlog() {
     const blog = await fetch(`/api/blog/${id}`, {
@@ -39,13 +40,12 @@ export default function BlogPost() {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [authorUsername, setAuthorUsername] = useState<string>("");
-  const [codeTemplate, setCodeTemplate] = useState<CodeTemplate>(null);
+  const [codeTemplate, setCodeTemplate] = useState<CodeTemplate[]>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [rating, setRating] = useState<number>(0);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
-  const [user, setUser] = useState(null);
   const [showReportBox, setShowReportBox] = useState(false); // Manage visibility of report box
   const [reportReason, setReportReason] = useState(""); // Store the report reason
   const [showCommentReportBox, setShowCommentReportBox] = useState(false);
@@ -65,7 +65,6 @@ export default function BlogPost() {
       });
 
       const json = await response.json();
-      console.log(json);
 
       if (response.ok) {
         setTitle(json.title);
@@ -110,7 +109,6 @@ export default function BlogPost() {
   // }, [comments]);
 
   async function handleAddComment() {
-      console.log("New Comment:", newComment);
       const bodyData = {
         content: newComment, 
         blogId: intId, 
@@ -208,7 +206,6 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully upvoted");
         setRating(jsonResponse.rating);
       } else {
         alert(jsonResponse.error);
@@ -227,7 +224,6 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully downvoted");
         setRating(jsonResponse.rating);
       } else {
         alert(jsonResponse.error);
@@ -246,7 +242,11 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully upvoted");
+        // setComments((prevComments) =>
+        //   prevComments.map((comment) =>
+        //     comment.id === id ? jsonResponse : comment
+        //   )
+        // );
         setCommentLikeUpdated(prevState => !prevState);
       } else {
         alert(jsonResponse.error);
@@ -265,7 +265,6 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully downvoted");
         setCommentLikeUpdated(prevState => !prevState);
       } else {
         alert(jsonResponse.error);
@@ -290,6 +289,8 @@ export default function BlogPost() {
         )
     }
 
+    if (!blog) return null;
+
     return (
       <>
         <Head>
@@ -311,17 +312,18 @@ export default function BlogPost() {
               ))}
             </div>
 
-
             {/* Description */}
             <p className="mt-4 text-lg s break-words">{description}</p>
 
-            { codeTemplate && <div className="mt-4">
-              <Link href={`/code-templates/${codeTemplate.id}`}>
-                <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
-                  Link to Code Template
-                </p>
-              </Link>
-            </div>}
+            {codeTemplate && codeTemplate.map((template) => (
+              <div className="mt-4" key={template.id}>
+                <Link href={`/code-templates/${template.id}`}>
+                  <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
+                    Link to Code Template: {template.title}
+                  </p>
+                </Link>
+              </div>
+            ))}
 
             {/* Like/Dislike buttons */}
             <div className="mt-6 flex items-center space-x-4 justify-end">
@@ -351,12 +353,7 @@ export default function BlogPost() {
               </button>
               {/* Edit Button (only for the author) */}
               {blog && blog.authorId === user.id && (
-                  <button
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700"
-                    onClick={() => console.log(`Edit blog with ID: ${blog.id}`)}
-                  >
-                    Edit
-                  </button>
+                  <Link href={`/blogs/edit/${id}`}><button className="blue-button">Edit</button></Link>
                 )}
 
               {/* Report Text Box */}
