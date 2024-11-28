@@ -10,39 +10,39 @@ export default function BlogPost() {
   const [blog, setBlog] = useState(null);
   const [user, setUser] = useState(null);
 
-  async function getBlog() {
-    const blog = await fetch(`/api/blog/${id}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
+  // async function getBlog() {
+  //   const blog = await fetch(`/api/blog/${id}`, {
+  //       method: "GET",
+  //       headers: {
+  //           "Content-Type": "application/json"
+  //       }
+  //   });
 
-    const jsonBlog = await blog.json();
-    return jsonBlog;
-  }
+  //   const jsonBlog = await blog.json();
+  //   return jsonBlog;
+  // }
 
-  useEffect(() => {
-      async function fetchBlog() {
-          const blogData = await getBlog();
-          setBlog(blogData);
-          setRating(blogData.rating)
-      }
-      fetchBlog();
+  // useEffect(() => {
+  //     async function fetchBlog() {
+  //         const blogData = await getBlog();
+  //         setBlog(blogData);
+  //         setRating(blogData.rating)
+  //     }
+  //     fetchBlog();
 
-      const userJson = window.localStorage.getItem('user');
-      const user = JSON.parse(userJson);
-      if (user) {
-        setUser(user);
-      }
-  }, [id]);
+  //     const userJson = window.localStorage.getItem('user');
+  //     const user = JSON.parse(userJson);
+  //     if (user) {
+  //       setUser(user);
+  //     }
+  // }, [id]);
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [authorUsername, setAuthorUsername] = useState<string>("");
   const [codeTemplate, setCodeTemplate] = useState<CodeTemplate[]>(null);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState([]);
   const [rating, setRating] = useState<number>(0);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
@@ -52,12 +52,21 @@ export default function BlogPost() {
   const [commentReportReason, setCommentReportReason] = useState("");
   const [sortType, setSortType] = useState("desc");
   const [sortDropdownOpen, setSortDropdown] = useState(false);
+  const [replyBoxVisible, setReplyBoxVisible] = useState<number | null>(null); // Tracks which comment's reply box is visible
+  const [replyText, setReplyText] = useState("");
+  const [repliesVisible, setRepliesVisible] = useState({}); // Tracks which comments have their replies dropdown open
+  const [replyingTo, setReplyingTo] = useState(-1);
   const [commentLikeUpdated, setCommentLikeUpdated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);  // Track the current page
   const [commentsPerPage, setCommentsPerPage] = useState(5);  // Number of comments per page
 
   useEffect(() => {
     if (!id) return;
+    const userJson = window.localStorage.getItem('user');
+    const user = JSON.parse(userJson);
+    if (user) {
+      setUser(user);
+    }
     const fetchData = async () => {
       const response = await fetch(`/api/blog/${id}`, {
         method: 'GET',
@@ -73,14 +82,16 @@ export default function BlogPost() {
         setDescription(json.description);
         setTags(json.tags);
         setCodeTemplate(json.codeTemplates);
-        setComments(json.comments);
+        console.log("djsfkljdaslfkdjsalkfjasklfj")
+        console.log(json.comments)
+        setComments(json.comments.filter(comment => comment.parentId === null));
         // setAuthorUsername(json.author);
       }  else {
           alert(json.error);
       }
     }
     fetchData();
-  }, [id]);
+  }, [repliesVisible, id]);
 
   let intId = 0;
   if (Array.isArray(id)) {
@@ -96,6 +107,10 @@ export default function BlogPost() {
         parentCommentId: null
       };
 
+      if (replyingTo !== -1) {
+        bodyData.parentCommentId = replyingTo;
+      }
+
       const response = await fetch(`/api/comments/createComment`, {
         method: "POST",
         headers: {
@@ -105,10 +120,33 @@ export default function BlogPost() {
         body: JSON.stringify(bodyData)
       });
 
+      setReplyingTo(-1);
+
       const json = await response.json();
 
       if (response.ok) {
-        setComments([...comments, json]);
+        
+        const fetchData = async () => {
+          const response = await fetch(`/api/blog/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+          });
+    
+          const json = await response.json();
+          console.log(json);
+    
+          if (response.ok) {
+            setComments(json.comments.filter(comment => comment.parentId === null));
+            console.log(json.comments)
+          }  else {
+              alert(json.error);
+          }
+        }
+        fetchData();
+
+
         setNewComment("");
         setShowCommentBox(false); // Hide the input box after submission
       } else {
@@ -155,24 +193,6 @@ export default function BlogPost() {
       console.error("Error submitting report:", error);
       alert("Something went wrong. Please try again later.");
     }
-  }
-
-  const handleReportClick = () => {
-    setShowReportBox(true); // Show the report text box
-  };
-
-  function handleCloseReportBox() {
-    setReportReason("");
-    setShowReportBox(false);
-  }
-
-  function handleCommentReportClick() {
-    setShowCommentReportBox(true);
-  }
-
-  function handleCloseCommentReportBox() {
-    setCommentReportReason("");
-    setShowCommentReportBox(false);
   }
 
     async function handleUpvote() {
@@ -252,6 +272,54 @@ export default function BlogPost() {
       }
     }
 
+    function Comment(comment){
+      console.log("==============")
+      console.log(comment)
+      return (
+      <>
+        <div key={comment.id} className="bg-[#302a3d] p-5 rounded w-full">
+          <p>Comment Id: {comment.id}</p>
+          {comment.parentId !== null && <p>Replying to Comment {comment.parentId}</p>}
+          <p className="break-words">{comment.content}</p>
+          <div className="mt-6 flex items-center space-x-4 justify-end">
+
+            <button
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+            onClick={() => handleCommentLike(comment.id)}
+            >
+            👍
+            </button>
+            <div className="text-center">
+            <span>{comment.rating}</span>
+            </div>
+            <button
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+            onClick={() => handleCommentDislike(comment.id)}
+            >
+            👎
+            </button>
+
+            {/* Report button */}
+            <button 
+              className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"                      >
+              Report
+            </button>
+
+            <button 
+              className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+              onClick={() => {setReplyingTo(comment.id);}}                   >
+              Reply
+            </button>
+
+            
+          </div>
+        </div>
+        {comment.replies && comment.replies.length > 0 && comment.replies.map((comment) => (Comment(comment)))}
+      </>
+        
+      );
+    }
+
     const sortToDisplayName = {
         "asc": "Ascending Ratings",
         "desc": "Descending Ratings",
@@ -288,6 +356,41 @@ export default function BlogPost() {
         setCurrentPage(page);
       }
     };  
+
+    async function handleReplySubmit(parentId: number) {
+      try {
+        const response = await fetch("/api/comments/createComment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.jwtToken}`
+          },
+          body: JSON.stringify({
+            content: replyText,
+            blogId: intId,
+            parentCommentId: parentId,
+          }),
+        });
+  
+        if (response.ok) {
+          const newComment = await response.json();
+          // setComments((prev) => [...prev, newComment]); // Add new comment to the list
+          setReplyText(""); // Clear the text box
+          setReplyBoxVisible(null); // Hide the reply box
+        } else {
+          console.error("Failed to create reply:", await response.text());
+        }
+      } catch (error) {
+        console.error("Error submitting reply:", error);
+      }
+    }
+
+    const toggleRepliesDropdown = (commentId) => {
+      setRepliesVisible((prev) => ({
+        ...prev,
+        [commentId]: !prev[commentId],
+      }));
+    };
 
     return (
       <>
@@ -345,8 +448,7 @@ export default function BlogPost() {
 
               {/* Report button */}
               <button 
-              className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
-              onClick={handleReportClick}>
+              className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">
                 Report
               </button>
               {/* Edit Button (only for the author) */}
@@ -371,7 +473,6 @@ export default function BlogPost() {
                       Submit Report
                     </button>
                     <button
-                      onClick={handleCloseReportBox}
                       className="ml-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none"
                     >
                       Cancel
@@ -413,63 +514,7 @@ export default function BlogPost() {
             {/* Comment Section */}
             <div className="mt-8">
               <div className="space-y-4">
-                {comments.map((comment) => (
-                  <div key={comment.id} className="bg-[#302a3d] p-5 rounded w-full">
-                    <p className="break-words">{comment.content}</p>
-                    <div className="mt-6 flex items-center space-x-4 justify-end">
-
-                      <button
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                      onClick={() => handleCommentLike(comment.id)}
-                      >
-                      👍
-                      </button>
-                      <div className="text-center">
-                      <span>{comment.rating}</span>
-                      </div>
-                      <button
-                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
-                      onClick={() => handleCommentDislike(comment.id)}
-                      >
-                      👎
-                      </button>
-
-                      {/* Report button */}
-                      <button 
-                        className="ml-auto px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
-                        onClick={handleCommentReportClick} // Pass the comment ID to handle this specific comment's report
-                      >
-                        Report
-                      </button>
-
-                      {/* Report Text Box for this specific comment */}
-                      {showCommentReportBox && (
-                        <div className="mt-2 ml-4 w-80">
-                          <textarea
-                            value={commentReportReason}
-                            onChange={(e) => setCommentReportReason(e.target.value)}
-                            placeholder="Explain why you are reporting this..."
-                            className="w-full p-2 border border-blue-300 rounded-lg bg-gray-800 text-white"
-                          ></textarea>
-                          <div className="flex mt-2">
-                            <button
-                              onClick={() => handleReport(null, comment.id)}
-                              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none"
-                            >
-                              Submit Report
-                            </button>
-                            <button
-                              onClick={handleCloseCommentReportBox}
-                              className="ml-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                {comments.map((comment) => (Comment(comment)))}
               </div>
             </div>
             {/* Pagination Controls */}

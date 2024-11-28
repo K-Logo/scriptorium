@@ -252,6 +252,95 @@ export async function searchBlogPostById(id, userId) {
                                 avatarPath: true,
                                 role: true
                             }
+                        },
+                        replies: {
+                            where: {
+                                hidden: false
+                            },
+                            include: {
+                                author: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatarPath: true,
+                                        role: true
+                                    }
+                                },
+                                replies: {where: {
+                                    hidden: false
+                                },
+                                include: {
+                                    author: {
+                                        select: {
+                                            id: true,
+                                            username: true,
+                                            avatarPath: true,
+                                            role: true
+                                        }
+                                    },
+                                    replies: {
+                                        where: {
+                                            hidden: false
+                                        },
+                                        include: {
+                                            author: {
+                                                select: {
+                                                    id: true,
+                                                    username: true,
+                                                    avatarPath: true,
+                                                    role: true
+                                                }
+                                            },
+                                            replies: {
+                                                where: {
+                                                    hidden: false
+                                                },
+                                                include: {
+                                                    author: {
+                                                        select: {
+                                                            id: true,
+                                                            username: true,
+                                                            avatarPath: true,
+                                                            role: true
+                                                        }
+                                                    },
+                                                    replies: {
+                                                        where: {
+                                                            hidden: false
+                                                        },
+                                                        include: {
+                                                            author: {
+                                                                select: {
+                                                                    id: true,
+                                                                    username: true,
+                                                                    avatarPath: true,
+                                                                    role: true
+                                                                }
+                                                            },
+                                                            replies: {
+                                                                where: {
+                                                                    hidden: false
+                                                                },
+                                                                include: {
+                                                                    author: {
+                                                                        select: {
+                                                                            id: true,
+                                                                            username: true,
+                                                                            avatarPath: true,
+                                                                            role: true
+                                                                        }
+                                                                    },
+                                                                    replies: true
+                                                                },
+                                                            }
+                                                        },
+                                                    }
+                                                },
+                                            }
+                                        },
+                                    }
+                                },}
+                            },
                         }
                     },
                 },
@@ -262,44 +351,54 @@ export async function searchBlogPostById(id, userId) {
     } else {
         const blog = await prisma.blog.findFirst({
             where: {
-                id: id,
-                OR: [
-                    { hidden: false }, // Show public posts
-                    { authorId: userId } // Show hidden posts for the author
-                ]
+              id: id,
+              OR: [
+                { hidden: false }, // Show public posts
+                { authorId: userId } // Show hidden posts for the author
+              ]
             },
             include: {
-                comments: {
-                    where: {
-                        OR: [
-                            { hidden: false },  // Show public comments
-                            { authorId: userId } // Show comments made by the author
-                        ]
-                    },
-                    include: {
-                        author: {
-                            select: {
-                                id: true,
-                                username: true,
-                                avatarPath: true,
-                                role: true
-                            }
-                        }
-                    },
+              comments: {
+                where: {
+                  OR: [
+                    { hidden: false }, // Show public comments
+                    { authorId: userId } // Show comments made by the author
+                  ]
                 },
-                tags: true,
-                author: {
+                include: {
+                  author: {
                     select: {
-                        id: true,
-                        username: true,
-                        avatarPath: true,
-                        role: true
+                      id: true,
+                      username: true,
+                      avatarPath: true,
+                      role: true
                     }
+                  },
+                  replies: { // Correctly include the replies relation
+                    include: {
+                      author: {
+                        select: {
+                          id: true,
+                          username: true,
+                          avatarPath: true
+                        }
+                      }
+                    }
+                  }
                 }
-            },
-        
-        });
-        return blog;
+              },
+              tags: true,
+              author: {
+                select: {
+                  id: true,
+                  username: true,
+                  avatarPath: true,
+                  role: true
+                }
+              }
+            }
+          });
+          return blog;
     }  
 }
 
