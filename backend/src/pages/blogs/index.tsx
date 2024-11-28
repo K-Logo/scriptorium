@@ -164,7 +164,7 @@ export default function BlogPosts() {
                                             <p className="m-0">Poster: {blog.author.username}</p>
                                         </div>
                                         <div className="flex flex-row items-center justify-between">
-                                            <p className="m-0">{blog.description}</p>
+                                            <p className="m-0 max-w-[80%] overflow-hidden text-ellipsis">{blog.description}</p>
                                             <p>Rating: {blog.rating}</p>
                                         </div>
                                         
