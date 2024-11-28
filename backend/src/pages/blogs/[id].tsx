@@ -247,12 +247,6 @@ export default function BlogPost() {
 
       if (response.ok) {
         console.log("Successfully upvoted");
-        console.log(jsonResponse);
-        // setComments((prevComments) =>
-        //   prevComments.map((comment) =>
-        //     comment.id === id ? jsonResponse : comment
-        //   )
-        // );
         setCommentLikeUpdated(prevState => !prevState);
       } else {
         alert(jsonResponse.error);
@@ -272,11 +266,7 @@ export default function BlogPost() {
 
       if (response.ok) {
         console.log("Successfully downvoted");
-        // setComments((prevComments) =>
-        //   prevComments.map((comment) =>
-        //     comment.id === id ? jsonResponse : comment
-        //   )
-        // );
+        setCommentLikeUpdated(prevState => !prevState);
       } else {
         alert(jsonResponse.error);
       }
