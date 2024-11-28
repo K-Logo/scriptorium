@@ -253,7 +253,95 @@ export async function searchBlogPostById(id, userId) {
                                 role: true
                             }
                         },
-                        replies: true
+                        replies: {
+                            where: {
+                                hidden: false
+                            },
+                            include: {
+                                author: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatarPath: true,
+                                        role: true
+                                    }
+                                },
+                                replies: {where: {
+                                    hidden: false
+                                },
+                                include: {
+                                    author: {
+                                        select: {
+                                            id: true,
+                                            username: true,
+                                            avatarPath: true,
+                                            role: true
+                                        }
+                                    },
+                                    replies: {
+                                        where: {
+                                            hidden: false
+                                        },
+                                        include: {
+                                            author: {
+                                                select: {
+                                                    id: true,
+                                                    username: true,
+                                                    avatarPath: true,
+                                                    role: true
+                                                }
+                                            },
+                                            replies: {
+                                                where: {
+                                                    hidden: false
+                                                },
+                                                include: {
+                                                    author: {
+                                                        select: {
+                                                            id: true,
+                                                            username: true,
+                                                            avatarPath: true,
+                                                            role: true
+                                                        }
+                                                    },
+                                                    replies: {
+                                                        where: {
+                                                            hidden: false
+                                                        },
+                                                        include: {
+                                                            author: {
+                                                                select: {
+                                                                    id: true,
+                                                                    username: true,
+                                                                    avatarPath: true,
+                                                                    role: true
+                                                                }
+                                                            },
+                                                            replies: {
+                                                                where: {
+                                                                    hidden: false
+                                                                },
+                                                                include: {
+                                                                    author: {
+                                                                        select: {
+                                                                            id: true,
+                                                                            username: true,
+                                                                            avatarPath: true,
+                                                                            role: true
+                                                                        }
+                                                                    },
+                                                                    replies: true
+                                                                },
+                                                            }
+                                                        },
+                                                    }
+                                                },
+                                            }
+                                        },
+                                    }
+                                },}
+                            },
+                        }
                     },
                 },
                 tags: true,
@@ -316,6 +404,78 @@ export async function searchBlogPostById(id, userId) {
     }  
 }
 
+export async function searchBlogPostByIdTmp(id, userId) {
+    if (userId == null) {
+        const blog = await prisma.blog.findFirst({
+            where: {
+                id: id
+            },
+            include: {
+                comments: {
+                    where: {
+                        hidden: false
+                    },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatarPath: true,
+                                role: true
+                            }
+                        }
+                    },
+                },
+                tags: true,
+                codeTemplates: true,
+            }
+        });
+        return blog;
+    } else {
+        const blog = await prisma.blog.findFirst({
+            where: {
+                id: id,
+                OR: [
+                    { hidden: false }, // Show public posts
+                    { authorId: userId } // Show hidden posts for the author
+                ]
+            },
+            include: {
+                comments: {
+                    where: {
+                        OR: [
+                            { hidden: false },  // Show public comments
+                            { authorId: userId } // Show comments made by the author
+                        ]
+                    },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatarPath: true,
+                                role: true
+                            }
+                        }
+                    },
+                },
+                tags: true,
+                author: {
+                    select: {
+                        id: true,
+                        username: true,
+                        avatarPath: true,
+                        role: true
+                    }
+                },
+                codeTemplates: true,
+            },
+        
+        });
+        return blog;
+    }  
+}
+
 export async function updateTitleById(id, title) {
     await prisma.blog.update({
         where: { id: id },
@@ -334,33 +494,33 @@ export async function updateDescriptionById(id, desc) {
     });
 }
 
-// export async function addTagById(id, newTag) {
+export async function addTagById(id, newTag) {
 
-//     const newTagId = await createTagAndGetId(newTag);
+    const newTagId = await createTagAndGetId(newTag);
 
-//     await prisma.blog.update({
-//         where: { id: id },
-//         data: {
-//             tags: {
-//                 connect: { id: newTagId }
-//             }
-//         }
-//     });
-// }
+    await prisma.blog.update({
+        where: { id: id },
+        data: {
+            tags: {
+                connect: { id: newTagId }
+            }
+        }
+    });
+}
 
-// export async function deleteTagById(id, oldTag) {
-//     console.log(oldTag);
-//     await prisma.blog.update({
-//         where: { id: id },
-//         data: {
-//             tags: {
-//                 disconnect: {
-//                     name: oldTag
-//                 }
-//             }
-//         }
-//     })
-// }
+export async function deleteTagById(id, oldTag) {
+    console.log(oldTag);
+    await prisma.blog.update({
+        where: { id: id },
+        data: {
+            tags: {
+                disconnect: {
+                    name: oldTag
+                }
+            }
+        }
+    })
+}
 
 export async function updateTags(blogId, tags) {
     await prisma.blog.update({

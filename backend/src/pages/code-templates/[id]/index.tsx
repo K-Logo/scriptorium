@@ -74,7 +74,7 @@ export default function CodeTemplateId() {
         if (!id) return;
         const fetchData = async () => {
             console.log(id)
-            const response = await fetch(`http://localhost:3000/api/codetemplates/${id}`, {
+            const response = await fetch(`/api/codetemplates/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export default function CodeTemplateId() {
                 setTags(json.tags);
                 setLanguage(json.language);
 
-                const userResponse = await fetch(`http://localhost:3000/api/users/${json.userId}?type=user`, {
+                const userResponse = await fetch(`/api/users/${json.userId}?type=user`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default function CodeTemplateId() {
                     setAuthorUsername(userJson.username);
                     console.log("asdf")
                     console.log(userJson.avatarPath)
-                    setAuthorAvatar("http://" + userJson.avatarPath);
+                    setAuthorAvatar(userJson.avatarPath);
                 } else {
                     alert(json.error);
                 }

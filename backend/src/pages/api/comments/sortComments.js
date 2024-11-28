@@ -4,6 +4,7 @@ import { paginate } from "@/service/paginate";
 export default async function handler(req, res) {
     if (req.method === "GET") {
         const { sortType } = req.query;
+        // localhost here to match URL validation regex. DO NOT RM
         const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
         const pno = new URL("https://localhost:3000" + req.url).searchParams.get("pno");
 

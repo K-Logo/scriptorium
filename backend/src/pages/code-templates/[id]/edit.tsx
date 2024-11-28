@@ -81,7 +81,7 @@ export default function CodeTemplateId() {
         if (!id) return;
         const fetchData = async () => {
             console.log(id)
-            const response = await fetch(`http://localhost:3000/api/codetemplates/${id}`, {
+            const response = await fetch(`/api/codetemplates/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ export default function CodeTemplateId() {
         const body = {};
         
 
-        const response = await fetch(`http://localhost:3000/api/codetemplates/${id}`, {
+        const response = await fetch(`/api/codetemplates/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ export default function CodeTemplateId() {
         if (response.ok) {
             if (removedTags.length !== 0) {
                 for (const removedTag of removedTags) {
-                    await fetch(`http://localhost:3000/api/codetemplates/${id}`, {
+                    await fetch(`/api/codetemplates/${id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ export default function CodeTemplateId() {
             }
             if (addedTags.length !== 0) {
                 for (const addedTag of addedTags) {
-                    await fetch(`http://localhost:3000/api/codetemplates/${id}`, {
+                    await fetch(`/api/codetemplates/${id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ export default function CodeTemplateId() {
         event.preventDefault();
         
 
-        const response = await fetch(`http://localhost:3000/api/codetemplates/${id}`, {
+        const response = await fetch(`/api/codetemplates/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -193,6 +193,7 @@ export default function CodeTemplateId() {
         const json = await response.json();
         if (response.ok) {
             alert("Successfully deleted code template.");
+            router.push("/code-templates");
         } else {
             alert(json.error);
         }

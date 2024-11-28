@@ -69,7 +69,7 @@ export default async function signup(req, res) {
 
     const passwordHash = await bcrypt.hash(password, parseInt(process.env.SALTROUNDS));
     const user = new User(null, username, passwordHash, firstName, lastName, email, parsedPhoneNumber,
-       "localhost:3000/avatars/amongus.jpg", "USER");
+       "/avatars/amongus.jpg", "USER");
     try {
       await addUser(user);
       return res.status(201).json({ message: "Sign up successful. Please log in!" });  // .json() required; else, next will hang. 201 ==> successful creation. info in JWT on login

@@ -8,7 +8,7 @@ import { isEmailTaken, isUsernameTaken, isPhoneNumberTaken } from '../../../serv
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const files = fs.readdirSync('./public/avatars')
-                .map((file) => "localhost:3000/avatars/" + file);
+                .map((file) => "/avatars/" + file);
 
 // accepts something@something.com, and in particular, prevents multiple @ signs.
 const validateEmail = (email) => {
@@ -119,6 +119,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ jwtToken: jwt, firstName: nu.firstName, lastName: nu.lastName, email: nu.email, phoneNumber: nu.phoneNumber, username: nu.username, avatarPath: nu.avatarPath, id: nu.id });  // return JWT with updated user details
   } else if (req.method === "GET") {
     let { id } = req.query;
+
+    // localhost here to match URL validation regex. DO NOT RM
     const epp = new URL("https://localhost:3000" + req.url).searchParams.get("epp");
     const pno = new URL("https://localhost:3000" + req.url).searchParams.get("pno");
     id = Number.parseInt(id);
