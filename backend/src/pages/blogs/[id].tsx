@@ -387,14 +387,14 @@ export default function BlogPost() {
 
           </div>
           <br/>
-          <h2 className="text-xl font-semibold mb-2">Comments</h2>
+          <h2 className="text-xl font-semibold mb-2 ">Comments</h2>
           {/* New Comment Input */}
           <div className="mt-6">
-                <textarea
+                <input
+                  type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  className="bg-[#302a3d] h-8 p-5 rounded w-full h-32"
-                  rows={4}
+                  className="bg-[#302a3d] h-20 p-5 rounded w-full"
                   placeholder="Add a comment..."
                 />
                 <button
