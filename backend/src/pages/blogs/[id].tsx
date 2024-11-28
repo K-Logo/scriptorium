@@ -8,6 +8,7 @@ export default function BlogPost() {
   const router = useRouter();
   const { id } = router.query;
   const [blog, setBlog] = useState(null);
+  const [user, setUser] = useState(null);
 
   // async function getBlog() {
   //   const blog = await fetch(`/api/blog/${id}`, {
@@ -39,13 +40,12 @@ export default function BlogPost() {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [authorUsername, setAuthorUsername] = useState<string>("");
-  const [codeTemplate, setCodeTemplate] = useState<CodeTemplate>(null);
+  const [codeTemplate, setCodeTemplate] = useState<CodeTemplate[]>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [comments, setComments] = useState([]);
   const [rating, setRating] = useState<number>(0);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
-  const [user, setUser] = useState(null);
   const [showReportBox, setShowReportBox] = useState(false); // Manage visibility of report box
   const [reportReason, setReportReason] = useState(""); // Store the report reason
   const [showCommentReportBox, setShowCommentReportBox] = useState(false);
@@ -56,6 +56,9 @@ export default function BlogPost() {
   const [replyText, setReplyText] = useState("");
   const [repliesVisible, setRepliesVisible] = useState({}); // Tracks which comments have their replies dropdown open
   const [replyingTo, setReplyingTo] = useState(-1);
+  const [commentLikeUpdated, setCommentLikeUpdated] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);  // Track the current page
+  const [commentsPerPage, setCommentsPerPage] = useState(5);  // Number of comments per page
 
   useEffect(() => {
     if (!id) return;
@@ -73,7 +76,6 @@ export default function BlogPost() {
       });
 
       const json = await response.json();
-      console.log(json);
 
       if (response.ok) {
         setTitle(json.title);
@@ -97,30 +99,8 @@ export default function BlogPost() {
   } else if (typeof id === 'string') {
     intId = parseInt(id, 10);
   }
-
-  // async function getAllComments() {
-  //   const comments = await fetch(`/api/comments/sortComments?sortType=${sortType}`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     }
-  //   });
-
-  //   return comments;
-  // }
-
-  // useEffect(() => {
-  //   async function fetchComments() {
-  //     const comments = await getAllComments();
-  //     const commentsJson = await comments.json();
-      
-  //     setComments(commentsJson.sortedComments);
-  //   }
-  //   fetchComments();
-  // }, [comments]);
-
+  
   async function handleAddComment() {
-      console.log("New Comment:", newComment);
       const bodyData = {
         content: newComment, 
         blogId: intId, 
@@ -227,7 +207,6 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully upvoted");
         setRating(jsonResponse.rating);
       } else {
         alert(jsonResponse.error);
@@ -246,7 +225,6 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully downvoted");
         setRating(jsonResponse.rating);
       } else {
         alert(jsonResponse.error);
@@ -265,14 +243,12 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully upvoted");
-        console.log(jsonResponse);
         // setComments((prevComments) =>
         //   prevComments.map((comment) =>
         //     comment.id === id ? jsonResponse : comment
         //   )
         // );
-        
+        setCommentLikeUpdated(prevState => !prevState);
       } else {
         alert(jsonResponse.error);
       }
@@ -290,12 +266,7 @@ export default function BlogPost() {
       const jsonResponse = await response.json();
 
       if (response.ok) {
-        console.log("Successfully downvoted");
-        // setComments((prevComments) =>
-        //   prevComments.map((comment) =>
-        //     comment.id === id ? jsonResponse : comment
-        //   )
-        // );
+        setCommentLikeUpdated(prevState => !prevState);
       } else {
         alert(jsonResponse.error);
       }
@@ -354,18 +325,37 @@ export default function BlogPost() {
         "desc": "Descending Ratings",
     }
 
+    useEffect(() => {
+      async function fetchComments() {
+        const response = await fetch(`/api/comments/sortComments?blogId=${intId}&sortType=${sortType}&epp=${commentsPerPage}&pno=${currentPage}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+    
+        if (response.ok) {
+          const commentsJson = await response.json();
+          setComments(commentsJson.sortedComments); // Assuming the API returns sorted comments in `sortedComments`.
+        } else {
+          console.error("Failed to fetch comments");
+        }
+      }
+    
+      fetchComments();
+    }, [intId, sortType, commentLikeUpdated, currentPage]); // Dependency array includes `sortType` and `commentLikeUpdated`.
+    
     function toggleSortDropdown() {
-        setSortDropdown(!sortDropdownOpen);
+      setSortDropdown((prev) => !prev);
     }
+    
+    if (!blog) return null;
 
-    function SortDropdown() {
-        return sortDropdownOpen && (
-            <ul id="code-search-type-dropdown">
-                <button onClick={() => {setSortType("asc"); toggleSortDropdown();}}><li>Ascending Ratings</li></button>
-                <button onClick={() => {setSortType("desc"); toggleSortDropdown();}}><li>Descending Ratings</li></button>
-            </ul>
-        )
-    }
+    const handlePageChange = (page: number) => {
+      if (page >= 1) {
+        setCurrentPage(page);
+      }
+    };  
 
     async function handleReplySubmit(parentId: number) {
       try {
@@ -423,17 +413,18 @@ export default function BlogPost() {
               ))}
             </div>
 
-
             {/* Description */}
             <p className="mt-4 text-lg s break-words">{description}</p>
 
-            { codeTemplate && <div className="mt-4">
-              <Link href={`/code-templates/${codeTemplate.id}`}>
-                <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
-                  Link to Code Template
-                </p>
-              </Link>
-            </div>}
+            {codeTemplate && codeTemplate.map((template) => (
+              <div className="mt-4" key={template.id}>
+                <Link href={`/code-templates/${template.id}`}>
+                  <p className="text-blue-500 hover:text-blue-700 text-lg font-medium">
+                    Link to Code Template: {template.title}
+                  </p>
+                </Link>
+              </div>
+            ))}
 
             {/* Like/Dislike buttons */}
             <div className="mt-6 flex items-center space-x-4 justify-end">
@@ -461,13 +452,8 @@ export default function BlogPost() {
                 Report
               </button>
               {/* Edit Button (only for the author) */}
-              {blog && blog.authorId === user.id && (
-                  <button
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700"
-                    onClick={() => console.log(`Edit blog with ID: ${blog.id}`)}
-                  >
-                    Edit
-                  </button>
+              {blog && user && blog.authorId === user.id && (
+                  <Link href={`/blogs/edit/${id}`}><button className="blue-button">Edit</button></Link>
                 )}
 
               {/* Report Text Box */}
@@ -496,18 +482,16 @@ export default function BlogPost() {
               )}
             </div>
 
-            
-
           </div>
           <br/>
-          <h2 className="text-xl font-semibold mb-2">Comments</h2>
+          <h2 className="text-xl font-semibold mb-2 ">Comments</h2>
           {/* New Comment Input */}
           <div className="mt-6">
-                <textarea
+                <input
+                  type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  className="bg-[#302a3d] h-8 p-5 rounded w-full h-32"
-                  rows={4}
+                  className="bg-[#302a3d] h-20 p-5 rounded w-full"
                   placeholder="Add a comment..."
                 />
                 <button
@@ -517,11 +501,14 @@ export default function BlogPost() {
                   Add Comment
                 </button>
               </div>
-              <div className="pt-[3vw]">
-                <button id="code-search-type-dropdown-button" onClick={() => toggleSortDropdown()}>
-                    {sortToDisplayName[sortType]}
-                </button>
-                <SortDropdown />
+              <div className="pt-6">
+              <button
+                id="code-search-type-toggle-button"
+                onClick={() => setSortType((prev) => (prev === "asc" ? "desc" : "asc"))}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+              >
+                {sortToDisplayName[sortType]}
+              </button>
             </div>
 
             {/* Comment Section */}
@@ -530,7 +517,23 @@ export default function BlogPost() {
                 {comments.map((comment) => (Comment(comment)))}
               </div>
             </div>
-          
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage <= 1}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-700"
+              >
+                Previous
+              </button>
+              <span className="px-4 py-2">{`Page ${currentPage}`}</span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg ml-2 hover:bg-gray-700"
+              >
+                Next
+              </button>
+            </div>
         </div>
       </>
     )

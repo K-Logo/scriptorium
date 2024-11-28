@@ -134,7 +134,7 @@ export default function EditProfile() {
     }
   };
 
-  const avatarUrl = `http://${formData.newAvatarPath}` || "/avatars/loggedout.png";
+  const avatarUrl = `${formData.newAvatarPath}` || "/avatars/loggedout.png";
 
   return (
     <>
@@ -244,7 +244,7 @@ export default function EditProfile() {
                 onClick={() => setFormData((prev) => ({ ...prev, newAvatarPath: avatar }))}
               >
                 <img
-                  src={`http://${avatar}`}
+                  src={`${avatar}`}
                   alt="Avatar"
                   className="avatar-image"
                 />

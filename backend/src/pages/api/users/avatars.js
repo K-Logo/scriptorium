@@ -8,7 +8,7 @@ export default async function getAvatars(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     const files = fs.readdirSync('./public/avatars')
-                    .map((file) => "localhost:3000/avatars/" + file);
+                    .map((file) => "/avatars/" + file);
     res.status(200).json(files);
   } else {
     return res.status(405).json({ error: "Method not allowed." });
