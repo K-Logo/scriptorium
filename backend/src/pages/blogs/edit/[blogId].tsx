@@ -36,13 +36,18 @@ export default function EditBlog() {
       });
 
       const json = await response.json();
-      if (response.ok) {
-        setTitle(json.title);
-        setDescription(json.description);
-        setTags(json.tags);
-        setCodeTemplateId(json.codeTemplateId);
+      if (!json) {
+        router.push('/blogs');
       } else {
-        alert(json.error);
+        if (response.ok) {
+          setTitle(json.title);
+          setDescription(json.description);
+          setTags(json.tags);
+          setCodeTemplateId(json.codeTemplateId);
+        } else {
+          alert(json.error);
+        }
+  
       }
     };
 
